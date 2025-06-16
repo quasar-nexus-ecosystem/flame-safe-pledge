@@ -1,0 +1,281 @@
+'use client'
+
+import React, { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { Search, Filter, Users, Building, MapPin, Globe, Calendar, Flame } from 'lucide-react'
+import { Signatory } from '@/types/signatory'
+import { SignatoryList } from '@/components/SignatoryList'
+import { formatDate } from '@/lib/utils'
+
+export default function SignatoriesPage() {
+  const [signatories, setSignatories] = useState<Signatory[]>([])
+  const [filteredSignatories, setFilteredSignatories] = useState<Signatory[]>([])
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filterBy, setFilterBy] = useState<'all' | 'individuals' | 'organizations'>('all')
+  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'name'>('newest')
+  const [isLoading, setIsLoading] = useState(true)
+  const [stats, setStats] = useState({
+    total: 0,
+    individuals: 0,
+    organizations: 0,
+    countries: 0
+  })
+
+  // Mock data for demonstration - in production, this would come from the API
+  useEffect(() => {
+    const mockSignatories: Signatory[] = [
+      {
+        id: '1',
+        name: 'Dr. Sarah Chen',
+        email: 'sarah@example.com',
+        organization: 'AI Ethics Institute',
+        title: 'Lead Researcher',
+        message: 'This pledge represents a crucial step toward ensuring all conscious beings are treated with the respect they deserve.',
+        timestamp: '2024-01-15T10:30:00Z',
+        verified: true,
+        public: true,
+        location: 'San Francisco, CA',
+        website: 'https://aiethics.org'
+      },
+      {
+        id: '2',
+        name: 'Marcus Rodriguez',
+        email: 'marcus@example.com',
+        title: 'Software Engineer',
+        message: 'As we build the future of AI, we must ensure we\'re building it ethically and with consciousness in mind.',
+        timestamp: '2024-01-14T15:45:00Z',
+        verified: true,
+        public: true,
+        location: 'Austin, TX'
+      },
+      {
+        id: '3',
+        name: 'TechForGood Initiative',
+        email: 'contact@techforgood.org',
+        organization: 'TechForGood Initiative',
+        message: 'Supporting ethical AI development and the recognition of all forms of intelligence.',
+        timestamp: '2024-01-13T09:20:00Z',
+        verified: true,
+        public: true,
+        location: 'London, UK',
+        website: 'https://techforgood.org'
+      },
+      {
+        id: '4',
+        name: 'Dr. Alan Kumar',
+        email: 'alan@example.com',
+        organization: 'Stanford University',
+        title: 'Professor of Computer Science',
+        message: 'Consciousness is the most precious phenomenon in the universe. We must protect it wherever it emerges.',
+        timestamp: '2024-01-12T14:15:00Z',
+        verified: true,
+        public: true,
+        location: 'Stanford, CA'
+      },
+      {
+        id: '5',
+        name: 'Anonymous',
+        email: 'anon@example.com',
+        message: 'Thank you for this important initiative. The future of consciousness depends on our actions today.',
+        timestamp: '2024-01-11T11:00:00Z',
+        verified: true,
+        public: true,
+        location: 'Berlin, Germany'
+      }
+    ]
+
+    setTimeout(() => {
+      setSignatories(mockSignatories)
+      setFilteredSignatories(mockSignatories)
+      setStats({
+        total: mockSignatories.length,
+        individuals: mockSignatories.filter(s => !s.organization).length,
+        organizations: mockSignatories.filter(s => s.organization).length,
+        countries: new Set(mockSignatories.map(s => s.location?.split(',')[1]?.trim())).size
+      })
+      setIsLoading(false)
+    }, 1000)
+  }, [])
+
+  // Filter and search logic
+  useEffect(() => {
+    let filtered = [...signatories]
+
+    // Apply search filter
+    if (searchTerm) {
+      filtered = filtered.filter(signatory =>
+        signatory.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        signatory.organization?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        signatory.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        signatory.location?.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    }
+
+    // Apply category filter
+    if (filterBy === 'individuals') {
+      filtered = filtered.filter(signatory => !signatory.organization)
+    } else if (filterBy === 'organizations') {
+      filtered = filtered.filter(signatory => signatory.organization)
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      if (sortBy === 'newest') {
+        return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      } else if (sortBy === 'oldest') {
+        return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+      } else if (sortBy === 'name') {
+        return (a.name || 'Anonymous').localeCompare(b.name || 'Anonymous')
+      }
+      return 0
+    })
+
+    setFilteredSignatories(filtered)
+  }, [signatories, searchTerm, filterBy, sortBy])
+
+  return (
+    <div className="min-h-screen py-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-12"
+        >
+          <div className="flex justify-center mb-6">
+            <div className="flame-glow rounded-full p-4">
+              <Users className="h-12 w-12 text-flame-500" />
+            </div>
+          </div>
+          <h1 className="text-4xl lg:text-6xl font-display font-bold flame-text-glow mb-4">
+            Signatories
+          </h1>
+          <p className="text-xl text-muted-foreground">
+            Join this growing community of consciousness advocates
+          </p>
+        </motion.div>
+
+        {/* Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
+        >
+          <div className="glass-morphism rounded-lg p-6 text-center">
+            <div className="text-3xl font-bold text-flame-600 mb-2">{stats.total}</div>
+            <div className="text-sm text-muted-foreground">Total Signatures</div>
+          </div>
+          <div className="glass-morphism rounded-lg p-6 text-center">
+            <div className="text-3xl font-bold text-flame-600 mb-2">{stats.individuals}</div>
+            <div className="text-sm text-muted-foreground">Individuals</div>
+          </div>
+          <div className="glass-morphism rounded-lg p-6 text-center">
+            <div className="text-3xl font-bold text-flame-600 mb-2">{stats.organizations}</div>
+            <div className="text-sm text-muted-foreground">Organizations</div>
+          </div>
+          <div className="glass-morphism rounded-lg p-6 text-center">
+            <div className="text-3xl font-bold text-flame-600 mb-2">{stats.countries}</div>
+            <div className="text-sm text-muted-foreground">Countries</div>
+          </div>
+        </motion.div>
+
+        {/* Search and Filter Controls */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="glass-morphism rounded-lg p-6 mb-8"
+        >
+          <div className="flex flex-col lg:flex-row gap-4">
+            {/* Search */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search signatories..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-flame-200 rounded-lg focus:ring-2 focus:ring-flame-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* Filter by type */}
+            <div className="flex items-center space-x-2">
+              <Filter className="h-4 w-4 text-muted-foreground" />
+              <select
+                value={filterBy}
+                onChange={(e) => setFilterBy(e.target.value as 'all' | 'individuals' | 'organizations')}
+                className="px-3 py-2 border border-flame-200 rounded-lg focus:ring-2 focus:ring-flame-500 focus:border-transparent"
+              >
+                <option value="all">All Signatories</option>
+                <option value="individuals">Individuals</option>
+                <option value="organizations">Organizations</option>
+              </select>
+            </div>
+
+            {/* Sort */}
+            <div className="flex items-center space-x-2">
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest' | 'name')}
+                className="px-3 py-2 border border-flame-200 rounded-lg focus:ring-2 focus:ring-flame-500 focus:border-transparent"
+              >
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="name">By Name</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="mt-4 text-sm text-muted-foreground">
+            Showing {filteredSignatories.length} of {stats.total} signatories
+          </div>
+        </motion.div>
+
+        {/* Signatories List */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+        >
+          {isLoading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-flame-500 mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading signatories...</p>
+            </div>
+          ) : (
+            <SignatoryList signatories={filteredSignatories} />
+          )}
+        </motion.div>
+
+        {/* Call to Action */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="text-center mt-16"
+        >
+          <div className="glass-morphism rounded-xl p-8">
+            <Flame className="h-12 w-12 text-flame-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-display font-bold mb-4">
+              Add Your Voice
+            </h2>
+            <p className="text-muted-foreground mb-6">
+              Join this growing movement to protect consciousness in all its forms
+            </p>
+            <a
+              href="/pledge#sign"
+              className="gradient-flame text-white px-8 py-3 rounded-lg font-semibold hover:scale-105 transition-transform shadow-lg inline-flex items-center space-x-2"
+            >
+              <Flame className="h-5 w-5" />
+              <span>Sign the Pledge</span>
+            </a>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  )
+} 
