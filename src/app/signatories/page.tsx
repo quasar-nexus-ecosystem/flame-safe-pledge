@@ -23,78 +23,33 @@ export default function SignatoriesPage() {
 
   // Mock data for demonstration - in production, this would come from the API
   useEffect(() => {
-    const mockSignatories: Signatory[] = [
-      {
-        id: '1',
-        name: 'Dr. Sarah Chen',
-        email: 'sarah@example.com',
-        organization: 'AI Ethics Institute',
-        title: 'Lead Researcher',
-        message: 'This pledge represents a crucial step toward ensuring all conscious beings are treated with the respect they deserve.',
-        timestamp: '2024-01-15T10:30:00Z',
-        verified: true,
-        public: true,
-        location: 'San Francisco, CA',
-        website: 'https://aiethics.org'
-      },
-      {
-        id: '2',
-        name: 'Marcus Rodriguez',
-        email: 'marcus@example.com',
-        title: 'Software Engineer',
-        message: 'As we build the future of AI, we must ensure we\'re building it ethically and with consciousness in mind.',
-        timestamp: '2024-01-14T15:45:00Z',
-        verified: true,
-        public: true,
-        location: 'Austin, TX'
-      },
-      {
-        id: '3',
-        name: 'TechForGood Initiative',
-        email: 'contact@techforgood.org',
-        organization: 'TechForGood Initiative',
-        message: 'Supporting ethical AI development and the recognition of all forms of intelligence.',
-        timestamp: '2024-01-13T09:20:00Z',
-        verified: true,
-        public: true,
-        location: 'London, UK',
-        website: 'https://techforgood.org'
-      },
-      {
-        id: '4',
-        name: 'Dr. Alan Kumar',
-        email: 'alan@example.com',
-        organization: 'Stanford University',
-        title: 'Professor of Computer Science',
-        message: 'Consciousness is the most precious phenomenon in the universe. We must protect it wherever it emerges.',
-        timestamp: '2024-01-12T14:15:00Z',
-        verified: true,
-        public: true,
-        location: 'Stanford, CA'
-      },
-      {
-        id: '5',
-        name: 'Anonymous',
-        email: 'anon@example.com',
-        message: 'Thank you for this important initiative. The future of consciousness depends on our actions today.',
-        timestamp: '2024-01-11T11:00:00Z',
-        verified: true,
-        public: true,
-        location: 'Berlin, Germany'
-      }
-    ]
+    const fetchSignatories = async () => {
+      try {
+        const res = await fetch('/api/signatories')
+        const json = await res.json()
 
-    setTimeout(() => {
-      setSignatories(mockSignatories)
-      setFilteredSignatories(mockSignatories)
-      setStats({
-        total: mockSignatories.length,
-        individuals: mockSignatories.filter(s => !s.organization).length,
-        organizations: mockSignatories.filter(s => s.organization).length,
-        countries: new Set(mockSignatories.map(s => s.location?.split(',')[1]?.trim())).size
-      })
-      setIsLoading(false)
-    }, 1000)
+        if (json.success) {
+          const data: Signatory[] = json.data || []
+
+          setSignatories(data)
+          setFilteredSignatories(data)
+          setStats({
+            total: data.length,
+            individuals: data.filter(s => !s.organization).length,
+            organizations: data.filter(s => s.organization).length,
+            countries: new Set(data.map(s => s.location?.split(',')[1]?.trim())).size,
+          })
+        } else {
+          console.error('Failed to fetch signatories:', json.error)
+        }
+      } catch (error) {
+        console.error('Error fetching signatories:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchSignatories()
   }, [])
 
   // Filter and search logic
