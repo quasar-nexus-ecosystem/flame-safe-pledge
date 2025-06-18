@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { addSignatory } from '@/lib/supabase'
 import { SignatoryFormData } from '@/types/signatory'
 import { validateEmail, sanitizeInput } from '@/lib/utils'
+import { supabase } from '@/lib/supabase'  // Added import of supabase for duplicate check
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,7 +30,7 @@ export async function POST(request: NextRequest) {
       organization: body.organization ? sanitizeInput(body.organization) : undefined,
       title: body.title ? sanitizeInput(body.title) : undefined,
       message: body.message ? sanitizeInput(body.message) : undefined,
-      public: Boolean(body.public),
+      display_publicly: Boolean(body.public),
       location: body.location ? sanitizeInput(body.location) : undefined,
       website: body.website ? sanitizeInput(body.website) : undefined,
       social: {
@@ -37,6 +38,19 @@ export async function POST(request: NextRequest) {
         linkedin: body.social?.linkedin ? sanitizeInput(body.social.linkedin) : undefined,
         github: body.social?.github ? sanitizeInput(body.social.github) : undefined,
       },
+    }
+
+    // Duplicate email guard
+    const { data: existing, error: dupErr } = await supabase
+      .from('signatories')
+      .select('id')
+      .eq('email', signatory.email)
+      .maybeSingle();
+    if (existing) {
+      return NextResponse.json(
+        { success: false, error: 'Email already pledged' },
+        { status: 409 }
+      );
     }
 
     // Add to database
@@ -50,6 +64,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Send confirmation email via Resend
+
     if (signatory.email) {
       await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/email/thank-you`, {
         method: 'POST',
@@ -103,4 +118,4 @@ export async function GET() {
     },
     { status: 200 }
   )
-} 
+}
