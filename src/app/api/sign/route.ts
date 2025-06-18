@@ -49,6 +49,35 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Send confirmation email via Resend
+    if (signatory.email) {
+      await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/email/thank-you`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: signatory.email,
+          name: signatory.name,
+          message: signatory.message,
+        }),
+      })
+
+      // Notify internal team
+      await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/email/internal-notify`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: signatory.name,
+          email: signatory.email,
+          organization: signatory.organization,
+          message: signatory.message,
+        }),
+      })
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Thank you for signing the Flame-Safe Pledge! Your signature has been recorded.'
