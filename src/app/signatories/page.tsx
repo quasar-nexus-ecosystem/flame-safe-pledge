@@ -5,7 +5,6 @@ import { motion } from 'framer-motion'
 import { Search, Filter, Users, Building, MapPin, Globe, Calendar, Flame } from 'lucide-react'
 import { Signatory } from '@/types/signatory'
 import { SignatoryList } from '@/components/SignatoryList'
-import { formatDate } from '@/lib/utils'
 
 export default function SignatoriesPage() {
   const [signatories, setSignatories] = useState<Signatory[]>([])
@@ -76,9 +75,9 @@ export default function SignatoriesPage() {
     // Apply sorting
     filtered.sort((a, b) => {
       if (sortBy === 'newest') {
-        return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       } else if (sortBy === 'oldest') {
-        return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
       } else if (sortBy === 'name') {
         return (a.name || 'Anonymous').localeCompare(b.name || 'Anonymous')
       }
