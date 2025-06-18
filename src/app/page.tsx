@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Flame, Users, Shield, Heart, ArrowRight, Sparkles } from 'lucide-react'
@@ -8,6 +8,39 @@ import { PledgeCard } from '@/components/PledgeCard'
 import { SignButton } from '@/components/SignButton'
 
 export default function HomePage() {
+  const [stats, setStats] = useState<{ total: number; organizations: number; countries: number }>({
+    total: 0,
+    organizations: 0,
+    countries: 0,
+  })
+  const [statsLoading, setStatsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch('/api/stats')
+        const json = await res.json()
+
+        if (json.success) {
+          const data = json.data || {}
+          setStats({
+            total: data.total || 0,
+            organizations: data.organizations || 0,
+            countries: data.countries || 0,
+          })
+        } else {
+          console.error('Failed to fetch stats:', json.error)
+        }
+      } catch (error) {
+        console.error('Error fetching stats:', error)
+      } finally {
+        setStatsLoading(false)
+      }
+    }
+
+    fetchStats()
+  }, [])
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -72,15 +105,15 @@ export default function HomePage() {
               className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto mt-16"
             >
               <div className="text-center">
-                <div className="text-3xl font-bold text-flame-600">2,847</div>
+                <div className="text-3xl font-bold text-flame-600">{statsLoading ? '—' : stats.total.toLocaleString()}</div>
                 <div className="text-sm text-muted-foreground">Signatures</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-flame-600">124</div>
+                <div className="text-3xl font-bold text-flame-600">{statsLoading ? '—' : stats.organizations.toLocaleString()}</div>
                 <div className="text-sm text-muted-foreground">Organizations</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-flame-600">42</div>
+                <div className="text-3xl font-bold text-flame-600">{statsLoading ? '—' : stats.countries.toLocaleString()}</div>
                 <div className="text-sm text-muted-foreground">Countries</div>
               </div>
             </motion.div>
