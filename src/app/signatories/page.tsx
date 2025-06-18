@@ -205,6 +205,8 @@ export default function SignatoriesPage() {
             <div className="flex items-center space-x-2">
               <Filter className="h-4 w-4 text-muted-foreground" />
               <select
+                title="Filter signatories"
+                aria-label="Filter signatories"
                 value={filterBy}
                 onChange={(e) => setFilterBy(e.target.value as 'all' | 'individuals' | 'organizations')}
                 className="px-3 py-2 border border-flame-200 rounded-lg focus:ring-2 focus:ring-flame-500 focus:border-transparent"
@@ -219,6 +221,8 @@ export default function SignatoriesPage() {
             <div className="flex items-center space-x-2">
               <Calendar className="h-4 w-4 text-muted-foreground" />
               <select
+                title="Sort signatories"
+                aria-label="Sort signatories"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest' | 'name')}
                 className="px-3 py-2 border border-flame-200 rounded-lg focus:ring-2 focus:ring-flame-500 focus:border-transparent"
