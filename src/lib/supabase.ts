@@ -1,16 +1,38 @@
 import { createClient } from '@supabase/supabase-js'
-import { Signatory, SignatoryFormData } from '@/types/signatory'
+import { Signatory } from '@/types/signatory'
+import { SignatoryFormValues } from './schemas'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
+export async function checkDuplicateEmail(email: string): Promise<{ exists: boolean }> {
+  if (!email) {
+    return { exists: false }
+  }
+
+  const { data, error } = await supabase
+    .from('signatories')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle()
+
+  if (error) {
+    console.error('Error checking for duplicate email:', error)
+    // To be safe, we'll say it doesn't exist if there's an error.
+    // This prevents a user from being blocked from signing if the check fails.
+    return { exists: false }
+  }
+
+  return { exists: !!data }
+}
+
 // Database functions
 export async function getSignatories(): Promise<Signatory[]> {
   const { data, error } = await supabase
     .from('signatories')
-    .select('*')
+    .select('id, name, organization, title, message, timestamp, public, location, website, social')
     .eq('public', true)
     .order('timestamp', { ascending: false })
 
@@ -20,29 +42,6 @@ export async function getSignatories(): Promise<Signatory[]> {
   }
 
   return data || []
-}
-
-export async function addSignatory(signatory: SignatoryFormData): Promise<{ success: boolean; error?: string }> {
-  try {
-    const { error } = await supabase
-      .from('signatories')
-      .insert({
-        ...signatory,
-        id: crypto.randomUUID(),
-        timestamp: new Date().toISOString(),
-        verified: false, // Will be verified by admin
-      })
-
-    if (error) {
-      console.error('Error adding signatory:', error)
-      return { success: false, error: error.message }
-    }
-
-    return { success: true }
-  } catch (error) {
-    console.error('Error adding signatory:', error)
-    return { success: false, error: 'Failed to add signature' }
-  }
 }
 
 export async function getSignatoryStats() {
