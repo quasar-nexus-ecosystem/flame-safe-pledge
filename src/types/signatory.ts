@@ -39,6 +39,7 @@ export interface SignatoryStats {
   organizations: number;
   individuals: number;
   recentSignatures: number; // last 24 hours
+  countries: number;
 }
 
 export interface PledgeSection {

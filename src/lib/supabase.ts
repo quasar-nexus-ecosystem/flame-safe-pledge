@@ -59,6 +59,7 @@ export async function getSignatoryStats() {
         organizations: 0,
         individuals: 0,
         recentSignatures: 0,
+        countries: 0,
       }
     }
 
@@ -71,6 +72,7 @@ export async function getSignatoryStats() {
       organizations: data.filter(s => s.organization).length,
       individuals: data.filter(s => !s.organization).length,
       recentSignatures: data.filter(s => new Date(s.timestamp) > oneDayAgo).length,
+      countries: new Set(data.map(s => s.location?.split(',')[1]?.trim())).size,
     }
   } catch (error) {
     console.error('Error fetching stats:', error)
@@ -80,6 +82,7 @@ export async function getSignatoryStats() {
       organizations: 0,
       individuals: 0,
       recentSignatures: 0,
+      countries: 0,
     }
   }
 } 
