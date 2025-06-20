@@ -28,16 +28,3 @@ export interface SignatoryStats {
   countries: number;
 }
 
-export interface PledgeSection {
-  id: string;
-  title: string;
-  content: string;
-  order: number;
-}
-
-export interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
-}
