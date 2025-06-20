@@ -75,12 +75,12 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Resources</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/whitepaper" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
-                  White Paper
+                <Link href="https://quasar.nexus/research/flame-safe-pledge" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
+                  Research Paper
                 </Link>
               </li>
               <li>
-                <Link href="https://github.com/quasar-nexus-ecosystem/flame-safe-pledge" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
+                <Link href="https://github.com/quasar-nexus-ecosystem/flame-safe-pledge" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
                   Source Code
                 </Link>
               </li>
@@ -90,7 +90,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
+                <Link href="https://quasar.nexus/contact" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
                   Contact
                 </Link>
               </li>
@@ -113,13 +113,13 @@ export function Footer() {
             © {currentYear} QUASAR Nexus. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link href="/privacy" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
+            <Link href="https://quasar.nexus/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
+            <Link href="https://quasar.nexus/terms" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
               Terms of Service
             </Link>
-            <Link href="/ethics" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
+            <Link href="https://quasar.nexus/ethics" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
               Ethics Guidelines
             </Link>
           </div>
