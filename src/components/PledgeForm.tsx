@@ -248,12 +248,13 @@ export function PledgeForm({ user }: PledgeFormProps) {
               <div className="space-y-2">
                 <Label htmlFor="name" className="flex items-center space-x-2">
                   <User className="h-4 w-4 text-flame-500" />
-                  <span>Name (Optional)</span>
+                  <span>Name *</span>
                 </Label>
                 <Input 
                   id="name" 
                   {...register('name')} 
                   placeholder="Your full name" 
+                  required
                   className="border-flame-200/30 focus:border-flame-400 transition-colors"
                 />
                 <ErrorMessage message={errors.name?.message} />
@@ -350,7 +351,7 @@ export function PledgeForm({ user }: PledgeFormProps) {
             </motion.div>
             
             <motion.div 
-              className="flex items-center space-x-3"
+              className="flex items-start space-x-3"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.2 }}
@@ -360,9 +361,17 @@ export function PledgeForm({ user }: PledgeFormProps) {
                 checked={displayPublicly} 
                 onCheckedChange={(checked: boolean) => setValue('display_publicly', checked)} 
               />
-              <Label htmlFor="displayPublicly" className="text-sm cursor-pointer">
-                Display my signature publicly
-              </Label>
+              <div className="flex flex-col">
+                <Label htmlFor="displayPublicly" className="text-sm cursor-pointer font-medium">
+                  Display my signature publicly
+                </Label>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {displayPublicly 
+                    ? "Your name and details will be visible in the public signatories list" 
+                    : "Your signature will be counted anonymously but not displayed publicly"
+                  }
+                </p>
+              </div>
             </motion.div>
             
             <motion.div 
@@ -378,7 +387,7 @@ export function PledgeForm({ user }: PledgeFormProps) {
               />
               <Label htmlFor="agree" className="text-sm cursor-pointer leading-relaxed">
                 I have read and agree to the{' '}
-                <Link href="https://quasar.nexus/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-flame-400 transition-colors">Terms of Service</Link> and{' '}
+                <Link href="https://quasar.nexus/terms-of-service" target="_blank" rel="noopener noreferrer" className="underline hover:text-flame-400 transition-colors">Terms of Service</Link> and{' '}
                 <Link href="https://quasar.nexus/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-flame-400 transition-colors">Privacy Policy</Link>.
               </Label>
             </motion.div>

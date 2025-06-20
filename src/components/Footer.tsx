@@ -116,7 +116,7 @@ export function Footer() {
             <Link href="https://quasar.nexus/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
               Privacy Policy
             </Link>
-            <Link href="https://quasar.nexus/terms" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
+            <Link href="https://quasar.nexus/terms-of-service" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
               Terms of Service
             </Link>
             <Link href="https://quasar.nexus/ethics" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
