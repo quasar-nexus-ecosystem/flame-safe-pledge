@@ -32,9 +32,13 @@ export async function checkDuplicateEmail(email: string): Promise<{ exists: bool
 export async function getSignatories(): Promise<Signatory[]> {
   const { data, error } = await supabase
     .from('signatories')
-    .select('id, name, organization, title, message, timestamp, public, location, website, social')
-    .eq('public', true)
-    .order('timestamp', { ascending: false })
+    .select(`
+      id, name, organization, title, message, created_at,
+      display_publicly, location, website, social,
+      verified
+    `)
+    .eq('display_publicly', true)
+    .order('created_at', { ascending: false })
 
   if (error) {
     console.error('Error fetching signatories:', error)
@@ -70,7 +74,7 @@ export async function getSignatoryStats() {
       verified: data.filter(s => s.verified).length,
       organizations: data.filter(s => s.organization).length,
       individuals: data.filter(s => !s.organization).length,
-      recentSignatures: data.filter(s => new Date(s.timestamp) > oneDayAgo).length,
+      recentSignatures: data.filter(s => new Date(s.created_at) > oneDayAgo).length,
       countries: new Set(data.map(s => s.location?.split(',')[1]?.trim())).size,
     }
   } catch (error) {

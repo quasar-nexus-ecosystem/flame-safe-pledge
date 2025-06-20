@@ -7,11 +7,8 @@ export const signatorySchema = z.object({
   title: z.string().optional(),
   message: z.string().optional(),
   location: z.string().optional(),
-  website: z.preprocess(
-    (val) => (val === '' ? undefined : val),
-    z.string().url({ message: 'Please enter a valid URL.' }).optional()
-  ),
-  display_publicly: z.boolean().default(true),
+  website: z.string().optional(),
+  display_publicly: z.boolean(),
   social: z
     .object({
       twitter: z.string().optional(),
