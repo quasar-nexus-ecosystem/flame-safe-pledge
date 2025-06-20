@@ -14,6 +14,9 @@ export interface Signatory {
     linkedin?: string;
     github?: string;
   };
+  
+  /** Email verified via /api/verify/[token] */
+  verified?: boolean;
 }
 
 export interface SignatoryStats {

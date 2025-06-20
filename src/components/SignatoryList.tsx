@@ -42,8 +42,13 @@ export function SignatoryList({ signatories }: SignatoryListProps) {
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center space-x-2">
-                  <h3 className="font-semibold text-sm truncate">
+                  <h3 className="font-semibold text-sm truncate flex items-center gap-1">
                     {signatory.name || 'Anonymous'}
+                    {signatory.verified && (
+                      <span title="Email verified">
+                        <CheckCircle className="h-4 w-4 text-blue-500 shrink-0" />
+                      </span>
+                    )}
                   </h3>
                 </div>
                 {signatory.organization && (

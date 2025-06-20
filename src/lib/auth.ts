@@ -1,5 +1,3 @@
-import { cookies } from 'next/headers'
-
 /**
  * A placeholder function to simulate fetching the currently logged-in user.
  * In your real application, this would be replaced with your actual
@@ -8,7 +6,10 @@ import { cookies } from 'next/headers'
  * @returns {Promise<{ id: string; name: string; email: string } | null>}
  */
 export async function getCurrentUser() {
-  const cookieStore = cookies()
+  // Import cookies dynamically to avoid build issues
+  const { cookies } = await import('next/headers')
+  const cookieStore = await cookies()
+  
   // This is a placeholder for your actual session cookie
   const sessionCookie = cookieStore.get('__Secure-next-auth.session-token')?.value || cookieStore.get('next-auth.session-token')?.value
 
