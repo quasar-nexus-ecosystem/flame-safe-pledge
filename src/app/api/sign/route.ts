@@ -1,121 +1,77 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { addSignatory } from '@/lib/supabase'
-import { SignatoryFormData } from '@/types/signatory'
-import { validateEmail, sanitizeInput } from '@/lib/utils'
-import { supabase } from '@/lib/supabase'  // Added import of supabase for duplicate check
+import { NextResponse } from 'next/server'
+import { supabase } from '@/lib/supabase'
+import { signatorySchema } from '@/lib/schemas'
+import { Resend } from 'resend'
+import { VerificationEmail } from '@/components/emails/VerificationEmail'
 
-export async function POST(request: NextRequest) {
+const resend = new Resend(process.env.RESEND_API_KEY)
+const baseUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : 'http://localhost:3000'
+
+export async function POST(request: Request) {
   try {
     const body = await request.json()
-    
-    // Validate required fields
-    if (!body.email) {
-      return NextResponse.json(
-        { success: false, error: 'Email is required' },
-        { status: 400 }
-      )
+    const validation = signatorySchema.safeParse(body)
+
+    if (!validation.success) {
+      return NextResponse.json({ error: 'Invalid input', details: validation.error.flatten() }, { status: 400 })
     }
 
-    if (!validateEmail(body.email)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid email format' },
-        { status: 400 }
-      )
-    }
+    const { email, display_publicly, name, ...rest } = validation.data
 
-    // Sanitize inputs
-    const signatory: SignatoryFormData = {
-      name: body.name ? sanitizeInput(body.name) : undefined,
-      email: sanitizeInput(body.email),
-      organization: body.organization ? sanitizeInput(body.organization) : undefined,
-      title: body.title ? sanitizeInput(body.title) : undefined,
-      message: body.message ? sanitizeInput(body.message) : undefined,
-      display_publicly: Boolean(body.public),
-      location: body.location ? sanitizeInput(body.location) : undefined,
-      website: body.website ? sanitizeInput(body.website) : undefined,
-      social: {
-        twitter: body.social?.twitter ? sanitizeInput(body.social.twitter) : undefined,
-        linkedin: body.social?.linkedin ? sanitizeInput(body.social.linkedin) : undefined,
-        github: body.social?.github ? sanitizeInput(body.social.github) : undefined,
-      },
-    }
-
-    // Duplicate email guard
-    const { data: existing, error: dupErr } = await supabase
+    // Check for duplicate email
+    const { data: existing } = await supabase
       .from('signatories')
-      .select('id')
-      .eq('email', signatory.email)
-      .maybeSingle();
+      .select('id, verified')
+      .eq('email', email)
+      .maybeSingle()
+
     if (existing) {
-      return NextResponse.json(
-        { success: false, error: 'Email already pledged' },
-        { status: 409 }
-      );
+        if(existing.verified) {
+            return NextResponse.json(
+                { error: 'duplicate', message: 'This email has already been used to sign and verify the pledge.' },
+                { status: 409 }
+            )
+        }
+        // If it exists but is not verified, we can resend verification.
     }
 
-    // Add to database
-    const result = await addSignatory(signatory)
+    const verification_token = crypto.randomUUID()
 
-    if (!result.success) {
-      return NextResponse.json(
-        { success: false, error: result.error || 'Failed to add signature' },
-        { status: 500 }
-      )
+    const payload = {
+      ...rest,
+      name,
+      email,
+      display_publicly,
+      verified: false,
+      created_at: new Date().toISOString(),
+      verification_token,
     }
 
-    // Send confirmation email via Resend
+    const { error: insertError } = await supabase.from('signatories').upsert(payload, { onConflict: 'email'})
 
-    if (signatory.email) {
-      await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/email/thank-you`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          to: signatory.email,
-          name: signatory.name,
-          message: signatory.message,
-        }),
-      })
-
-      // Notify internal team
-      await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/email/internal-notify`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: signatory.name,
-          email: signatory.email,
-          organization: signatory.organization,
-          message: signatory.message,
-        }),
-      })
+    if (insertError) {
+      console.error('Supabase insert error:', insertError)
+      return NextResponse.json({ error: 'Database error', message: 'Could not save signature.' }, { status: 500 })
+    }
+    
+    // Send verification email
+    try {
+        await resend.emails.send({
+            from: 'Flame-Safe Pledge <noreply@quasar.nexus>',
+            to: email,
+            subject: 'Verify your Flame-Safe Pledge Signature',
+            react: VerificationEmail({ verificationUrl: `${baseUrl}/api/verify/${verification_token}` }),
+        });
+    } catch (error) {
+        console.error('Resend error:', error)
+        return NextResponse.json({ error: 'Email error', message: 'Could not send verification email.' }, { status: 500 })
     }
 
-    return NextResponse.json({
-      success: true,
-      message: 'Thank you for signing the Flame-Safe Pledge! Your signature has been recorded.'
-    })
-
+    return NextResponse.json({ success: true, message: 'Thank you! Please check your email to verify your signature.' })
   } catch (error) {
-    console.error('Error processing signature:', error)
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+    console.error('API Error:', error)
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
-}
-
-export async function GET() {
-  return NextResponse.json(
-    { 
-      message: 'Flame-Safe Pledge API', 
-      endpoints: {
-        'POST /api/sign': 'Submit a signature',
-        'GET /api/signatories': 'Get public signatures'
-      }
-    },
-    { status: 200 }
-  )
 }

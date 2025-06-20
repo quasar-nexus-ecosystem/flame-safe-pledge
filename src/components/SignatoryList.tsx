@@ -2,7 +2,6 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { Users, Building, MapPin, Globe, Calendar, Quote, CheckCircle } from 'lucide-react'
 import { Signatory } from '@/types/signatory'
-import { formatDate, getRelativeTime } from '@/lib/utils'
 
 interface SignatoryListProps {
   signatories: Signatory[]
@@ -46,9 +45,6 @@ export function SignatoryList({ signatories }: SignatoryListProps) {
                   <h3 className="font-semibold text-sm truncate">
                     {signatory.name || 'Anonymous'}
                   </h3>
-                  {signatory.verified && (
-                    <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-                  )}
                 </div>
                 {signatory.organization && (
                   <p className="text-xs text-muted-foreground truncate">
@@ -101,7 +97,7 @@ export function SignatoryList({ signatories }: SignatoryListProps) {
 
             <div className="flex items-center space-x-2 text-xs text-muted-foreground">
               <Calendar className="h-3 w-3 flex-shrink-0" />
-              <span>{getRelativeTime(signatory.timestamp)}</span>
+              <span>{new Date(signatory.created_at).toLocaleDateString()}</span>
             </div>
           </div>
 

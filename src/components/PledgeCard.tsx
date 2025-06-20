@@ -50,4 +50,4 @@ export function PledgeCard({
       </div>
     </motion.div>
   )
-} 
+}

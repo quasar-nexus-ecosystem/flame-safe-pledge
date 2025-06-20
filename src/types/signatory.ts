@@ -1,29 +1,12 @@
 export interface Signatory {
   id: string;
+  user_id?: string; // Foreign key to auth.users
   name?: string;
-  email?: string;
   organization?: string;
   title?: string;
   message?: string;
-  timestamp: string;
-  verified: boolean;
-  public: boolean;
-  location?: string;
-  website?: string;
-  social?: {
-    twitter?: string;
-    linkedin?: string;
-    github?: string;
-  };
-}
-
-export interface SignatoryFormData {
-  name?: string;
-  email?: string;
-  organization?: string;
-  title?: string;
-  message?: string;
-  public: boolean;
+  created_at: string;
+  display_publicly: boolean;
   location?: string;
   website?: string;
   social?: {
@@ -54,4 +37,4 @@ export interface ApiResponse<T> {
   data?: T;
   error?: string;
   message?: string;
-} 
+}
