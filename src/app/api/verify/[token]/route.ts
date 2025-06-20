@@ -1,1 +1,0 @@
-export { GET } from '@/app/api/pledge/email/verify/[token]/route' 
