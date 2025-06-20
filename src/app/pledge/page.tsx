@@ -3,6 +3,9 @@ import { PledgeContent } from '@/components/PledgeContent'
 import { PledgeForm } from '@/components/PledgeForm'
 import { getCurrentUser } from '@/lib/auth'
 
+// Mark as dynamic since we use cookies for authentication
+export const dynamic = 'force-dynamic'
+
 export default async function PledgePage() {
   const user = await getCurrentUser()
 

@@ -4,10 +4,10 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { CheckCircle, Twitter, Linkedin, Sparkles, Heart, Flame } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import confetti from 'canvas-confetti'
 
-export default function VerifiedPage() {
+function VerifiedContent() {
   const searchParams = useSearchParams()
   const name = searchParams?.get('name')
 
@@ -148,5 +148,18 @@ export default function VerifiedPage() {
         </p>
       </motion.div>
     </div>
+  )
+}
+
+export default function VerifiedPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto py-24 px-4 sm:px-6 lg:px-8 text-center">
+        <div className="animate-spin rounded-full h-24 w-24 border-b-2 border-flame-500 mx-auto mb-6"></div>
+        <p className="text-flame-500 font-semibold">Loading verification...</p>
+      </div>
+    }>
+      <VerifiedContent />
+    </Suspense>
   )
 }
