@@ -24,11 +24,22 @@ export async function getCurrentUser() {
     if (sessionCookie) {
       try {
         // Validate session with auth.quasar.nexus microservice
+        const authInternalKey = process.env.AUTH_INTERNAL_KEY
+        const headers: Record<string, string> = {
+          'Cookie': cookieStore.getAll().map(cookie => `${cookie.name}=${cookie.value}`).join('; '),
+          'Origin': 'https://pledge.quasar.nexus'
+        }
+        
+        // Add internal API key if available for service-to-service auth
+        if (authInternalKey) {
+          headers['Authorization'] = `Bearer ${authInternalKey}`
+          // Alternative header patterns your auth service might expect:
+          // headers['X-Internal-Key'] = authInternalKey
+          // headers['X-Service-Key'] = authInternalKey
+        }
+
         const response = await fetch('https://auth.quasar.nexus/api/auth/session', {
-          headers: {
-            'Cookie': cookieStore.getAll().map(cookie => `${cookie.name}=${cookie.value}`).join('; '),
-            'Origin': 'https://pledge.quasar.nexus'
-          },
+          headers,
           credentials: 'include'
         })
 
