@@ -3,9 +3,9 @@ import { supabase } from '@/lib/supabase'
 
 export async function GET(
   request: Request,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
-  const { token } = params
+  const { token } = await params
   const { searchParams } = new URL(request.url)
   const next = searchParams.get('next') ?? '/pledge/verified'
 

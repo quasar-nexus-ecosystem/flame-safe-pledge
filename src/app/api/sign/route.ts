@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       name,
       email,
       display_publicly,
-      verified: false,
+      verified: false, // email not yet confirmed
       created_at: new Date().toISOString(),
       verification_token,
     }
@@ -69,7 +69,11 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Email error', message: 'Could not send verification email.' }, { status: 500 })
     }
 
-    return NextResponse.json({ success: true, message: 'Thank you! Please check your email to verify your signature.' })
+    return NextResponse.json({
+      success: true,
+      message: 'Thank you! Please check your email to verify your signature.',
+      ...(process.env.NODE_ENV !== 'production' && { token: verification_token }),
+    })
   } catch (error) {
     console.error('API Error:', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
