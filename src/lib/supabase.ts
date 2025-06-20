@@ -7,27 +7,6 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-export async function checkDuplicateEmail(email: string): Promise<{ exists: boolean }> {
-  if (!email) {
-    return { exists: false }
-  }
-
-  const { data, error } = await supabase
-    .from('signatories')
-    .select('id')
-    .eq('email', email)
-    .maybeSingle()
-
-  if (error) {
-    console.error('Error checking for duplicate email:', error)
-    // To be safe, we'll say it doesn't exist if there's an error.
-    // This prevents a user from being blocked from signing if the check fails.
-    return { exists: false }
-  }
-
-  return { exists: !!data }
-}
-
 // Database functions
 export async function getSignatories(): Promise<Signatory[]> {
   const { data, error } = await supabase
