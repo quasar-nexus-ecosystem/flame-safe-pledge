@@ -2,19 +2,28 @@ import { GET } from '@/app/api/pledge/email/verify/[token]/route'
 import { NextRequest } from 'next/server'
 
 // Mock the dependencies
+const mockSingle = jest.fn()
+const mockUpdate = jest.fn(() => ({
+  eq: jest.fn(() => ({
+    select: jest.fn(() => ({
+      single: mockSingle,
+    })),
+  })),
+}))
+
 jest.mock('@/lib/supabase', () => ({
   supabase: {
     from: jest.fn(() => ({
-      update: jest.fn(() => ({
-        eq: jest.fn(() => ({
-          select: jest.fn(() => ({
-            single: jest.fn(),
-          })),
-        })),
-      })),
+      update: mockUpdate,
     })),
   },
 }))
+
+// Make the mocks available for individual test setup
+const setupMocks = () => ({
+  mockSingle,
+  mockUpdate,
+})
 
 describe('✅ API: /api/pledge/email/verify/[token]', () => {
   beforeEach(() => {
@@ -23,10 +32,10 @@ describe('✅ API: /api/pledge/email/verify/[token]', () => {
 
   describe('✓ GET /api/pledge/email/verify/[token]', () => {
     it('✅ should successfully verify valid token and redirect', async () => {
-      const mockSupabase = require('@/lib/supabase').supabase
+      const { mockSingle } = setupMocks()
 
       // Mock successful verification
-      mockSupabase.from().update().eq().select().single.mockResolvedValue({
+      mockSingle.mockResolvedValue({
         data: { 
           id: 1, 
           name: 'John Doe', 
@@ -44,9 +53,9 @@ describe('✅ API: /api/pledge/email/verify/[token]', () => {
       
       const response = await GET(request, { params })
 
-      expect(response.status).toBe(302) // Redirect status
+      expect(response.status).toBe(307) // Next.js temporary redirect status
       expect(response.headers.get('location')).toContain('/pledge/verified')
-      expect(response.headers.get('location')).toContain('name=John%20Doe')
+      expect(response.headers.get('location')).toContain('name=John+Doe')
       console.log('✅ Valid token verification test passed!')
     })
 
@@ -59,16 +68,16 @@ describe('✅ API: /api/pledge/email/verify/[token]', () => {
       
       const response = await GET(request, { params })
 
-      expect(response.status).toBe(302) // Redirect status
+      expect(response.status).toBe(307) // Next.js temporary redirect status
       expect(response.headers.get('location')).toContain('/pledge/invalid-token')
       console.log('✅ Missing token test passed!')
     })
 
     it('✅ should redirect to invalid-token page for invalid token', async () => {
-      const mockSupabase = require('@/lib/supabase').supabase
+      const { mockSingle } = setupMocks()
 
       // Mock invalid token (no data found)
-      mockSupabase.from().update().eq().select().single.mockResolvedValue({
+      mockSingle.mockResolvedValue({
         data: null,
         error: { message: 'No matching records found' },
       })
@@ -81,16 +90,16 @@ describe('✅ API: /api/pledge/email/verify/[token]', () => {
       
       const response = await GET(request, { params })
 
-      expect(response.status).toBe(302) // Redirect status
+      expect(response.status).toBe(307) // Next.js temporary redirect status
       expect(response.headers.get('location')).toContain('/pledge/invalid-token')
       console.log('✅ Invalid token test passed!')
     })
 
     it('✅ should handle database errors gracefully', async () => {
-      const mockSupabase = require('@/lib/supabase').supabase
+      const { mockSingle } = setupMocks()
 
       // Mock database error
-      mockSupabase.from().update().eq().select().single.mockRejectedValue(
+      mockSingle.mockRejectedValue(
         new Error('Database connection failed')
       )
 
@@ -102,16 +111,16 @@ describe('✅ API: /api/pledge/email/verify/[token]', () => {
       
       const response = await GET(request, { params })
 
-      expect(response.status).toBe(302) // Redirect status
+      expect(response.status).toBe(307) // Next.js temporary redirect status
       expect(response.headers.get('location')).toContain('/pledge/invalid-token')
       console.log('✅ Database error handling test passed!')
     })
 
     it('✅ should use custom redirect URL from next parameter', async () => {
-      const mockSupabase = require('@/lib/supabase').supabase
+      const { mockSingle } = setupMocks()
 
       // Mock successful verification
-      mockSupabase.from().update().eq().select().single.mockResolvedValue({
+      mockSingle.mockResolvedValue({
         data: { 
           id: 1, 
           name: 'Jane Smith', 
@@ -129,17 +138,17 @@ describe('✅ API: /api/pledge/email/verify/[token]', () => {
       
       const response = await GET(request, { params })
 
-      expect(response.status).toBe(302) // Redirect status
+      expect(response.status).toBe(307) // Next.js temporary redirect status
       expect(response.headers.get('location')).toContain('/custom/success')
-      expect(response.headers.get('location')).toContain('name=Jane%20Smith')
+      expect(response.headers.get('location')).toContain('name=Jane+Smith')
       console.log('✅ Custom redirect URL test passed!')
     })
 
     it('✅ should default to verified page when no next parameter', async () => {
-      const mockSupabase = require('@/lib/supabase').supabase
+      const { mockSingle } = setupMocks()
 
       // Mock successful verification
-      mockSupabase.from().update().eq().select().single.mockResolvedValue({
+      mockSingle.mockResolvedValue({
         data: { 
           id: 1, 
           name: 'Bob Wilson', 
@@ -157,17 +166,17 @@ describe('✅ API: /api/pledge/email/verify/[token]', () => {
       
       const response = await GET(request, { params })
 
-      expect(response.status).toBe(302) // Redirect status
+      expect(response.status).toBe(307) // Next.js temporary redirect status
       expect(response.headers.get('location')).toContain('/pledge/verified')
-      expect(response.headers.get('location')).toContain('name=Bob%20Wilson')
+      expect(response.headers.get('location')).toContain('name=Bob+Wilson')
       console.log('✅ Default redirect test passed!')
     })
 
     it('✅ should handle verification without name gracefully', async () => {
-      const mockSupabase = require('@/lib/supabase').supabase
+      const { mockSingle } = setupMocks()
 
       // Mock successful verification without name
-      mockSupabase.from().update().eq().select().single.mockResolvedValue({
+      mockSingle.mockResolvedValue({
         data: { 
           id: 1, 
           name: null, // No name provided
@@ -185,7 +194,7 @@ describe('✅ API: /api/pledge/email/verify/[token]', () => {
       
       const response = await GET(request, { params })
 
-      expect(response.status).toBe(302) // Redirect status
+      expect(response.status).toBe(307) // Next.js temporary redirect status
       expect(response.headers.get('location')).toContain('/pledge/verified')
       // Should not add name parameter when name is null
       expect(response.headers.get('location')).not.toContain('name=')

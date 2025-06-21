@@ -3,20 +3,27 @@ import { POST } from '@/app/api/pledge/sign/route'
 import { NextRequest } from 'next/server'
 
 // Mock the dependencies
+const mockMaybeSingle = jest.fn()
+const mockUpsert = jest.fn()
+
 jest.mock('@/lib/supabase', () => ({
   supabase: {
     from: jest.fn(() => ({
       select: jest.fn(() => ({
         eq: jest.fn(() => ({
-          maybeSingle: jest.fn(),
+          maybeSingle: mockMaybeSingle,
         })),
       })),
-      upsert: jest.fn(() => ({
-        // Return success by default
-      })),
+      upsert: mockUpsert,
     })),
   },
 }))
+
+// Make the mocks available for individual test setup
+const setupMocks = () => ({
+  mockMaybeSingle,
+  mockUpsert,
+})
 
 jest.mock('@/lib/resend', () => ({
   sendVerificationEmail: jest.fn(),
@@ -29,15 +36,15 @@ describe('✅ API: /api/pledge/sign', () => {
 
   describe('✓ POST /api/pledge/sign', () => {
     it('✅ should successfully create a new signature', async () => {
-      const mockSupabase = require('@/lib/supabase').supabase
+      const { mockMaybeSingle, mockUpsert } = setupMocks()
       const mockSendEmail = require('@/lib/resend').sendVerificationEmail
 
       // Mock successful flow
-      mockSupabase.from().select().eq().maybeSingle.mockResolvedValue({ 
+      mockMaybeSingle.mockResolvedValue({ 
         data: null, 
         error: null 
       })
-      mockSupabase.from().upsert.mockResolvedValue({ 
+      mockUpsert.mockResolvedValue({ 
         error: null 
       })
       mockSendEmail.mockResolvedValue({ success: true })
@@ -99,10 +106,10 @@ describe('✅ API: /api/pledge/sign', () => {
     })
 
     it('✅ should handle duplicate verified email', async () => {
-      const mockSupabase = require('@/lib/supabase').supabase
+      const { mockMaybeSingle } = setupMocks()
 
       // Mock existing verified signature
-      mockSupabase.from().select().eq().maybeSingle.mockResolvedValue({ 
+      mockMaybeSingle.mockResolvedValue({ 
         data: { id: 1, verified: true }, 
         error: null 
       })
@@ -131,14 +138,14 @@ describe('✅ API: /api/pledge/sign', () => {
     })
 
     it('✅ should handle database errors gracefully', async () => {
-      const mockSupabase = require('@/lib/supabase').supabase
+      const { mockMaybeSingle, mockUpsert } = setupMocks()
 
       // Mock database error
-      mockSupabase.from().select().eq().maybeSingle.mockResolvedValue({ 
+      mockMaybeSingle.mockResolvedValue({ 
         data: null, 
         error: null 
       })
-      mockSupabase.from().upsert.mockResolvedValue({ 
+      mockUpsert.mockResolvedValue({ 
         error: { message: 'Database connection failed' }
       })
 
@@ -165,15 +172,15 @@ describe('✅ API: /api/pledge/sign', () => {
     })
 
     it('✅ should handle email sending errors', async () => {
-      const mockSupabase = require('@/lib/supabase').supabase
+      const { mockMaybeSingle, mockUpsert } = setupMocks()
       const mockSendEmail = require('@/lib/resend').sendVerificationEmail
 
       // Mock successful database, failed email
-      mockSupabase.from().select().eq().maybeSingle.mockResolvedValue({ 
+      mockMaybeSingle.mockResolvedValue({ 
         data: null, 
         error: null 
       })
-      mockSupabase.from().upsert.mockResolvedValue({ 
+      mockUpsert.mockResolvedValue({ 
         error: null 
       })
       mockSendEmail.mockRejectedValue(new Error('Email service down'))
