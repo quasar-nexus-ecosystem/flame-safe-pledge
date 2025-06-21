@@ -13,7 +13,9 @@
     "test:coverage": "jest --coverage",
     "test:api": "jest --testPathPattern=api",
     "test:verbose": "jest --verbose",
-    "test:flame": "node src/__tests__/test-runner.js"
+    "test:flame": "node src/__tests__/test-runner.js",
+    "test:real": "jest --config jest.config.js --testMatch='**/*.real.ts'",
+    "test:e2e": "npx ts-node src/__tests__/e2e-runner.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",

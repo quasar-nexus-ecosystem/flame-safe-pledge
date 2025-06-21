@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     try {
       await sendVerificationEmail(email, verification_token)
     } catch (error) {
-      console.error('Email error:', error)
+      console.error('Email sending failed. Full error:', JSON.stringify(error, null, 2))
       return NextResponse.json(
         { error: 'Email error', message: 'Could not send verification email.' },
         { status: 500 }
