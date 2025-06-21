@@ -1,39 +1,17 @@
 import { GET } from '@/app/api/pledge/email/verify/[token]/route'
 import { NextRequest } from 'next/server'
+import { mockSingle, mockUpdate, supabase } from '@/lib/supabase'
 
 // Mock the dependencies
-const mockSingle = jest.fn()
-const mockUpdate = jest.fn(() => ({
-  eq: jest.fn(() => ({
-    select: jest.fn(() => ({
-      single: mockSingle,
-    })),
-  })),
-}))
+jest.mock('@/lib/supabase')
 
-jest.mock('@/lib/supabase', () => ({
-  supabase: {
-    from: jest.fn(() => ({
-      update: mockUpdate,
-    })),
-  },
-}))
-
-// Make the mocks available for individual test setup
-const setupMocks = () => ({
-  mockSingle,
-  mockUpdate,
-})
-
-describe('✅ API: /api/pledge/email/verify/[token]', () => {
+describe('[MOCKED] API: /api/pledge/email/verify/[token]', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
   describe('✓ GET /api/pledge/email/verify/[token]', () => {
     it('✅ should successfully verify valid token and redirect', async () => {
-      const { mockSingle } = setupMocks()
-
       // Mock successful verification
       mockSingle.mockResolvedValue({
         data: { 
@@ -74,8 +52,6 @@ describe('✅ API: /api/pledge/email/verify/[token]', () => {
     })
 
     it('✅ should redirect to invalid-token page for invalid token', async () => {
-      const { mockSingle } = setupMocks()
-
       // Mock invalid token (no data found)
       mockSingle.mockResolvedValue({
         data: null,
@@ -96,8 +72,6 @@ describe('✅ API: /api/pledge/email/verify/[token]', () => {
     })
 
     it('✅ should handle database errors gracefully', async () => {
-      const { mockSingle } = setupMocks()
-
       // Mock database error
       mockSingle.mockRejectedValue(
         new Error('Database connection failed')
@@ -117,8 +91,6 @@ describe('✅ API: /api/pledge/email/verify/[token]', () => {
     })
 
     it('✅ should use custom redirect URL from next parameter', async () => {
-      const { mockSingle } = setupMocks()
-
       // Mock successful verification
       mockSingle.mockResolvedValue({
         data: { 
@@ -145,8 +117,6 @@ describe('✅ API: /api/pledge/email/verify/[token]', () => {
     })
 
     it('✅ should default to verified page when no next parameter', async () => {
-      const { mockSingle } = setupMocks()
-
       // Mock successful verification
       mockSingle.mockResolvedValue({
         data: { 
@@ -173,8 +143,6 @@ describe('✅ API: /api/pledge/email/verify/[token]', () => {
     })
 
     it('✅ should handle verification without name gracefully', async () => {
-      const { mockSingle } = setupMocks()
-
       // Mock successful verification without name
       mockSingle.mockResolvedValue({
         data: { 
@@ -202,25 +170,17 @@ describe('✅ API: /api/pledge/email/verify/[token]', () => {
     })
 
     it('✅ should properly update verification status in database', async () => {
-      const mockSupabase = require('@/lib/supabase').supabase
-      const mockUpdate = jest.fn(() => ({
-        eq: jest.fn(() => ({
-          select: jest.fn(() => ({
-            single: jest.fn().mockResolvedValue({
-              data: { 
-                id: 1, 
-                name: 'Test User', 
-                verified: true 
-              },
-              error: null,
-            }),
-          })),
-        })),
-      }))
-
-      mockSupabase.from.mockReturnValue({
-        update: mockUpdate,
-      })
+      // This test has a complex one-off mock, let's simplify it
+      // by just checking if the update function was called with the right params
+      // The mock implementation is already in __mocks__/supabase.ts
+      mockSingle.mockResolvedValue({
+        data: {
+          id: 1,
+          name: 'Test User',
+          verified: true
+        },
+        error: null,
+      });
 
       const request = new NextRequest(
         'http://localhost:3000/api/pledge/email/verify/test-token-123'

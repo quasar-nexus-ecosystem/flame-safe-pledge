@@ -1,44 +1,20 @@
 /// <reference types="jest" />
 import { POST } from '@/app/api/pledge/sign/route'
 import { NextRequest } from 'next/server'
+import { mockMaybeSingle, mockUpsert } from '@/lib/supabase'
+import { sendVerificationEmail } from '@/lib/resend'
 
-// Mock the dependencies
-const mockMaybeSingle = jest.fn()
-const mockUpsert = jest.fn()
+// Mock the dependencies to use implementations from `__mocks__`
+jest.mock('@/lib/supabase')
+jest.mock('@/lib/resend')
 
-jest.mock('@/lib/supabase', () => ({
-  supabase: {
-    from: jest.fn(() => ({
-      select: jest.fn(() => ({
-        eq: jest.fn(() => ({
-          maybeSingle: mockMaybeSingle,
-        })),
-      })),
-      upsert: mockUpsert,
-    })),
-  },
-}))
-
-// Make the mocks available for individual test setup
-const setupMocks = () => ({
-  mockMaybeSingle,
-  mockUpsert,
-})
-
-jest.mock('@/lib/resend', () => ({
-  sendVerificationEmail: jest.fn(),
-}))
-
-describe('✅ API: /api/pledge/sign', () => {
+describe('[MOCKED] API: /api/pledge/sign', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
   describe('✓ POST /api/pledge/sign', () => {
     it('✅ should successfully create a new signature', async () => {
-      const { mockMaybeSingle, mockUpsert } = setupMocks()
-      const mockSendEmail = require('@/lib/resend').sendVerificationEmail
-
       // Mock successful flow
       mockMaybeSingle.mockResolvedValue({ 
         data: null, 
@@ -47,7 +23,7 @@ describe('✅ API: /api/pledge/sign', () => {
       mockUpsert.mockResolvedValue({ 
         error: null 
       })
-      mockSendEmail.mockResolvedValue({ success: true })
+      ;(sendVerificationEmail as jest.Mock).mockResolvedValue({ success: true })
 
       const validPayload = {
         name: 'John Doe',
@@ -106,8 +82,6 @@ describe('✅ API: /api/pledge/sign', () => {
     })
 
     it('✅ should handle duplicate verified email', async () => {
-      const { mockMaybeSingle } = setupMocks()
-
       // Mock existing verified signature
       mockMaybeSingle.mockResolvedValue({ 
         data: { id: 1, verified: true }, 
@@ -138,8 +112,6 @@ describe('✅ API: /api/pledge/sign', () => {
     })
 
     it('✅ should handle database errors gracefully', async () => {
-      const { mockMaybeSingle, mockUpsert } = setupMocks()
-
       // Mock database error
       mockMaybeSingle.mockResolvedValue({ 
         data: null, 
@@ -172,9 +144,6 @@ describe('✅ API: /api/pledge/sign', () => {
     })
 
     it('✅ should handle email sending errors', async () => {
-      const { mockMaybeSingle, mockUpsert } = setupMocks()
-      const mockSendEmail = require('@/lib/resend').sendVerificationEmail
-
       // Mock successful database, failed email
       mockMaybeSingle.mockResolvedValue({ 
         data: null, 
@@ -183,7 +152,7 @@ describe('✅ API: /api/pledge/sign', () => {
       mockUpsert.mockResolvedValue({ 
         error: null 
       })
-      mockSendEmail.mockRejectedValue(new Error('Email service down'))
+      ;(sendVerificationEmail as jest.Mock).mockRejectedValue(new Error('Email service down'))
 
       const payload = {
         name: 'John Doe',

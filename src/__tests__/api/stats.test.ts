@@ -1,20 +1,16 @@
 import { GET } from '@/app/api/stats/route'
-import { NextRequest } from 'next/server'
+import { getSignatoryStats } from '@/lib/supabase'
 
 // Mock the dependencies
-jest.mock('@/lib/supabase', () => ({
-  getSignatoryStats: jest.fn(),
-}))
+jest.mock('@/lib/supabase')
 
-describe('✅ API: /api/stats', () => {
+describe('[MOCKED] API: /api/stats', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
   describe('✓ GET /api/stats', () => {
     it('✅ should successfully return signatory statistics', async () => {
-      const mockGetSignatoryStats = require('@/lib/supabase').getSignatoryStats
-
       const mockStats = {
         total: 150,
         verified: 120,
@@ -24,11 +20,7 @@ describe('✅ API: /api/stats', () => {
         countries: 25,
       }
 
-      mockGetSignatoryStats.mockResolvedValue(mockStats)
-
-      const request = new NextRequest('http://localhost:3000/api/stats', {
-        method: 'GET',
-      })
+      ;(getSignatoryStats as jest.Mock).mockResolvedValue(mockStats)
 
       const response = await GET()
       const data = await response.json()
@@ -46,8 +38,6 @@ describe('✅ API: /api/stats', () => {
     })
 
     it('✅ should return zero values when no signatories exist', async () => {
-      const mockGetSignatoryStats = require('@/lib/supabase').getSignatoryStats
-
       const emptyStats = {
         total: 0,
         verified: 0,
@@ -57,7 +47,7 @@ describe('✅ API: /api/stats', () => {
         countries: 0,
       }
 
-      mockGetSignatoryStats.mockResolvedValue(emptyStats)
+      ;(getSignatoryStats as jest.Mock).mockResolvedValue(emptyStats)
 
       const response = await GET()
       const data = await response.json()
@@ -67,13 +57,15 @@ describe('✅ API: /api/stats', () => {
       expect(data.data).toEqual(emptyStats)
       expect(data.data.total).toBe(0)
       expect(data.data.verified).toBe(0)
+      expect(data.data.organizations).toBe(0)
+      expect(data.data.individuals).toBe(0)
+      expect(data.data.recentSignatures).toBe(0)
+      expect(data.data.countries).toBe(0)
       console.log('✅ Empty stats test passed!')
     })
 
     it('✅ should handle database errors gracefully', async () => {
-      const mockGetSignatoryStats = require('@/lib/supabase').getSignatoryStats
-
-      mockGetSignatoryStats.mockRejectedValue(new Error('Database connection failed'))
+      ;(getSignatoryStats as jest.Mock).mockRejectedValue(new Error('Database connection failed'))
 
       const response = await GET()
       const data = await response.json()
@@ -85,8 +77,6 @@ describe('✅ API: /api/stats', () => {
     })
 
     it('✅ should include all expected statistics fields', async () => {
-      const mockGetSignatoryStats = require('@/lib/supabase').getSignatoryStats
-
       const mockStats = {
         total: 100,
         verified: 80,
@@ -96,7 +86,7 @@ describe('✅ API: /api/stats', () => {
         countries: 15,
       }
 
-      mockGetSignatoryStats.mockResolvedValue(mockStats)
+      ;(getSignatoryStats as jest.Mock).mockResolvedValue(mockStats)
 
       const response = await GET()
       const data = await response.json()
@@ -112,8 +102,6 @@ describe('✅ API: /api/stats', () => {
     })
 
     it('✅ should return realistic statistics relationships', async () => {
-      const mockGetSignatoryStats = require('@/lib/supabase').getSignatoryStats
-
       const mockStats = {
         total: 100,
         verified: 75,
@@ -123,7 +111,7 @@ describe('✅ API: /api/stats', () => {
         countries: 20,
       }
 
-      mockGetSignatoryStats.mockResolvedValue(mockStats)
+      ;(getSignatoryStats as jest.Mock).mockResolvedValue(mockStats)
 
       const response = await GET()
       const data = await response.json()
@@ -136,8 +124,6 @@ describe('✅ API: /api/stats', () => {
     })
 
     it('✅ should handle edge cases with large numbers', async () => {
-      const mockGetSignatoryStats = require('@/lib/supabase').getSignatoryStats
-
       const largeStats = {
         total: 1000000,
         verified: 950000,
@@ -147,7 +133,7 @@ describe('✅ API: /api/stats', () => {
         countries: 195,
       }
 
-      mockGetSignatoryStats.mockResolvedValue(largeStats)
+      ;(getSignatoryStats as jest.Mock).mockResolvedValue(largeStats)
 
       const response = await GET()
       const data = await response.json()

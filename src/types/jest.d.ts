@@ -17,4 +17,20 @@ declare global {
   }
 }
 
+declare module '@/lib/supabase' {
+  export const supabase: {
+    from: jest.Mock<any, any>;
+  };
+  export const mockMaybeSingle: jest.Mock<any, any>;
+  export const mockUpsert: jest.Mock<any, any>;
+  export const mockSingle: jest.Mock<any, any>;
+  export const mockUpdate: jest.Mock<any, any>;
+  export const getSignatories: jest.Mock<any, any>;
+  export const getSignatoryStats: jest.Mock<any, any>;
+}
+
+declare module '@/lib/resend' {
+    export const sendVerificationEmail: jest.Mock<any, any>;
+}
+
 export {} 

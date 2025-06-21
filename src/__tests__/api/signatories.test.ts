@@ -1,20 +1,16 @@
 import { GET } from '@/app/api/signatories/route'
-import { NextRequest } from 'next/server'
+import { getSignatories } from '@/lib/supabase'
 
 // Mock the dependencies
-jest.mock('@/lib/supabase', () => ({
-  getSignatories: jest.fn(),
-}))
+jest.mock('@/lib/supabase')
 
-describe('✅ API: /api/signatories', () => {
+describe('[MOCKED] API: /api/signatories', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
   describe('✓ GET /api/signatories', () => {
     it('✅ should successfully return signatories list', async () => {
-      const mockGetSignatories = require('@/lib/supabase').getSignatories
-
       const mockSignatories = [
         {
           id: 1,
@@ -44,11 +40,7 @@ describe('✅ API: /api/signatories', () => {
         },
       ]
 
-      mockGetSignatories.mockResolvedValue(mockSignatories)
-
-      const request = new NextRequest('http://localhost:3000/api/signatories', {
-        method: 'GET',
-      })
+      ;(getSignatories as jest.Mock).mockResolvedValue(mockSignatories)
 
       const response = await GET()
       const data = await response.json()
@@ -63,9 +55,7 @@ describe('✅ API: /api/signatories', () => {
     })
 
     it('✅ should return empty array when no signatories exist', async () => {
-      const mockGetSignatories = require('@/lib/supabase').getSignatories
-
-      mockGetSignatories.mockResolvedValue([])
+      ;(getSignatories as jest.Mock).mockResolvedValue([])
 
       const response = await GET()
       const data = await response.json()
@@ -78,9 +68,7 @@ describe('✅ API: /api/signatories', () => {
     })
 
     it('✅ should handle database errors gracefully', async () => {
-      const mockGetSignatories = require('@/lib/supabase').getSignatories
-
-      mockGetSignatories.mockRejectedValue(new Error('Database connection failed'))
+      ;(getSignatories as jest.Mock).mockRejectedValue(new Error('Database connection failed'))
 
       const response = await GET()
       const data = await response.json()
@@ -92,8 +80,6 @@ describe('✅ API: /api/signatories', () => {
     })
 
     it('✅ should only return publicly visible signatories', async () => {
-      const mockGetSignatories = require('@/lib/supabase').getSignatories
-
       // getSignatories already filters for display_publicly: true
       const mockSignatories = [
         {
@@ -104,7 +90,7 @@ describe('✅ API: /api/signatories', () => {
         },
       ]
 
-      mockGetSignatories.mockResolvedValue(mockSignatories)
+      ;(getSignatories as jest.Mock).mockResolvedValue(mockSignatories)
 
       const response = await GET()
       const data = await response.json()
@@ -116,8 +102,6 @@ describe('✅ API: /api/signatories', () => {
     })
 
     it('✅ should include all expected signatory fields', async () => {
-      const mockGetSignatories = require('@/lib/supabase').getSignatories
-
       const mockSignatory = {
         id: 1,
         name: 'Complete User',
@@ -136,7 +120,7 @@ describe('✅ API: /api/signatories', () => {
         verified: true,
       }
 
-      mockGetSignatories.mockResolvedValue([mockSignatory])
+      ;(getSignatories as jest.Mock).mockResolvedValue([mockSignatory])
 
       const response = await GET()
       const data = await response.json()
