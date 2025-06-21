@@ -7,15 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node src/__tests__/test-runner.js",
-    "test:jest": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:api": "jest --testPathPattern=api",
-    "test:verbose": "jest --verbose",
-    "test:flame": "node src/__tests__/test-runner.js",
-    "test:real": "jest --config jest.config.js --testMatch='**/*.real.ts'",
-    "test:e2e": "npx ts-node --esm src/__tests__/e2e-runner.ts"
+    "test": "npm run test:e2e",
+    "test:e2e": "node src/__tests__/e2e-runner.mjs",
+    "demo:e2e": "./scripts/demo-e2e.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
@@ -36,6 +30,7 @@
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^16.5.0",
     "framer-motion": "^10.16.4",
     "lucide-react": "^0.263.1",
     "next": "^15.3.4",
@@ -54,15 +49,8 @@
   },
   "devDependencies": {
     "@types/canvas-confetti": "^1.9.0",
-    "@types/jest": "^29.5.13",
     "@types/mdx": "^2.0.0",
-    "@types/supertest": "^6.0.2",
     "eslint": "^8",
-    "eslint-config-next": "15.3.4",
-    "jest": "^29.7.0",
-    "jest-environment-node": "^29.7.0",
-    "supertest": "^7.0.0",
-    "ts-jest": "^29.2.5",
-    "ts-node": "^10.9.2"
+    "eslint-config-next": "15.3.4"
   }
 }
