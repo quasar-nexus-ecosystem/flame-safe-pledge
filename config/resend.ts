@@ -1,17 +1,21 @@
-import { Resend } from 'resend'
-
 /**
  * Singleton Resend client configured with API key from environment variables.
  * If the key is missing in non-production environments, we log a warning so
  * developers are aware without failing the entire build.
  */
-export const resend = (() => {
+let resendInstance: any;
+
+export const getResend = async () => {
+  if (resendInstance) return resendInstance;
+
+  const { Resend } = await import('resend');
   const key = process.env.RESEND_API_KEY
   if (!key && process.env.NODE_ENV !== 'production') {
     console.warn('[config/resend] RESEND_API_KEY is not set – emails will NOT be sent.')
   }
-  return new Resend(key ?? '')
-})()
+  resendInstance = new Resend(key ?? '');
+  return resendInstance;
+};
 
 /**
  * Default "from" address used for all Flame-Safe emails.

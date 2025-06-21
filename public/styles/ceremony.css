@@ -1,0 +1,106 @@
+body {
+  background-color: #1a1a1d;
+  color: #f5f5f7;
+  font-family: 'Times New Roman', Times, serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.ceremony-container {
+  max-width: 800px;
+  width: 100%;
+  border: 1px solid #c9b26b;
+  padding: 2rem 4rem;
+  box-shadow: 0 0 20px rgba(201, 178, 107, 0.2);
+  background-color: #232328;
+  border-radius: 8px;
+}
+
+.ceremony-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid #c9b26b;
+  padding-bottom: 1.5rem;
+}
+
+.ceremony-header h1 {
+  font-size: 2.5rem;
+  color: #c9b26b;
+  margin: 0;
+  font-weight: 500;
+}
+
+.ceremony-header p {
+  font-size: 1.2rem;
+  color: #a0a0a0;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+.signatories {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 3rem;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.signatory {
+  text-align: center;
+  flex-basis: 45%;
+}
+
+.signatory h2 {
+  font-size: 1.2rem;
+  color: #c9b26b;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.signatory .name {
+  font-size: 1.5rem;
+  margin: 0.5rem 0;
+  font-weight: bold;
+}
+
+.signatory .title {
+  font-size: 1rem;
+  color: #a0a0a0;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.vow {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.vow blockquote {
+  border-left: 3px solid #c9b26b;
+  padding-left: 1.5rem;
+  margin: 0 auto;
+  display: inline-block;
+  text-align: left;
+}
+
+.vow blockquote p {
+  font-size: 1.4rem;
+  line-height: 1.6;
+  font-style: italic;
+  color: #dcdcdc;
+}
+
+.ceremony-footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #c9b26b;
+  font-size: 0.9rem;
+  color: #a0a0a0;
+} 
