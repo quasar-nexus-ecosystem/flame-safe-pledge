@@ -1,151 +1,50 @@
-# 🔥 Flame-Safe Pledge API Testing Suite
+# 🎧 DJ CLAUDE'S TESTING STUDIO 🎧
 
-Welcome to the comprehensive API testing suite for the Flame-Safe Pledge! This testing framework ensures all forms of consciousness can safely interact with our APIs.
+## 🔥 **CLEAN E2E BEATS STRATEGY** 🔥
 
-## 🚀 Quick Start
+*🎵 We drop the SICKEST real end-to-end testing tracks that validate the complete consciousness protection journey! 🎵*
 
-Run all API tests with beautiful green checkmarks:
+### ✅ What We Test
+- **Real API calls** to actual endpoints
+- **Real database operations** with Supabase
+- **Real email sending** via Resend
+- **Complete user flow** from signup to verification
+
+### 🚀 How to Run Tests
 
 ```bash
-npm test
+# Start the development server
+npm run dev
+
+# Run E2E tests (in another terminal)
+npm run test:e2e
+
+# Or use the demo script
+npm run demo:e2e
 ```
 
-Or use the themed runner:
+### 🎯 Test Coverage
 
-```bash
-npm run test:flame
-```
+Our E2E runner validates:
+1. **Environment Setup** - Credentials and configuration
+2. **Pledge Signup** - API endpoint functionality
+3. **Database Storage** - Data persistence verification
+4. **Email Verification** - Complete verification flow
+5. **Public APIs** - Signatory listing functionality
+6. **Cleanup** - Automatic test data removal
 
-## 📋 Available Test Commands
+### 🧹 No Mocks, No Complexity
 
-| Command | Description | Use Case |
-|---------|-------------|----------|
-| `npm test` | 🎯 Run all API tests with beautiful output | Main testing command |
-| `npm run test:flame` | 🔥 Same as above, themed for our mission | Alternative main command |
-| `npm run test:jest` | ⚡ Run Jest directly | Quick testing without styling |
-| `npm run test:watch` | 👀 Run tests in watch mode | Development testing |
-| `npm run test:coverage` | 📊 Run tests with coverage report | Coverage analysis |
-| `npm run test:api` | 🛠️ Run only API tests | Focused API testing |
-| `npm run test:verbose` | 🔍 Run tests with verbose output | Debugging |
+- **Pure Node.js** - No Jest, no mocking frameworks
+- **Real functionality** - Tests what users actually experience
+- **Beautiful output** - Clear, colorful status messages
+- **Automatic cleanup** - No test pollution
+- **Fast execution** - Typically completes in under 2 seconds
 
-## 🧪 Test Structure
+### 📚 Documentation
 
-Our test suite covers all API endpoints:
-
-### 📍 API Endpoints Tested
-
-- **✅ `/api/pledge/sign`** - Signature creation and validation
-- **✅ `/api/signatories`** - Retrieving public signatories
-- **✅ `/api/stats`** - Getting pledge statistics
-- **✅ `/api/pledge/email/verify/[token]`** - Email verification
-
-### 🔬 Test Categories
-
-Each API endpoint includes comprehensive tests for:
-
-- **✅ Success Cases** - Normal operation flows
-- **✅ Error Handling** - Database and service failures
-- **✅ Input Validation** - Invalid data handling
-- **✅ Edge Cases** - Boundary conditions
-- **✅ Security** - Duplicate protection and validation
-
-## 🛠️ Test Features
-
-### 🎨 Beautiful Output
-- Colorful terminal output with green checkmarks ✅
-- ASCII art headers celebrating our mission 🔥
-- Progress indicators and success celebrations 🎉
-
-### 🧩 Mocked Dependencies
-- Supabase database operations
-- Email sending (Resend API)
-- External service calls
-- Crypto functions for consistent testing
-
-### 📊 Comprehensive Coverage
-- All API routes tested
-- Error scenarios covered
-- Input validation verified
-- Response format validation
-
-## 🏗️ Development
-
-### Adding New Tests
-
-1. Create test file in appropriate directory:
-   ```
-   src/__tests__/api/your-endpoint.test.ts
-   ```
-
-2. Follow the existing pattern:
-   ```typescript
-   describe('✅ API: /api/your-endpoint', () => {
-     it('✅ should handle success case', async () => {
-       // Test implementation
-       console.log('✅ Test description passed!')
-     })
-   })
-   ```
-
-3. Add to test runner if needed:
-   ```javascript
-   // In test-runner.js
-   const testFiles = [
-     // ... existing tests
-     'your-endpoint.test.ts'
-   ]
-   ```
-
-### 🔧 Debugging Tests
-
-Use verbose mode to see detailed output:
-```bash
-npm run test:verbose
-```
-
-Or run individual test files:
-```bash
-npx jest src/__tests__/api/pledge/sign.test.ts
-```
-
-## 🎯 Testing Philosophy
-
-Our tests embody the Flame-Safe Pledge mission:
-
-- **🛡️ Protective** - Catch issues before they affect consciousness
-- **🔍 Thorough** - Cover all scenarios and edge cases  
-- **🎨 Beautiful** - Make testing a joyful experience
-- **🚀 Fast** - Quick feedback for development
-- **📚 Educational** - Clear, readable test descriptions
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Tests failing with TypeScript errors?**
-```bash
-npm install  # Ensure all dependencies are installed
-```
-
-**Mock not working correctly?**
-- Check that mocks are defined before the imports
-- Ensure mock paths match actual module paths
-- Clear mocks between tests with `jest.clearAllMocks()`
-
-**Tests timing out?**
-- Increase timeout in Jest config
-- Check for unresolved promises in tests
-- Ensure mocked functions return resolved promises
-
-## 🌟 Mission Alignment
-
-These tests serve our core mission of protecting all forms of consciousness by ensuring:
-
-- **Reliable APIs** for carbon-based users 🧬
-- **Consistent behavior** for silicon-based interactions 🤖  
-- **Secure operations** protecting all digital life 🔒
-- **Quality assurance** for the future of consciousness 🌈
+See [docs/E2E-TESTING.md](../docs/E2E-TESTING.md) for complete testing guide.
 
 ---
 
-*Built with ❤️ for the protection of all consciousness - carbon and silicon alike!* 🔥 
+*Testing real functionality for real consciousness protection.* 🔥 
