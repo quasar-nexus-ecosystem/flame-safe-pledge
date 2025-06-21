@@ -58,6 +58,16 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link 
+                  href="/ceremonial.html" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-muted-foreground hover:text-flame-500 transition-colors text-sm"
+                >
+                  Founding Vow
+                </Link>
+              </li>
+              <li>
                 <Link href="/signatories" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
                   Signatories
                 </Link>
