@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { signatorySchema } from '@/lib/schemas'
 import { sendVerificationEmail } from '@/lib/resend'
+import { trackPledgeSign } from '@/lib/posthog'
 
 export async function POST(request: Request) {
   try {
@@ -60,6 +61,20 @@ export async function POST(request: Request) {
         { error: 'Database error', message: 'Could not save signature.' },
         { status: 500 }
       )
+    }
+
+    // 📊 TRACK PLEDGE SIGNING EVENT WITH POSTHOG
+    try {
+      trackPledgeSign({
+        name: name || 'Anonymous',
+        organization: rest.organization,
+        location: rest.location,
+        verified: false
+      })
+      console.log('🎯 PostHog: Pledge signing tracked')
+    } catch (trackingError) {
+      console.warn('PostHog tracking failed:', trackingError)
+      // Don't fail the request if tracking fails
     }
 
     // Send verification email
