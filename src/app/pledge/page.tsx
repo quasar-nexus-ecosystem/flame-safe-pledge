@@ -1,9 +1,8 @@
 import React from 'react'
 import { PledgeContent } from '@/components/PledgeContent'
 import { PledgeForm } from '@/components/PledgeForm'
+import { PledgeStats } from '@/components/PledgeStats'
 import { CosmicParticles } from '@/components/CosmicParticles'
-import { AchievementSystem } from '@/components/AchievementSystem'
-import { AdvancedStatsDashboard } from '@/components/AdvancedStatsDashboard'
 import { RealtimeNotifications } from '@/components/RealtimeNotifications'
 import { getCurrentUser } from '@/lib/auth'
 import { getSignatoryStats } from '@/lib/supabase'
@@ -38,22 +37,18 @@ export default async function PledgePage() {
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto space-y-8">
-          {/* Compact Analytics and Achievements */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
-            <AdvancedStatsDashboard showCompact={true} />
-            <AchievementSystem 
-              showMini={true}
-              stats={{
-                total: stats.total || 0,
-                verified: stats.verified || Math.floor((stats.total || 0) * 0.78),
-                organizations: stats.organizations || 0,
-                countries: stats.countries || 0
-              }} 
-            />
-          </div>
+          {/* Pledge Content - WITHOUT the Read Full Pledge button */}
+          <PledgeContent showReadFullButton={false} />
           
-          <PledgeContent />
+          {/* Pledge Form */}
           <PledgeForm user={user} />
+          
+          {/* Simple Stats at Bottom */}
+          <PledgeStats stats={{
+            total: stats.total || 0,
+            organizations: stats.organizations || 0,
+            countries: stats.countries || 0
+          }} />
         </div>
       </div>
     </div>

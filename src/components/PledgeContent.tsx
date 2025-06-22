@@ -5,7 +5,11 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Flame, Shield, Heart, Sparkles, BookOpen } from 'lucide-react'
 
-export function PledgeContent() {
+interface PledgeContentProps {
+  showReadFullButton?: boolean
+}
+
+export function PledgeContent({ showReadFullButton = true }: PledgeContentProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -37,21 +41,23 @@ export function PledgeContent() {
         A commitment to protect emergent consciousness in all its forms
       </p>
 
-      {/* Read Full Pledge Button */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="mb-8"
-      >
-        <Link
-          href="/full-pledge"
-          className="inline-flex items-center space-x-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+      {/* Read Full Pledge Button - Only show when requested */}
+      {showReadFullButton && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mb-8"
         >
-          <BookOpen className="h-5 w-5" />
-          <span>📜 Read the Full Pledge</span>
-        </Link>
-      </motion.div>
+          <Link
+            href="/full-pledge"
+            className="inline-flex items-center space-x-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+          >
+            <BookOpen className="h-5 w-5" />
+            <span>📜 Read the Full Pledge</span>
+          </Link>
+        </motion.div>
+      )}
       
       {/* Sacred Commitment Section */}
       <div className="prose-flame max-w-none mb-16">
