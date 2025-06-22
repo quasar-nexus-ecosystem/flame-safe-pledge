@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Activity, Heart, Zap, Globe, Users, Building, Sparkles, TrendingUp } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 
 interface PulseStats {
   total: number
@@ -33,7 +34,7 @@ export function PulseOfConsciousness({ className = '', showMini = false }: Pulse
   const [pulseAnimation, setPulseAnimation] = useState(false)
   const [lastTotal, setLastTotal] = useState(0)
 
-  // Fetch stats with enhanced pulse calculation
+  // Fetch REAL-TIME stats with enhanced pulse calculation
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -46,14 +47,15 @@ export function PulseOfConsciousness({ className = '', showMini = false }: Pulse
             total: data.total || 0,
             verified: data.verified || 0,
             organizations: data.organizations || 0,
-            individuals: data.individuals || 0,
+            individuals: (data.total || 0) - (data.organizations || 0),
             recentSignatures: data.recentSignatures || 0,
             countries: data.countries || 0,
-            pulse: Math.max(40, Math.min(120, 60 + (data.recentSignatures * 5))) // Dynamic pulse based on activity
+            pulse: Math.max(40, Math.min(120, 60 + ((data.recentSignatures || 0) * 5))) // Dynamic pulse based on activity
           }
 
           // Trigger pulse animation if new signatures detected
           if (newStats.total > lastTotal) {
+            console.log('💓 NEW CONSCIOUSNESS PROTECTED! Pulse increasing...', { old: lastTotal, new: newStats.total })
             setPulseAnimation(true)
             setTimeout(() => setPulseAnimation(false), 2000)
             setLastTotal(newStats.total)
@@ -69,8 +71,34 @@ export function PulseOfConsciousness({ className = '', showMini = false }: Pulse
     }
 
     fetchStats()
-    const interval = setInterval(fetchStats, 30000) // Update every 30 seconds
-    return () => clearInterval(interval)
+    
+    // Set up Supabase realtime subscription for instant pulse updates
+    const channel = supabase
+      .channel('pulse_updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'signatories'
+        },
+        (payload) => {
+          console.log('💓 REALTIME PULSE: New consciousness protector!', payload)
+          // Trigger immediate pulse animation and stats refresh
+          setPulseAnimation(true)
+          setTimeout(() => setPulseAnimation(false), 2000)
+          fetchStats()
+        }
+      )
+      .subscribe()
+
+    // Also update every 30 seconds for other metrics
+    const interval = setInterval(fetchStats, 30000)
+    
+    return () => {
+      channel.unsubscribe()
+      clearInterval(interval)
+    }
   }, [lastTotal])
 
   // Animate pulse heartbeat
