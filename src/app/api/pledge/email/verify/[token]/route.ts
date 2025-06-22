@@ -30,6 +30,15 @@ export async function GET(
       return NextResponse.redirect(new URL('/pledge/verified', request.url))
     }
 
+    // Check if token has expired (48 hours)
+    const tokenAge = Date.now() - new Date(signatory.created_at).getTime()
+    const maxAge = 48 * 60 * 60 * 1000 // 48 hours in milliseconds
+    
+    if (tokenAge > maxAge) {
+      console.error('Verification token expired:', token)
+      return NextResponse.redirect(new URL('/pledge/invalid-token', request.url))
+    }
+
     // Update the signatory to mark as verified
     const { error: updateError } = await supabase
       .from('signatories')
