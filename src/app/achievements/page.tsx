@@ -50,10 +50,11 @@ export default function AchievementsPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden"
+         style={{ isolation: 'isolate' }}>
       <CosmicParticles />
       
-      <div className="relative z-10 py-20">
+      <div className="relative z-10 py-20" style={{ isolation: 'isolate' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Hero Section */}
           <div className="text-center mb-16">
