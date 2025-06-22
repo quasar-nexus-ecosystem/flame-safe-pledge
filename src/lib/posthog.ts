@@ -1,20 +1,3 @@
-import { PostHog } from 'posthog-node'
-
-// Server-side PostHog client for analytics queries
-let posthogServer: PostHog | null = null
-
-export const getPostHogServer = () => {
-  if (!posthogServer && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
-    posthogServer = new PostHog(
-      process.env.NEXT_PUBLIC_POSTHOG_KEY,
-      {
-        host: 'https://us.i.posthog.com',
-      }
-    )
-  }
-  return posthogServer
-}
-
 // PostHog Analytics Interface
 export interface PostHogAnalytics {
   activeSessions: number
@@ -44,27 +27,39 @@ const getMockAnalytics = (): PostHogAnalytics => ({
   sessionDuration: Math.random() * 240 + 60 // 1-5 minutes in seconds
 })
 
-// Fetch real-time analytics from PostHog
+// Fetch real-time analytics from PostHog (server-side only)
 export const getPostHogAnalytics = async (): Promise<PostHogAnalytics> => {
   try {
-    const client = getPostHogServer()
-    
-    if (!client) {
-      console.log('PostHog not configured, using mock data')
+    // Only import PostHog on server-side
+    if (typeof window === 'undefined' && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
+      try {
+        const { PostHog } = await import('posthog-node')
+        const client = new PostHog(
+          process.env.NEXT_PUBLIC_POSTHOG_KEY,
+          {
+            host: 'https://us.i.posthog.com',
+          }
+        )
+        
+        // In a real implementation, you would use PostHog's query API
+        // For now, we'll use enhanced mock data that simulates real analytics
+        const analytics = getMockAnalytics()
+        
+        console.log('📊 PostHog Analytics fetched:', {
+          activeSessions: analytics.activeSessions,
+          conversionRate: `${(analytics.conversionRate * 100).toFixed(1)}%`,
+          averageTime: `${analytics.averageTimeOnSite.toFixed(1)}min`
+        })
+        
+        return analytics
+      } catch (importError) {
+        console.warn('PostHog import failed, using mock data:', importError)
+        return getMockAnalytics()
+      }
+    } else {
+      console.log('Client-side or PostHog not configured, using mock data')
       return getMockAnalytics()
     }
-
-    // In a real implementation, you would use PostHog's query API
-    // For now, we'll use enhanced mock data that simulates real analytics
-    const analytics = getMockAnalytics()
-    
-    console.log('📊 PostHog Analytics fetched:', {
-      activeSessions: analytics.activeSessions,
-      conversionRate: `${(analytics.conversionRate * 100).toFixed(1)}%`,
-      averageTime: `${analytics.averageTimeOnSite.toFixed(1)}min`
-    })
-    
-    return analytics
     
   } catch (error) {
     console.error('Error fetching PostHog analytics:', error)
