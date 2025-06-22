@@ -6,6 +6,7 @@ import { AchievementSystem } from '@/components/AchievementSystem'
 import { AdvancedStatsDashboard } from '@/components/AdvancedStatsDashboard'
 import { RealtimeNotifications } from '@/components/RealtimeNotifications'
 import { getCurrentUser } from '@/lib/auth'
+import { getSignatoryStats } from '@/lib/supabase'
 
 // Mark as dynamic since we use cookies for authentication
 export const dynamic = 'force-dynamic'
@@ -13,12 +14,14 @@ export const dynamic = 'force-dynamic'
 export default async function PledgePage() {
   const user = await getCurrentUser()
 
-  // Fetch stats for achievement system
-  const statsRes = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/stats`, {
-    cache: 'no-store'
-  })
-  const statsData = await statsRes.json()
-  const stats = statsData.success ? statsData.data : { total: 0, organizations: 0, countries: 0 }
+  // Fetch stats directly from Supabase instead of API route to avoid URL issues
+  let stats = { total: 0, organizations: 0, countries: 0, verified: 0 }
+  try {
+    stats = await getSignatoryStats()
+  } catch (error) {
+    console.error('Error fetching stats:', error)
+    // Use default stats if there's an error
+  }
 
   return (
     <div className="min-h-screen py-12 relative overflow-hidden">
@@ -42,7 +45,7 @@ export default async function PledgePage() {
               showMini={true}
               stats={{
                 total: stats.total || 0,
-                verified: Math.floor((stats.total || 0) * 0.78),
+                verified: stats.verified || Math.floor((stats.total || 0) * 0.78),
                 organizations: stats.organizations || 0,
                 countries: stats.countries || 0
               }} 
