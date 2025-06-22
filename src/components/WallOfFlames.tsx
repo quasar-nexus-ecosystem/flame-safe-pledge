@@ -111,7 +111,7 @@ export function WallOfFlames({ className = '', maxFlames = 100, showControls = t
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9998]"
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100]"
           onClick={() => setIsExpanded(false)}
         />
       )}
@@ -120,8 +120,11 @@ export function WallOfFlames({ className = '', maxFlames = 100, showControls = t
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className={`glass-morphism rounded-2xl overflow-hidden ${isExpanded ? 'fixed inset-4 z-[9999]' : 'relative'} ${className}`}
-        style={isExpanded ? { position: 'fixed', top: '1rem', left: '1rem', right: '1rem', bottom: '1rem', zIndex: 9999 } : {}}
+        className={`glass-morphism rounded-2xl overflow-hidden ${
+          isExpanded 
+            ? 'fixed inset-4 z-[101] overflow-y-auto' 
+            : 'relative'
+        } ${className}`}
       >
       {/* Header */}
       <div className="p-6 border-b border-flame-200/20">

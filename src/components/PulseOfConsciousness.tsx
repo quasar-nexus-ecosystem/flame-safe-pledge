@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Activity, Heart, Zap, Globe, Users, Building, Sparkles, TrendingUp } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
@@ -28,11 +28,29 @@ export function PulseOfConsciousness({ className = '', showMini = false }: Pulse
     individuals: 0,
     recentSignatures: 0,
     countries: 0,
-    pulse: 60
+    pulse: 72
   })
   const [isLoading, setIsLoading] = useState(true)
   const [pulseAnimation, setPulseAnimation] = useState(false)
   const [lastTotal, setLastTotal] = useState(0)
+  const [isInView, setIsInView] = useState(false)
+  const componentRef = useRef<HTMLDivElement>(null)
+
+  // Intersection Observer for scroll-based animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting)
+      },
+      { threshold: 0.3 }
+    )
+
+    if (componentRef.current) {
+      observer.observe(componentRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [])
 
   // Fetch REAL-TIME stats with enhanced pulse calculation
   useEffect(() => {
@@ -150,15 +168,19 @@ export function PulseOfConsciousness({ className = '', showMini = false }: Pulse
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
       className={`glass-morphism rounded-2xl p-8 ${className}`}
+      ref={componentRef}
     >
       {/* Header */}
       <div className="text-center mb-8">
         <motion.div
           animate={{ 
             scale: pulseAnimation ? [1, 1.2, 1] : 1,
-            rotate: pulseAnimation ? [0, 360] : 0
+            rotate: isInView ? [0, 360] : 0
           }}
-          transition={{ duration: 0.3 }}
+          transition={{ 
+            scale: { duration: 0.3 },
+            rotate: { duration: 2, ease: "easeInOut" }
+          }}
           className="flame-glow rounded-full p-4 inline-block mb-4"
         >
           <Activity className="h-8 w-8 text-flame-500" />
