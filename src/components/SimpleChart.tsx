@@ -23,6 +23,10 @@ export function SimpleChart({
   height = 200, 
   className = '' 
 }: SimpleChartProps) {
+  // Create dynamic style for chart container
+  const chartContainerStyle = {
+    height: `${height}px`
+  } as const
   if (!data || data.length === 0) {
     return (
       <div className={`bg-gradient-to-r from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700 ${className}`}>
@@ -42,7 +46,7 @@ export function SimpleChart({
     <div className={`bg-gradient-to-r from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700 ${className}`}>
       <h3 className="text-xl font-semibold mb-4 text-flame-500">{title}</h3>
       
-      <div className="relative" style={{ height: `${height}px` }}>
+      <div className="relative" style={chartContainerStyle}>
         {/* Y-axis labels */}
         <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-muted-foreground">
           <span>{maxValue}</span>
