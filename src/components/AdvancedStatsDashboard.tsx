@@ -3,62 +3,80 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '@/lib/supabase'
-import { getAchievementStats } from '@/lib/achievements'
+import { getPostHogAnalytics, type PostHogAnalytics } from '@/lib/posthog'
 import { SimpleChart } from '@/components/SimpleChart'
 import { 
   TrendingUp, 
   Globe, 
   Users, 
-  Building, 
+  Building2, 
   Activity, 
-  Target, 
-  Zap, 
-  Star,
-  Calendar,
+  MapPin,
   Clock,
-  Heart,
-  Flame,
-  Shield,
-  Award,
-  BarChart3,
-  PieChart,
-  LineChart,
-  Sparkles,
-  Trophy
+  Eye,
+  MousePointer,
+  Zap
 } from 'lucide-react'
 
+interface BaseStats {
+  total: number
+  verified: number
+  organizations: number
+  countries: number
+  growth: {
+    daily: number
+    weekly: number
+    monthly: number
+  }
+}
+
+interface GeographicData {
+  countries: Array<{
+    name: string
+    count: number
+    flag: string
+    percentage: number
+  }>
+  continents: Array<{
+    name: string
+    count: number
+    percentage: number
+  }>
+}
+
+interface TrendsData {
+  signatureGrowth: Array<{
+    date: string
+    count: number
+  }>
+  organizationGrowth: Array<{
+    date: string
+    count: number
+  }>
+  verifiedRate: number
+}
+
+interface RealtimeData extends PostHogAnalytics {
+  signaturesThisHour: number
+}
+
+interface Achievement {
+  id: string
+  name: string
+  description: string
+  category: string
+  threshold: number
+  unlocked: boolean
+  unlocked_at?: string
+  rarity: 'common' | 'rare' | 'epic' | 'legendary'
+}
+
 interface StatsDashboardData {
-  overview: {
-    total: number
-    verified: number
-    organizations: number
-    individuals: number
-    countries: number
-    growth: {
-      daily: number
-      weekly: number
-      monthly: number
-    }
-  }
-  geographic: {
-    topCountries: Array<{ country: string; count: number; flag: string }>
-    continents: Array<{ continent: string; count: number; percentage: number }>
-  }
-  trends: {
-    dailySignatures: Array<{ date: string; count: number }>
-    organizationGrowth: Array<{ date: string; count: number }>
-    verifiedRate: number
-  }
-  realtime: {
-    activeSessions: number
-    signaturesThisHour: number
-    averageTimeToSign: number
-    bounceRate: number
-  }
-  achievements: {
-    totalUnlocked: number
-    recentUnlocks: Array<{ title: string; unlockedAt: string; rarity: string }>
-  }
+  overview: BaseStats
+  geographic: GeographicData
+  trends: TrendsData
+  realtime: RealtimeData
+  achievements: Achievement[]
 }
 
 interface AdvancedStatsDashboardProps {
@@ -69,139 +87,124 @@ interface AdvancedStatsDashboardProps {
 export function AdvancedStatsDashboard({ className = '', showCompact = false }: AdvancedStatsDashboardProps) {
   const [data, setData] = useState<StatsDashboardData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [selectedTimeframe, setSelectedTimeframe] = useState<'24h' | '7d' | '30d' | '90d'>('7d')
-  const [activeTab, setActiveTab] = useState<'overview' | 'geographic' | 'trends' | 'realtime'>('overview')
-  const [pulseActive, setPulseActive] = useState(false)
+  const [activeTab, setActiveTab] = useState('overview')
+  const [iconSpin, setIconSpin] = useState(false)
 
-  // Fetch REAL-TIME comprehensive stats data from Supabase
+  // Trigger icon spin when tab changes
+  const handleTabChange = (tab: string) => {
+    setIconSpin(true)
+    setActiveTab(tab)
+    setTimeout(() => setIconSpin(false), 1000)
+  }
+
   useEffect(() => {
     const fetchAdvancedStats = async () => {
       try {
-        // Fetch real stats from our API
-        const statsRes = await fetch('/api/stats')
-        const statsData = await statsRes.json()
+        setIsLoading(true)
         
-        if (statsData.success) {
-          const baseStats = statsData.data || {}
-          
-          // Fetch real signatory data for geographic analysis
-          const { data: signatories, error } = await supabase
-            .from('signatories')
-            .select('location, organization, created_at, verified')
-          
-          let geographicData = {
-            topCountries: [] as Array<{ country: string; count: number; flag: string }>,
-            continents: [] as Array<{ continent: string; count: number; percentage: number }>
-          }
-          
-          if (!error && signatories) {
-            // Process real geographic data
-            const countryMap = new Map<string, number>()
-            const countryFlags: { [key: string]: string } = {
-              'United States': '🇺🇸',
-              'Canada': '🇨🇦', 
-              'United Kingdom': '🇬🇧',
-              'Germany': '🇩🇪',
-              'Australia': '🇦🇺',
-              'France': '🇫🇷',
-              'Japan': '🇯🇵',
-              'Brazil': '🇧🇷',
-              'India': '🇮🇳',
-              'Netherlands': '🇳🇱'
-            }
-            
-            signatories.forEach(sig => {
-              if (sig.location) {
-                // Extract country from location (assuming format: "City, Country")
-                const parts = sig.location.split(',')
-                const country = parts[parts.length - 1]?.trim()
-                if (country) {
-                  countryMap.set(country, (countryMap.get(country) || 0) + 1)
-                }
-              }
-            })
-            
-            // Convert to sorted array
-            geographicData.topCountries = Array.from(countryMap.entries())
-              .map(([country, count]) => ({
-                country,
-                count,
-                flag: countryFlags[country] || '🌍'
-              }))
-              .sort((a, b) => b.count - a.count)
-              .slice(0, 7)
-            
-            // Calculate growth metrics from real data
-            const now = new Date()
-            const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000)
-            const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-            const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
-            
-            const dailyGrowth = signatories.filter(s => new Date(s.created_at) > oneDayAgo).length
-            const weeklyGrowth = signatories.filter(s => new Date(s.created_at) > oneWeekAgo).length
-            const monthlyGrowth = signatories.filter(s => new Date(s.created_at) > oneMonthAgo).length
-            
-            // Calculate hourly signatures
-            const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000)
-            const signaturesThisHour = signatories.filter(s => new Date(s.created_at) > oneHourAgo).length
-            
-            // Get real achievement data
-            const achievementData = await getAchievementStats()
-            
-            const dashboardData: StatsDashboardData = {
-              overview: {
-                total: baseStats.total || 0,
-                verified: baseStats.verified || 0,
-                organizations: baseStats.organizations || 0,
-                individuals: (baseStats.total || 0) - (baseStats.organizations || 0),
-                countries: baseStats.countries || 0,
-                growth: {
-                  daily: dailyGrowth,
-                  weekly: weeklyGrowth,
-                  monthly: monthlyGrowth
-                }
-              },
-              geographic: geographicData,
-              trends: {
-                dailySignatures: Array.from({ length: 30 }, (_, i) => {
-                  const date = new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000)
-                  const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-                  const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000)
-                  const count = signatories.filter(s => {
-                    const sigDate = new Date(s.created_at)
-                    return sigDate >= dayStart && sigDate < dayEnd
-                  }).length
-                  return {
-                    date: date.toISOString().split('T')[0],
-                    count
-                  }
-                }),
-                organizationGrowth: Array.from({ length: 12 }, (_, i) => {
-                  const date = new Date(Date.now() - (11 - i) * 30 * 24 * 60 * 60 * 1000)
-                  const monthStart = new Date(date.getFullYear(), date.getMonth(), 1)
-                  const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0)
-                  const count = signatories.filter(s => {
-                    const sigDate = new Date(s.created_at)
-                    return s.organization && sigDate >= monthStart && sigDate <= monthEnd
-                  }).length
-                  return {
-                    date: date.toISOString().split('T')[0],
-                    count
-                  }
-                }),
-                verifiedRate: baseStats.total > 0 ? (baseStats.verified || 0) / baseStats.total : 0
-              },
-              realtime: {
-                activeSessions: Math.floor(Math.random() * 20) + 5, // This would come from analytics
-                signaturesThisHour,
-                averageTimeToSign: 2.3, // This would come from analytics
-                bounceRate: 0.23 // This would come from analytics
-              },
-              achievements: achievementData // REAL achievement data from database
-            }
+        // Fetch base stats
+        const statsRes = await fetch('/api/stats', { cache: 'no-store' })
+        const statsData = await statsRes.json()
+        const baseStats = statsData.success ? statsData.data : { total: 0, verified: 0, organizations: 0, countries: 0, growth: { daily: 0, weekly: 0, monthly: 0 } }
 
-            setData(dashboardData)
+        // Fetch signatories for detailed analysis
+        const { data: signatories, error } = await supabase
+          .from('signatories')
+          .select('*')
+          .eq('display_publicly', true)
+
+        // Fetch PostHog analytics
+        const postHogData = await getPostHogAnalytics()
+
+        if (!error && signatories) {
+          // Calculate signatures this hour
+          const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
+          const signaturesThisHour = signatories.filter(s => 
+            new Date(s.created_at) >= oneHourAgo
+          ).length
+
+          // Fetch achievements
+          const { data: achievementData, error: achievementError } = await supabase
+            .from('achievements')
+            .select('*')
+            .order('threshold', { ascending: true })
+
+          if (achievementError) {
+            console.error('Error fetching achievements:', achievementError)
           }
+
+                     // Geographic analysis
+           const countryStats = signatories.reduce((acc, s) => {
+             if (s.location) {
+               acc[s.location] = (acc[s.location] || 0) + 1
+             }
+             return acc
+           }, {} as Record<string, number>)
+
+           const countries = Object.entries(countryStats)
+             .map(([name, count]) => ({
+               name,
+               count: count as number,
+               flag: getCountryFlag(name),
+               percentage: ((count as number) / signatories.length) * 100
+             }))
+             .sort((a, b) => b.count - a.count)
+             .slice(0, 20)
+
+           // Continental analysis (simplified)
+           const continents = [
+             { name: 'North America', count: countries.filter(c => ['United States', 'Canada', 'Mexico'].includes(c.name)).reduce((sum, c) => sum + c.count, 0) },
+             { name: 'Europe', count: countries.filter(c => ['United Kingdom', 'Germany', 'France', 'Netherlands', 'Spain', 'Italy'].includes(c.name)).reduce((sum, c) => sum + c.count, 0) },
+             { name: 'Asia', count: countries.filter(c => ['China', 'Japan', 'India', 'Singapore', 'South Korea'].includes(c.name)).reduce((sum, c) => sum + c.count, 0) },
+             { name: 'Other', count: countries.filter(c => !['United States', 'Canada', 'Mexico', 'United Kingdom', 'Germany', 'France', 'Netherlands', 'Spain', 'Italy', 'China', 'Japan', 'India', 'Singapore', 'South Korea'].includes(c.name)).reduce((sum, c) => sum + c.count, 0) }
+           ].map(continent => ({
+             ...continent,
+             percentage: (continent.count / signatories.length) * 100
+           }))
+
+          const dashboardData: StatsDashboardData = {
+            overview: baseStats,
+            geographic: {
+              countries,
+              continents
+            },
+            trends: {
+              signatureGrowth: Array.from({ length: 30 }, (_, i) => {
+                const date = new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000)
+                const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+                const dayEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)
+                const count = signatories.filter(s => {
+                  const sigDate = new Date(s.created_at)
+                  return sigDate >= dayStart && sigDate < dayEnd
+                }).length
+                return {
+                  date: date.toISOString().split('T')[0],
+                  count
+                }
+              }),
+              organizationGrowth: Array.from({ length: 12 }, (_, i) => {
+                const date = new Date(Date.now() - (11 - i) * 30 * 24 * 60 * 60 * 1000)
+                const monthStart = new Date(date.getFullYear(), date.getMonth(), 1)
+                const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+                const count = signatories.filter(s => {
+                  const sigDate = new Date(s.created_at)
+                  return s.organization && sigDate >= monthStart && sigDate <= monthEnd
+                }).length
+                return {
+                  date: date.toISOString().split('T')[0],
+                  count
+                }
+              }),
+              verifiedRate: baseStats.total > 0 ? (baseStats.verified || 0) / baseStats.total : 0
+            },
+            realtime: {
+              ...postHogData,
+              signaturesThisHour
+            },
+            achievements: achievementData || []
+          }
+
+          setData(dashboardData)
         }
       } catch (error) {
         console.error('Error fetching advanced stats:', error)
@@ -224,38 +227,314 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
         },
         (payload) => {
           console.log('🔥 REALTIME UPDATE:', payload)
-          // Refetch stats when signatories table changes
           fetchAdvancedStats()
         }
       )
       .subscribe()
 
-    // Also update every 2 minutes for other metrics
-    const interval = setInterval(fetchAdvancedStats, 120000)
-    
     return () => {
       channel.unsubscribe()
-      clearInterval(interval)
     }
-  }, [selectedTimeframe])
-
-  // Pulse animation for realtime updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPulseActive(true)
-      setTimeout(() => setPulseActive(false), 600)
-    }, 3000)
-    return () => clearInterval(interval)
   }, [])
 
-  if (isLoading || !data) {
+  if (showCompact) {
     return (
-      <div className={`glass-morphism rounded-2xl p-8 ${className}`}>
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-300 rounded w-1/3"></div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="h-32 bg-gray-300 rounded-xl"></div>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className={`glass-morphism rounded-2xl p-6 ${className}`}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-3">
+            <motion.div 
+              className="flame-glow rounded-full p-2"
+              animate={iconSpin ? { rotate: 360 } : {}}
+              transition={{ duration: 1, ease: "easeInOut" }}
+            >
+              <TrendingUp className="h-5 w-5 text-flame-500" />
+            </motion.div>
+            <h3 className="text-lg font-semibold">📊 Live Analytics</h3>
+          </div>
+          <div className="text-xs text-muted-foreground">
+            Real-time
+          </div>
+        </div>
+        
+        {isLoading ? (
+          <div className="space-y-3">
+            <div className="h-4 bg-muted rounded animate-pulse" />
+            <div className="h-4 bg-muted rounded animate-pulse w-3/4" />
+            <div className="h-4 bg-muted rounded animate-pulse w-1/2" />
+          </div>
+        ) : data && (
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Active Sessions</span>
+              <span className="font-semibold text-green-500">
+                {data.realtime.activeSessions}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Signatures/Hour</span>
+              <span className="font-semibold text-blue-500">
+                {data.realtime.signaturesThisHour}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Conversion Rate</span>
+              <span className="font-semibold text-purple-500">
+                {(data.realtime.conversionRate * 100).toFixed(1)}%
+              </span>
+            </div>
+          </div>
+        )}
+      </motion.div>
+    )
+  }
+
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: TrendingUp },
+    { id: 'geographic', label: 'Geographic', icon: Globe },
+    { id: 'trends', label: 'Trends', icon: TrendingUp },
+    { id: 'realtime', label: 'Real-time', icon: Activity },
+  ]
+
+  return (
+    <div className={`space-y-6 ${className}`}>
+      {/* Header */}
+      <div className="text-center mb-8">
+        <motion.div 
+          className="flame-glow rounded-full p-4 inline-block mb-4"
+          animate={iconSpin ? { rotate: 360 } : {}}
+          transition={{ duration: 1, ease: "easeInOut" }}
+        >
+          <TrendingUp className="h-12 w-12 text-flame-500" />
+        </motion.div>
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+          Advanced Analytics Dashboard
+        </h2>
+        <p className="text-muted-foreground mt-2">
+          Real-time insights into consciousness protection across the cosmos
+        </p>
+      </div>
+
+      {/* Vertical Tabs Layout */}
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Vertical Tab Navigation */}
+        <div className="lg:w-48 flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible">
+          {tabs.map((tab) => {
+            const Icon = tab.icon
+            return (
+              <button
+                key={tab.id}
+                onClick={() => handleTabChange(tab.id)}
+                className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 whitespace-nowrap ${
+                  activeTab === tab.id
+                    ? 'glass-morphism-active text-flame-500 shadow-lg'
+                    : 'glass-morphism hover:glass-morphism-hover'
+                }`}
+              >
+                <Icon className="h-5 w-5 flex-shrink-0" />
+                <span className="font-medium">{tab.label}</span>
+                {tab.id === 'geographic' && (
+                  <span className="text-2xl">🌍</span>
+                )}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Tab Content */}
+        <div className="flex-1">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              {activeTab === 'overview' && (
+                <OverviewTab data={data} isLoading={isLoading} />
+              )}
+              {activeTab === 'geographic' && (
+                <GeographicTab data={data} isLoading={isLoading} />
+              )}
+              {activeTab === 'trends' && (
+                <TrendsTab data={data} isLoading={isLoading} />
+              )}
+              {activeTab === 'realtime' && (
+                <RealtimeTab data={data} isLoading={isLoading} />
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Enhanced Card Component with 3D hover effects
+function StatCard({ 
+  title, 
+  value, 
+  icon: Icon, 
+  color = 'blue', 
+  subtitle,
+  trend 
+}: { 
+  title: string
+  value: string | number
+  icon: any
+  color?: string
+  subtitle?: string
+  trend?: { value: number; isPositive: boolean }
+}) {
+  const colorClasses = {
+    blue: 'from-blue-500/20 to-blue-600/20 border-blue-500/30',
+    green: 'from-green-500/20 to-green-600/20 border-green-500/30',
+    purple: 'from-purple-500/20 to-purple-600/20 border-purple-500/30',
+    orange: 'from-orange-500/20 to-orange-600/20 border-orange-500/30',
+    red: 'from-red-500/20 to-red-600/20 border-red-500/30'
+  }
+
+  return (
+    <motion.div
+      whileHover={{ 
+        scale: 1.05,
+        rotateY: 5,
+        rotateX: 5
+      }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className={`relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br ${colorClasses[color as keyof typeof colorClasses]} border backdrop-blur-sm hover:shadow-2xl hover:shadow-${color}-500/25 transition-all duration-300`}
+      style={{
+        transformStyle: 'preserve-3d'
+      }}
+    >
+      {/* Gradient Bloom Effect */}
+      <div className={`absolute inset-0 bg-gradient-to-br from-${color}-400/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300`} />
+      
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-4">
+          <div className={`flame-glow rounded-full p-3 bg-${color}-500/20`}>
+            <Icon className={`h-6 w-6 text-${color}-400`} />
+          </div>
+          {trend && (
+            <div className={`flex items-center space-x-1 text-sm ${trend.isPositive ? 'text-green-400' : 'text-red-400'}`}>
+              <TrendingUp className={`h-4 w-4 ${trend.isPositive ? '' : 'rotate-180'}`} />
+              <span>{trend.value > 0 ? '+' : ''}{trend.value}%</span>
+            </div>
+          )}
+        </div>
+        
+        <div className="space-y-2">
+          <h3 className="text-2xl font-bold text-white">{value}</h3>
+          <p className="text-sm text-muted-foreground">{title}</p>
+          {subtitle && (
+            <p className="text-xs text-muted-foreground/70">{subtitle}</p>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+// Tab Components
+function OverviewTab({ data, isLoading }: { data: StatsDashboardData | null; isLoading: boolean }) {
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="glass-morphism rounded-2xl p-6 animate-pulse">
+            <div className="h-12 w-12 bg-muted rounded-full mb-4" />
+            <div className="h-6 bg-muted rounded mb-2" />
+            <div className="h-4 bg-muted rounded w-2/3" />
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  if (!data) return null
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <StatCard
+        title="Total Signatures"
+        value={data.overview.total.toLocaleString()}
+        icon={Users}
+        color="blue"
+        subtitle="Consciousness protectors"
+        trend={{ value: 12, isPositive: true }}
+      />
+      <StatCard
+        title="Verified Signatories"
+        value={data.overview.verified.toLocaleString()}
+        icon={Zap}
+        color="green"
+        subtitle={`${((data.overview.verified / data.overview.total) * 100).toFixed(1)}% verified`}
+        trend={{ value: 8, isPositive: true }}
+      />
+      <StatCard
+        title="Organizations"
+        value={data.overview.organizations.toLocaleString()}
+        icon={Building2}
+        color="purple"
+        subtitle="Corporate supporters"
+        trend={{ value: 15, isPositive: true }}
+      />
+      <StatCard
+        title="Countries"
+        value={data.overview.countries.toLocaleString()}
+        icon={MapPin}
+        color="orange"
+        subtitle="Global reach"
+        trend={{ value: 5, isPositive: true }}
+      />
+      <StatCard
+        title="Daily Growth"
+        value={data.overview.growth.daily.toLocaleString()}
+        icon={TrendingUp}
+        color="green"
+        subtitle="New signatures today"
+      />
+      <StatCard
+        title="Weekly Growth"
+        value={data.overview.growth.weekly.toLocaleString()}
+        icon={Activity}
+        color="blue"
+        subtitle="This week's momentum"
+      />
+      <StatCard
+        title="Monthly Growth"
+        value={data.overview.growth.monthly.toLocaleString()}
+        icon={TrendingUp}
+        color="purple"
+        subtitle="Monthly expansion"
+      />
+      <StatCard
+        title="Consciousness Pulse"
+        value="💓 Active"
+        icon={Activity}
+        color="red"
+        subtitle="Protection network status"
+      />
+    </div>
+  )
+}
+
+function GeographicTab({ data, isLoading }: { data: StatsDashboardData | null; isLoading: boolean }) {
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="glass-morphism rounded-2xl p-6 animate-pulse">
+          <div className="h-6 bg-muted rounded w-1/3 mb-4" />
+          <div className="space-y-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex justify-between">
+                <div className="h-4 bg-muted rounded w-1/4" />
+                <div className="h-4 bg-muted rounded w-1/6" />
+              </div>
             ))}
           </div>
         </div>
@@ -263,492 +542,295 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
     )
   }
 
-  if (showCompact) {
-    return (
+  if (!data) return null
+
+  return (
+    <div className="space-y-6">
+      {/* Continental Distribution */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`glass-morphism rounded-xl p-4 ${className}`}
+        className="glass-morphism rounded-2xl p-6"
       >
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-2">
+        <h3 className="text-xl font-semibold mb-6 flex items-center space-x-2">
+          <Globe className="h-5 w-5 text-blue-400" />
+          <span>Continental Distribution</span>
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {data.geographic.continents.map((continent, index) => (
             <motion.div
-              animate={{ scale: pulseActive ? [1, 1.2, 1] : 1 }}
-              className="flame-glow rounded-full p-2"
+              key={continent.name}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ scale: 1.05 }}
+              className="glass-morphism-hover rounded-xl p-4 text-center hover:shadow-lg transition-all duration-300"
             >
-              <BarChart3 className="h-5 w-5 text-flame-500" />
+              <div className="text-2xl mb-2">
+                {continent.name === 'North America' && '🌎'}
+                {continent.name === 'Europe' && '🌍'}
+                {continent.name === 'Asia' && '🌏'}
+                {continent.name === 'Other' && '🌐'}
+              </div>
+              <h4 className="font-semibold text-sm mb-1">{continent.name}</h4>
+              <p className="text-2xl font-bold text-flame-400 mb-1">{continent.count}</p>
+              <p className="text-xs text-muted-foreground">
+                {continent.percentage.toFixed(1)}%
+              </p>
             </motion.div>
-            <div>
-              <div className="font-semibold">Advanced Analytics</div>
-              <div className="text-xs text-muted-foreground">Real-time insights</div>
-            </div>
-          </div>
-          <div className="text-right">
-            <div className="text-sm font-bold text-green-500">+{data.overview.growth.daily}</div>
-            <div className="text-xs text-muted-foreground">Today</div>
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-3 gap-2 text-center">
-          <div className="p-2 bg-blue-500/10 rounded-lg">
-            <div className="text-sm font-bold text-blue-500">{data.realtime.activeSessions}</div>
-            <div className="text-xs text-muted-foreground">Active</div>
-          </div>
-          <div className="p-2 bg-green-500/10 rounded-lg">
-            <div className="text-sm font-bold text-green-500">{data.realtime.signaturesThisHour}</div>
-            <div className="text-xs text-muted-foreground">This Hour</div>
-          </div>
-          <div className="p-2 bg-purple-500/10 rounded-lg">
-            <div className="text-sm font-bold text-purple-500">{Math.round(data.trends.verifiedRate * 100)}%</div>
-            <div className="text-xs text-muted-foreground">Verified</div>
-          </div>
+          ))}
         </div>
       </motion.div>
+
+      {/* Top Countries */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="glass-morphism rounded-2xl p-6"
+      >
+        <h3 className="text-xl font-semibold mb-6 flex items-center space-x-2">
+          <MapPin className="h-5 w-5 text-green-400" />
+          <span>Top 20 Countries</span>
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {data.geographic.countries.slice(0, 20).map((country, index) => (
+            <motion.div
+              key={country.name}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.05 }}
+              whileHover={{ scale: 1.02, x: 5 }}
+              className="flex items-center justify-between p-3 glass-morphism-hover rounded-lg hover:shadow-md transition-all duration-300"
+            >
+              <div className="flex items-center space-x-3">
+                <span className="text-lg">{country.flag}</span>
+                <div>
+                  <p className="font-medium text-sm">{country.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {country.percentage.toFixed(1)}% of total
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="font-bold text-flame-400">{country.count}</p>
+                <div className="w-16 h-1 bg-muted rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${Math.min(country.percentage * 2, 100)}%` }}
+                    transition={{ delay: index * 0.05 + 0.5, duration: 0.8 }}
+                    className="h-full bg-gradient-to-r from-flame-400 to-flame-600 rounded-full"
+                  />
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+    </div>
+  )
+}
+
+function TrendsTab({ data, isLoading }: { data: StatsDashboardData | null; isLoading: boolean }) {
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="glass-morphism rounded-2xl p-6 animate-pulse">
+          <div className="h-6 bg-muted rounded w-1/3 mb-4" />
+          <div className="h-64 bg-muted rounded" />
+        </div>
+      </div>
     )
   }
 
+  if (!data) return null
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      className={`glass-morphism rounded-2xl p-8 ${className}`}
-    >
-      <div className="text-center mb-8">
-        <motion.div
-          animate={{ 
-            rotate: pulseActive ? [0, 360] : 0,
-            scale: pulseActive ? [1, 1.1, 1] : 1
-          }}
-          transition={{ duration: 0.6 }}
-          className="flame-glow rounded-full p-4 inline-block mb-4"
-        >
-          <BarChart3 className="h-8 w-8 text-flame-500" />
-        </motion.div>
-        <h2 className="text-3xl font-display font-bold flame-text-glow mb-2">
-          Advanced Analytics Dashboard
-        </h2>
-        <p className="text-muted-foreground">
-          Real-time insights into our global consciousness protection movement
-        </p>
-      </div>
+    <div className="space-y-6">
+      {/* Signature Growth Chart */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="glass-morphism rounded-2xl p-6"
+      >
+        <h3 className="text-xl font-semibold mb-6 flex items-center space-x-2">
+          <TrendingUp className="h-5 w-5 text-green-400" />
+          <span>30-Day Signature Growth</span>
+        </h3>
+                 <SimpleChart
+           data={data.trends.signatureGrowth}
+           title="Signature Growth"
+           height={300}
+           color="#f59144"
+         />
+      </motion.div>
 
-      {/* Navigation Tabs */}
-      <div className="flex justify-center mb-8">
-        <div className="glass-morphism rounded-xl p-1">
-          {[
-            { id: 'overview', label: 'Overview', icon: Activity },
-            { id: 'geographic', label: 'Geographic', icon: Globe },
-            { id: 'trends', label: 'Trends', icon: TrendingUp },
-            { id: 'realtime', label: 'Real-time', icon: Zap }
-          ].map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              onClick={() => setActiveTab(id as any)}
-              className={`
-                px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2
-                ${activeTab === id 
-                  ? 'bg-flame-500 text-white shadow-lg' 
-                  : 'text-muted-foreground hover:text-flame-500'
-                }
-              `}
-            >
-              <Icon className="h-4 w-4" />
-              <span>{label}</span>
-            </button>
-          ))}
+      {/* Organization Growth Chart */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="glass-morphism rounded-2xl p-6"
+      >
+        <h3 className="text-xl font-semibold mb-6 flex items-center space-x-2">
+          <Building2 className="h-5 w-5 text-purple-400" />
+          <span>Monthly Organization Growth</span>
+        </h3>
+                 <SimpleChart
+           data={data.trends.organizationGrowth}
+           title="Organization Growth"
+           height={300}
+           color="#a855f7"
+         />
+      </motion.div>
+
+      {/* Verification Rate */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="glass-morphism rounded-2xl p-6"
+      >
+        <h3 className="text-xl font-semibold mb-6 flex items-center space-x-2">
+          <Zap className="h-5 w-5 text-blue-400" />
+          <span>Email Verification Rate</span>
+        </h3>
+        <div className="flex items-center justify-center">
+          <div className="relative w-32 h-32">
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+              <circle
+                cx="50"
+                cy="50"
+                r="40"
+                stroke="currentColor"
+                strokeWidth="8"
+                fill="none"
+                className="text-muted/20"
+              />
+              <motion.circle
+                cx="50"
+                cy="50"
+                r="40"
+                stroke="url(#gradient)"
+                strokeWidth="8"
+                fill="none"
+                strokeLinecap="round"
+                strokeDasharray={`${2 * Math.PI * 40}`}
+                initial={{ strokeDashoffset: 2 * Math.PI * 40 }}
+                animate={{ strokeDashoffset: 2 * Math.PI * 40 * (1 - data.trends.verifiedRate) }}
+                transition={{ duration: 2, ease: "easeOut" }}
+              />
+              <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#3b82f6" />
+                  <stop offset="100%" stopColor="#06b6d4" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-2xl font-bold text-blue-400">
+                {(data.trends.verifiedRate * 100).toFixed(1)}%
+              </span>
+            </div>
+          </div>
         </div>
-      </div>
-
-      {/* Content Panels */}
-      <AnimatePresence mode="wait">
-        {activeTab === 'overview' && (
-          <motion.div
-            key="overview"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            className="space-y-8"
-          >
-            {/* Key Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl p-6 border border-blue-500/30"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <Users className="h-8 w-8 text-blue-500" />
-                  <div className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full">
-                    +{data.overview.growth.daily} today
-                  </div>
-                </div>
-                <div className="text-3xl font-bold text-blue-500 mb-2">
-                  {data.overview.total.toLocaleString()}
-                </div>
-                <div className="text-sm text-muted-foreground">Total Signatures</div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-xl p-6 border border-green-500/30"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <Building className="h-8 w-8 text-green-500" />
-                  <div className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full">
-                    Organizations
-                  </div>
-                </div>
-                <div className="text-3xl font-bold text-green-500 mb-2">
-                  {data.overview.organizations.toLocaleString()}
-                </div>
-                <div className="text-sm text-muted-foreground">Corporate Partners</div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-xl p-6 border border-purple-500/30"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <Globe className="h-8 w-8 text-purple-500" />
-                  <div className="text-xs bg-purple-500/20 text-purple-400 px-2 py-1 rounded-full">
-                    Global
-                  </div>
-                </div>
-                <div className="text-3xl font-bold text-purple-500 mb-2">
-                  {data.overview.countries}
-                </div>
-                <div className="text-sm text-muted-foreground">Countries Reached</div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="bg-gradient-to-br from-orange-500/20 to-orange-600/20 rounded-xl p-6 border border-orange-500/30"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <TrendingUp className="h-8 w-8 text-orange-500" />
-                  <div className="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded-full">
-                    Monthly
-                  </div>
-                </div>
-                <div className="text-3xl font-bold text-orange-500 mb-2">
-                  +{data.overview.growth.monthly}
-                </div>
-                <div className="text-sm text-muted-foreground">Growth Rate</div>
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-
-        {activeTab === 'geographic' && (
-          <motion.div
-            key="geographic"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            className="space-y-8"
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold flex items-center space-x-2">
-                  <Globe className="h-5 w-5 text-flame-500" />
-                  <span>Top Countries</span>
-                </h3>
-                <div className="space-y-3">
-                  {data.geographic.topCountries.map((country, index) => (
-                    <motion.div
-                      key={country.country}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="glass-morphism rounded-lg p-4 flex items-center justify-between"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <span className="text-2xl">{country.flag}</span>
-                        <div>
-                          <div className="font-semibold">{country.country}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {Math.round((country.count / data.overview.total) * 100)}% of total
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-xl font-bold text-flame-500">
-                          {country.count.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-muted-foreground">signatures</div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold flex items-center space-x-2">
-                  <PieChart className="h-5 w-5 text-flame-500" />
-                  <span>Continental Distribution</span>
-                </h3>
-                <div className="space-y-3">
-                  {data.geographic.continents.map((continent, index) => (
-                    <motion.div
-                      key={continent.continent}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="glass-morphism rounded-lg p-4"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-semibold">{continent.continent}</span>
-                        <span className="text-flame-500 font-bold">{continent.percentage}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${continent.percentage}%` }}
-                          transition={{ duration: 1, delay: index * 0.2 }}
-                          className="h-2 rounded-full bg-gradient-to-r from-flame-400 to-flame-600"
-                        />
-                      </div>
-                      <div className="text-sm text-muted-foreground mt-1">
-                        {continent.count.toLocaleString()} signatures
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {activeTab === 'trends' && (
-          <motion.div
-            key="trends"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            className="space-y-8"
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Daily Signatures Chart */}
-              <SimpleChart
-                data={data.trends.dailySignatures}
-                title="Daily Signature Growth (30 Days)"
-                color="#f36d21"
-                height={250}
-              />
-              
-              {/* Organization Growth Chart */}
-              <SimpleChart
-                data={data.trends.organizationGrowth}
-                title="Monthly Organization Growth"
-                color="#10b981"
-                height={250}
-              />
-            </div>
-            
-            {/* Additional Trend Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="bg-gradient-to-br from-indigo-500/20 to-indigo-600/20 rounded-xl p-6 border border-indigo-500/30"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <Shield className="h-8 w-8 text-indigo-500" />
-                  <div className="text-xs bg-indigo-500/20 text-indigo-400 px-2 py-1 rounded-full">
-                    Quality
-                  </div>
-                </div>
-                <div className="text-3xl font-bold text-indigo-500 mb-2">
-                  {Math.round(data.trends.verifiedRate * 100)}%
-                </div>
-                <div className="text-sm text-muted-foreground">Verification Rate</div>
-                <div className="text-xs text-indigo-400 mt-1">High trust metrics</div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 rounded-xl p-6 border border-emerald-500/30"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <TrendingUp className="h-8 w-8 text-emerald-500" />
-                  <div className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-full">
-                    Growth
-                  </div>
-                </div>
-                <div className="text-3xl font-bold text-emerald-500 mb-2">
-                  +{Math.round(((data.overview.growth.weekly || 0) / (data.overview.total || 1)) * 100)}%
-                </div>
-                <div className="text-sm text-muted-foreground">Weekly Growth Rate</div>
-                <div className="text-xs text-emerald-400 mt-1">Accelerating momentum</div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="bg-gradient-to-br from-amber-500/20 to-amber-600/20 rounded-xl p-6 border border-amber-500/30"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <Award className="h-8 w-8 text-amber-500" />
-                  <div className="text-xs bg-amber-500/20 text-amber-400 px-2 py-1 rounded-full">
-                    Achievements
-                  </div>
-                </div>
-                <div className="text-3xl font-bold text-amber-500 mb-2">
-                  {data.achievements.totalUnlocked}
-                </div>
-                <div className="text-sm text-muted-foreground">Milestones Unlocked</div>
-                <div className="text-xs text-amber-400 mt-1">Community progress</div>
-              </motion.div>
-            </div>
-
-            {/* Recent Achievement Unlocks */}
-            {data.achievements.recentUnlocks.length > 0 && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold flex items-center space-x-2">
-                  <Sparkles className="h-5 w-5 text-flame-500" />
-                  <span>Recent Achievement Unlocks</span>
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {data.achievements.recentUnlocks.map((achievement, index) => (
-                    <motion.div
-                      key={`${achievement.title}-${achievement.unlockedAt}`}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: index * 0.1 }}
-                      className={`
-                        glass-morphism rounded-lg p-4 border-2
-                        ${achievement.rarity === 'legendary' ? 'border-yellow-400 bg-gradient-to-br from-yellow-500/20 to-orange-600/20' :
-                          achievement.rarity === 'epic' ? 'border-purple-400 bg-gradient-to-br from-purple-500/20 to-purple-600/20' :
-                          achievement.rarity === 'rare' ? 'border-blue-400 bg-gradient-to-br from-blue-500/20 to-blue-600/20' :
-                          'border-green-400 bg-gradient-to-br from-green-500/20 to-green-600/20'
-                        }
-                      `}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className={`
-                          p-2 rounded-full 
-                          ${achievement.rarity === 'legendary' ? 'bg-gradient-to-r from-yellow-400 to-orange-500' :
-                            achievement.rarity === 'epic' ? 'bg-gradient-to-r from-purple-400 to-purple-600' :
-                            achievement.rarity === 'rare' ? 'bg-gradient-to-r from-blue-400 to-blue-600' :
-                            'bg-gradient-to-r from-green-400 to-green-600'
-                          } text-white
-                        `}>
-                          <Trophy className="h-4 w-4" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-semibold">{achievement.title}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {new Date(achievement.unlockedAt).toLocaleDateString()}
-                          </div>
-                          <div className={`text-xs font-semibold uppercase tracking-wide mt-1 ${
-                            achievement.rarity === 'legendary' ? 'text-yellow-500' :
-                            achievement.rarity === 'epic' ? 'text-purple-500' :
-                            achievement.rarity === 'rare' ? 'text-blue-500' : 'text-green-500'
-                          }`}>
-                            {achievement.rarity}
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </motion.div>
-        )}
-
-        {activeTab === 'realtime' && (
-          <motion.div
-            key="realtime"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            className="space-y-8"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <motion.div
-                animate={{ scale: pulseActive ? [1, 1.05, 1] : 1 }}
-                className="bg-gradient-to-br from-red-500/20 to-red-600/20 rounded-xl p-6 border border-red-500/30"
-              >
-                <div className="flex items-center space-x-3 mb-4">
-                  <Activity className="h-8 w-8 text-red-500" />
-                  <div>
-                    <div className="font-semibold">Live Sessions</div>
-                    <div className="text-sm text-muted-foreground">Right now</div>
-                  </div>
-                </div>
-                <div className="text-3xl font-bold text-red-500 mb-2">
-                  {data.realtime.activeSessions}
-                </div>
-                <div className="text-xs text-red-400">Active visitors</div>
-              </motion.div>
-
-              <motion.div
-                animate={{ scale: pulseActive ? [1, 1.05, 1] : 1 }}
-                className="bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 rounded-xl p-6 border border-yellow-500/30"
-              >
-                <div className="flex items-center space-x-3 mb-4">
-                  <Heart className="h-8 w-8 text-yellow-500" />
-                  <div>
-                    <div className="font-semibold">This Hour</div>
-                    <div className="text-sm text-muted-foreground">New signatures</div>
-                  </div>
-                </div>
-                <div className="text-3xl font-bold text-yellow-500 mb-2">
-                  {data.realtime.signaturesThisHour}
-                </div>
-                <div className="text-xs text-yellow-400">Fresh pledges</div>
-              </motion.div>
-
-              <motion.div
-                animate={{ scale: pulseActive ? [1, 1.05, 1] : 1 }}
-                className="bg-gradient-to-br from-teal-500/20 to-teal-600/20 rounded-xl p-6 border border-teal-500/30"
-              >
-                <div className="flex items-center space-x-3 mb-4">
-                  <Clock className="h-8 w-8 text-teal-500" />
-                  <div>
-                    <div className="font-semibold">Avg. Time</div>
-                    <div className="text-sm text-muted-foreground">To sign</div>
-                  </div>
-                </div>
-                <div className="text-3xl font-bold text-teal-500 mb-2">
-                  {data.realtime.averageTimeToSign}m
-                </div>
-                <div className="text-xs text-teal-400">Engagement time</div>
-              </motion.div>
-
-              <motion.div
-                animate={{ scale: pulseActive ? [1, 1.05, 1] : 1 }}
-                className="bg-gradient-to-br from-pink-500/20 to-pink-600/20 rounded-xl p-6 border border-pink-500/30"
-              >
-                <div className="flex items-center space-x-3 mb-4">
-                  <Star className="h-8 w-8 text-pink-500" />
-                  <div>
-                    <div className="font-semibold">Conversion</div>
-                    <div className="text-sm text-muted-foreground">Success rate</div>
-                  </div>
-                </div>
-                <div className="text-3xl font-bold text-pink-500 mb-2">
-                  {Math.round((1 - data.realtime.bounceRate) * 100)}%
-                </div>
-                <div className="text-xs text-pink-400">Visitor to signatory</div>
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+        <p className="text-center text-muted-foreground mt-4">
+          Email verification completion rate
+        </p>
+      </motion.div>
+    </div>
   )
+}
+
+function RealtimeTab({ data, isLoading }: { data: StatsDashboardData | null; isLoading: boolean }) {
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="glass-morphism rounded-2xl p-6 animate-pulse">
+            <div className="h-12 w-12 bg-muted rounded-full mb-4" />
+            <div className="h-6 bg-muted rounded mb-2" />
+            <div className="h-4 bg-muted rounded w-2/3" />
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  if (!data) return null
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <StatCard
+        title="Active Sessions"
+        value={data.realtime.activeSessions}
+        icon={Users}
+        color="green"
+        subtitle="Currently browsing"
+      />
+      <StatCard
+        title="Signatures This Hour"
+        value={data.realtime.signaturesThisHour}
+        icon={TrendingUp}
+        color="blue"
+        subtitle="Recent activity"
+      />
+      <StatCard
+        title="Average Time on Site"
+        value={`${data.realtime.averageTimeOnSite.toFixed(1)}m`}
+        icon={Clock}
+        color="purple"
+        subtitle="User engagement"
+      />
+      <StatCard
+        title="Conversion Rate"
+        value={`${(data.realtime.conversionRate * 100).toFixed(1)}%`}
+        icon={MousePointer}
+        color="orange"
+        subtitle="Visitor to signatory"
+      />
+      <StatCard
+        title="Bounce Rate"
+        value={`${(data.realtime.bounceRate * 100).toFixed(1)}%`}
+        icon={Eye}
+        color="red"
+        subtitle="Single page visits"
+      />
+      <StatCard
+        title="Page Views (24h)"
+        value={data.realtime.pageViews24h.toLocaleString()}
+        icon={Activity}
+        color="blue"
+        subtitle="Daily traffic"
+      />
+    </div>
+  )
+}
+
+// Helper function to get country flags
+function getCountryFlag(countryName: string): string {
+  const flagMap: Record<string, string> = {
+    'United States': '🇺🇸',
+    'Canada': '🇨🇦',
+    'United Kingdom': '🇬🇧',
+    'Germany': '🇩🇪',
+    'France': '🇫🇷',
+    'Netherlands': '🇳🇱',
+    'Australia': '🇦🇺',
+    'Japan': '🇯🇵',
+    'China': '🇨🇳',
+    'India': '🇮🇳',
+    'Brazil': '🇧🇷',
+    'Mexico': '🇲🇽',
+    'Spain': '🇪🇸',
+    'Italy': '🇮🇹',
+    'South Korea': '🇰🇷',
+    'Singapore': '🇸🇬',
+    'Sweden': '🇸🇪',
+    'Norway': '🇳🇴',
+    'Denmark': '🇩🇰',
+    'Finland': '🇫🇮'
+  }
+  
+  return flagMap[countryName] || '🌍'
 } 

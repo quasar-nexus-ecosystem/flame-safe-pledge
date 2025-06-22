@@ -536,13 +536,24 @@ export function AchievementSystem({ className = '', stats, showMini = false }: A
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
+                  whileHover={{ 
+                    scale: 1.05,
+                    rotateY: 5,
+                    rotateX: 5,
+                    boxShadow: achievement.unlocked 
+                      ? "0 20px 40px rgba(245, 145, 68, 0.3)" 
+                      : "0 10px 20px rgba(0, 0, 0, 0.1)"
+                  }}
                   className={`
-                    relative p-4 rounded-xl border-2 transition-all duration-300
+                    relative p-4 rounded-xl border-2 transition-all duration-300 cursor-pointer
                     ${achievement.unlocked 
-                      ? `${getRarityBorder(achievement.rarity)} bg-gradient-to-br ${getRarityColors(achievement.rarity)}/10 shadow-lg` 
-                      : 'border-gray-300 bg-gray-50 dark:bg-gray-800 dark:border-gray-600 opacity-60'
+                      ? `${getRarityBorder(achievement.rarity)} bg-gradient-to-br ${getRarityColors(achievement.rarity)}/10 shadow-lg hover:shadow-2xl` 
+                      : 'border-gray-300 bg-gray-50 dark:bg-gray-800 dark:border-gray-600 opacity-60 hover:opacity-80'
                     }
                   `}
+                  style={{
+                    transformStyle: 'preserve-3d'
+                  }}
                 >
                   <div className="flex items-center space-x-3 mb-3">
                     <div className={`
