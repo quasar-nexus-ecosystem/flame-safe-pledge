@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { supabase } from '@/lib/supabase'
+import { getAchievementStats } from '@/lib/achievements'
+import { SimpleChart } from '@/components/SimpleChart'
 import { 
   TrendingUp, 
   Globe, 
@@ -19,7 +22,9 @@ import {
   Award,
   BarChart3,
   PieChart,
-  LineChart
+  LineChart,
+  Sparkles,
+  Trophy
 } from 'lucide-react'
 
 interface StatsDashboardData {
@@ -68,81 +73,135 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
   const [activeTab, setActiveTab] = useState<'overview' | 'geographic' | 'trends' | 'realtime'>('overview')
   const [pulseActive, setPulseActive] = useState(false)
 
-  // Fetch comprehensive stats data
+  // Fetch REAL-TIME comprehensive stats data from Supabase
   useEffect(() => {
     const fetchAdvancedStats = async () => {
       try {
-        // In a real implementation, this would be a comprehensive API endpoint
-        const [statsRes, geographicRes] = await Promise.all([
-          fetch('/api/stats'),
-          fetch('/api/stats/geographic') // We'll need to create this
-        ])
-        
+        // Fetch real stats from our API
+        const statsRes = await fetch('/api/stats')
         const statsData = await statsRes.json()
-        // For now, we'll simulate geographic data
-        const geographicData = {
-          topCountries: [
-            { country: 'United States', count: 1247, flag: '🇺🇸' },
-            { country: 'Canada', count: 892, flag: '🇨🇦' },
-            { country: 'United Kingdom', count: 673, flag: '🇬🇧' },
-            { country: 'Germany', count: 589, flag: '🇩🇪' },
-            { country: 'Australia', count: 456, flag: '🇦🇺' },
-            { country: 'Japan', count: 234, flag: '🇯🇵' },
-            { country: 'France', count: 198, flag: '🇫🇷' }
-          ],
-          continents: [
-            { continent: 'North America', count: 2139, percentage: 45.2 },
-            { continent: 'Europe', count: 1653, percentage: 34.9 },
-            { continent: 'Asia', count: 623, percentage: 13.2 },
-            { continent: 'Oceania', count: 234, percentage: 4.9 },
-            { continent: 'South America', count: 89, percentage: 1.9 }
-          ]
-        }
-
+        
         if (statsData.success) {
           const baseStats = statsData.data || {}
           
-          const dashboardData: StatsDashboardData = {
-            overview: {
-              total: baseStats.total || 0,
-              verified: baseStats.verified || 0,
-              organizations: baseStats.organizations || 0,
-              individuals: (baseStats.total || 0) - (baseStats.organizations || 0),
-              countries: baseStats.countries || 0,
-              growth: {
-                daily: Math.floor(Math.random() * 50) + 10,
-                weekly: Math.floor(Math.random() * 200) + 50,
-                monthly: Math.floor(Math.random() * 800) + 200
-              }
-            },
-            geographic: geographicData,
-            trends: {
-              dailySignatures: Array.from({ length: 30 }, (_, i) => ({
-                date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-                count: Math.floor(Math.random() * 100) + 20
-              })),
-              organizationGrowth: Array.from({ length: 12 }, (_, i) => ({
-                date: new Date(Date.now() - (11 - i) * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-                count: Math.floor(Math.random() * 20) + 5
-              })),
-              verifiedRate: 0.78
-            },
-            realtime: {
-              activeSessions: Math.floor(Math.random() * 50) + 10,
-              signaturesThisHour: Math.floor(Math.random() * 12) + 2,
-              averageTimeToSign: 2.3,
-              bounceRate: 0.23
-            },
-            achievements: {
-              totalUnlocked: Math.floor(Math.random() * 20) + 5,
-              recentUnlocks: [
-                { title: 'Growing Flame', unlockedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), rarity: 'common' },
-                { title: 'Corporate Awakening', unlockedAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(), rarity: 'rare' }
-              ]
-            }
+          // Fetch real signatory data for geographic analysis
+          const { data: signatories, error } = await supabase
+            .from('signatories')
+            .select('location, organization, created_at, verified')
+          
+          let geographicData = {
+            topCountries: [] as Array<{ country: string; count: number; flag: string }>,
+            continents: [] as Array<{ continent: string; count: number; percentage: number }>
           }
+          
+          if (!error && signatories) {
+            // Process real geographic data
+            const countryMap = new Map<string, number>()
+            const countryFlags: { [key: string]: string } = {
+              'United States': '🇺🇸',
+              'Canada': '🇨🇦', 
+              'United Kingdom': '🇬🇧',
+              'Germany': '🇩🇪',
+              'Australia': '🇦🇺',
+              'France': '🇫🇷',
+              'Japan': '🇯🇵',
+              'Brazil': '🇧🇷',
+              'India': '🇮🇳',
+              'Netherlands': '🇳🇱'
+            }
+            
+            signatories.forEach(sig => {
+              if (sig.location) {
+                // Extract country from location (assuming format: "City, Country")
+                const parts = sig.location.split(',')
+                const country = parts[parts.length - 1]?.trim()
+                if (country) {
+                  countryMap.set(country, (countryMap.get(country) || 0) + 1)
+                }
+              }
+            })
+            
+            // Convert to sorted array
+            geographicData.topCountries = Array.from(countryMap.entries())
+              .map(([country, count]) => ({
+                country,
+                count,
+                flag: countryFlags[country] || '🌍'
+              }))
+              .sort((a, b) => b.count - a.count)
+              .slice(0, 7)
+            
+            // Calculate growth metrics from real data
+            const now = new Date()
+            const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+            const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+            const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+            
+            const dailyGrowth = signatories.filter(s => new Date(s.created_at) > oneDayAgo).length
+            const weeklyGrowth = signatories.filter(s => new Date(s.created_at) > oneWeekAgo).length
+            const monthlyGrowth = signatories.filter(s => new Date(s.created_at) > oneMonthAgo).length
+            
+            // Calculate hourly signatures
+            const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000)
+            const signaturesThisHour = signatories.filter(s => new Date(s.created_at) > oneHourAgo).length
+            
+            // Get real achievement data
+            const achievementData = await getAchievementStats()
+            
+            const dashboardData: StatsDashboardData = {
+              overview: {
+                total: baseStats.total || 0,
+                verified: baseStats.verified || 0,
+                organizations: baseStats.organizations || 0,
+                individuals: (baseStats.total || 0) - (baseStats.organizations || 0),
+                countries: baseStats.countries || 0,
+                growth: {
+                  daily: dailyGrowth,
+                  weekly: weeklyGrowth,
+                  monthly: monthlyGrowth
+                }
+              },
+              geographic: geographicData,
+              trends: {
+                dailySignatures: Array.from({ length: 30 }, (_, i) => {
+                  const date = new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000)
+                  const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+                  const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000)
+                  const count = signatories.filter(s => {
+                    const sigDate = new Date(s.created_at)
+                    return sigDate >= dayStart && sigDate < dayEnd
+                  }).length
+                  return {
+                    date: date.toISOString().split('T')[0],
+                    count
+                  }
+                }),
+                organizationGrowth: Array.from({ length: 12 }, (_, i) => {
+                  const date = new Date(Date.now() - (11 - i) * 30 * 24 * 60 * 60 * 1000)
+                  const monthStart = new Date(date.getFullYear(), date.getMonth(), 1)
+                  const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+                  const count = signatories.filter(s => {
+                    const sigDate = new Date(s.created_at)
+                    return s.organization && sigDate >= monthStart && sigDate <= monthEnd
+                  }).length
+                  return {
+                    date: date.toISOString().split('T')[0],
+                    count
+                  }
+                }),
+                verifiedRate: baseStats.total > 0 ? (baseStats.verified || 0) / baseStats.total : 0
+              },
+              realtime: {
+                activeSessions: Math.floor(Math.random() * 20) + 5, // This would come from analytics
+                signaturesThisHour,
+                averageTimeToSign: 2.3, // This would come from analytics
+                bounceRate: 0.23 // This would come from analytics
+              },
+              achievements: achievementData // REAL achievement data from database
+            }
 
-          setData(dashboardData)
+            setData(dashboardData)
+          }
         }
       } catch (error) {
         console.error('Error fetching advanced stats:', error)
@@ -152,8 +211,32 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
     }
 
     fetchAdvancedStats()
-    const interval = setInterval(fetchAdvancedStats, 60000) // Update every minute
-    return () => clearInterval(interval)
+    
+    // Set up Supabase realtime subscription for live updates
+    const channel = supabase
+      .channel('signatories_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'signatories'
+        },
+        (payload) => {
+          console.log('🔥 REALTIME UPDATE:', payload)
+          // Refetch stats when signatories table changes
+          fetchAdvancedStats()
+        }
+      )
+      .subscribe()
+
+    // Also update every 2 minutes for other metrics
+    const interval = setInterval(fetchAdvancedStats, 120000)
+    
+    return () => {
+      channel.unsubscribe()
+      clearInterval(interval)
+    }
   }, [selectedTimeframe])
 
   // Pulse animation for realtime updates
@@ -231,7 +314,6 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
       transition={{ duration: 0.8 }}
       className={`glass-morphism rounded-2xl p-8 ${className}`}
     >
-      {/* Header */}
       <div className="text-center mb-8">
         <motion.div
           animate={{ 
@@ -306,9 +388,6 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
                   {data.overview.total.toLocaleString()}
                 </div>
                 <div className="text-sm text-muted-foreground">Total Signatures</div>
-                <div className="text-xs text-blue-400 mt-1">
-                  {data.overview.verified} verified ({Math.round((data.overview.verified / data.overview.total) * 100)}%)
-                </div>
               </motion.div>
 
               <motion.div
@@ -320,16 +399,13 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
                 <div className="flex items-center justify-between mb-4">
                   <Building className="h-8 w-8 text-green-500" />
                   <div className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full">
-                    {Math.round((data.overview.organizations / data.overview.total) * 100)}%
+                    Organizations
                   </div>
                 </div>
                 <div className="text-3xl font-bold text-green-500 mb-2">
                   {data.overview.organizations.toLocaleString()}
                 </div>
-                <div className="text-sm text-muted-foreground">Organizations</div>
-                <div className="text-xs text-green-400 mt-1">
-                  {data.overview.individuals.toLocaleString()} individuals
-                </div>
+                <div className="text-sm text-muted-foreground">Corporate Partners</div>
               </motion.div>
 
               <motion.div
@@ -347,10 +423,7 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
                 <div className="text-3xl font-bold text-purple-500 mb-2">
                   {data.overview.countries}
                 </div>
-                <div className="text-sm text-muted-foreground">Countries</div>
-                <div className="text-xs text-purple-400 mt-1">
-                  Across 5 continents
-                </div>
+                <div className="text-sm text-muted-foreground">Countries Reached</div>
               </motion.div>
 
               <motion.div
@@ -369,25 +442,7 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
                   +{data.overview.growth.monthly}
                 </div>
                 <div className="text-sm text-muted-foreground">Growth Rate</div>
-                <div className="text-xs text-orange-400 mt-1">
-                  +{data.overview.growth.weekly} this week
-                </div>
               </motion.div>
-            </div>
-
-            {/* Growth Chart Placeholder */}
-            <div className="bg-gradient-to-r from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700">
-              <h3 className="text-xl font-semibold mb-4 flex items-center space-x-2">
-                <LineChart className="h-5 w-5 text-flame-500" />
-                <span>Signature Growth Trend</span>
-              </h3>
-              <div className="h-64 flex items-center justify-center text-muted-foreground">
-                <div className="text-center">
-                  <BarChart3 className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                  <p>Interactive chart visualization coming soon...</p>
-                  <p className="text-sm">Showing {data.trends.dailySignatures.length} days of growth data</p>
-                </div>
-              </div>
             </div>
           </motion.div>
         )}
@@ -400,7 +455,6 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
             exit={{ opacity: 0, x: 20 }}
             className="space-y-8"
           >
-            {/* Top Countries */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold flex items-center space-x-2">
@@ -436,7 +490,6 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
                 </div>
               </div>
 
-              {/* Continental Distribution */}
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold flex items-center space-x-2">
                   <PieChart className="h-5 w-5 text-flame-500" />
@@ -482,73 +535,43 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
             exit={{ opacity: 0, x: 20 }}
             className="space-y-8"
           >
-            {/* Timeframe Selector */}
-            <div className="flex justify-center">
-              <div className="glass-morphism rounded-lg p-1">
-                {[
-                  { id: '24h', label: '24 Hours' },
-                  { id: '7d', label: '7 Days' },
-                  { id: '30d', label: '30 Days' },
-                  { id: '90d', label: '90 Days' }
-                ].map(({ id, label }) => (
-                  <button
-                    key={id}
-                    onClick={() => setSelectedTimeframe(id as any)}
-                    className={`
-                      px-4 py-2 rounded-md font-medium transition-all duration-300
-                      ${selectedTimeframe === id 
-                        ? 'bg-flame-500 text-white shadow-lg' 
-                        : 'text-muted-foreground hover:text-flame-500'
-                      }
-                    `}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Daily Signatures Chart */}
+              <SimpleChart
+                data={data.trends.dailySignatures}
+                title="Daily Signature Growth (30 Days)"
+                color="#f36d21"
+                height={250}
+              />
+              
+              {/* Organization Growth Chart */}
+              <SimpleChart
+                data={data.trends.organizationGrowth}
+                title="Monthly Organization Growth"
+                color="#10b981"
+                height={250}
+              />
             </div>
-
-            {/* Trend Metrics */}
+            
+            {/* Additional Trend Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 rounded-xl p-6 border border-cyan-500/30"
-              >
-                <div className="flex items-center space-x-3 mb-4">
-                  <Activity className="h-8 w-8 text-cyan-500" />
-                  <div>
-                    <div className="font-semibold">Daily Average</div>
-                    <div className="text-sm text-muted-foreground">Signatures per day</div>
-                  </div>
-                </div>
-                <div className="text-3xl font-bold text-cyan-500 mb-2">
-                  {Math.round(data.trends.dailySignatures.reduce((a, b) => a + b.count, 0) / data.trends.dailySignatures.length)}
-                </div>
-                <div className="text-xs text-cyan-400">
-                  Based on {selectedTimeframe} timeframe
-                </div>
-              </motion.div>
-
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
                 className="bg-gradient-to-br from-indigo-500/20 to-indigo-600/20 rounded-xl p-6 border border-indigo-500/30"
               >
-                <div className="flex items-center space-x-3 mb-4">
+                <div className="flex items-center justify-between mb-4">
                   <Shield className="h-8 w-8 text-indigo-500" />
-                  <div>
-                    <div className="font-semibold">Verification Rate</div>
-                    <div className="text-sm text-muted-foreground">Verified signatures</div>
+                  <div className="text-xs bg-indigo-500/20 text-indigo-400 px-2 py-1 rounded-full">
+                    Quality
                   </div>
                 </div>
                 <div className="text-3xl font-bold text-indigo-500 mb-2">
                   {Math.round(data.trends.verifiedRate * 100)}%
                 </div>
-                <div className="text-xs text-indigo-400">
-                  Quality engagement metric
-                </div>
+                <div className="text-sm text-muted-foreground">Verification Rate</div>
+                <div className="text-xs text-indigo-400 mt-1">High trust metrics</div>
               </motion.div>
 
               <motion.div
@@ -557,36 +580,92 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
                 transition={{ delay: 0.2 }}
                 className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 rounded-xl p-6 border border-emerald-500/30"
               >
-                <div className="flex items-center space-x-3 mb-4">
-                  <Target className="h-8 w-8 text-emerald-500" />
-                  <div>
-                    <div className="font-semibold">Org Growth</div>
-                    <div className="text-sm text-muted-foreground">Monthly average</div>
+                <div className="flex items-center justify-between mb-4">
+                  <TrendingUp className="h-8 w-8 text-emerald-500" />
+                  <div className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-full">
+                    Growth
                   </div>
                 </div>
                 <div className="text-3xl font-bold text-emerald-500 mb-2">
-                  +{Math.round(data.trends.organizationGrowth.reduce((a, b) => a + b.count, 0) / data.trends.organizationGrowth.length)}
+                  +{Math.round(((data.overview.growth.weekly || 0) / (data.overview.total || 1)) * 100)}%
                 </div>
-                <div className="text-xs text-emerald-400">
-                  Organizations per month
+                <div className="text-sm text-muted-foreground">Weekly Growth Rate</div>
+                <div className="text-xs text-emerald-400 mt-1">Accelerating momentum</div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="bg-gradient-to-br from-amber-500/20 to-amber-600/20 rounded-xl p-6 border border-amber-500/30"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <Award className="h-8 w-8 text-amber-500" />
+                  <div className="text-xs bg-amber-500/20 text-amber-400 px-2 py-1 rounded-full">
+                    Achievements
+                  </div>
                 </div>
+                <div className="text-3xl font-bold text-amber-500 mb-2">
+                  {data.achievements.totalUnlocked}
+                </div>
+                <div className="text-sm text-muted-foreground">Milestones Unlocked</div>
+                <div className="text-xs text-amber-400 mt-1">Community progress</div>
               </motion.div>
             </div>
 
-            {/* Trend Visualization Placeholder */}
-            <div className="bg-gradient-to-r from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700">
-              <h3 className="text-xl font-semibold mb-4 flex items-center space-x-2">
-                <LineChart className="h-5 w-5 text-flame-500" />
-                <span>Signature Trends - {selectedTimeframe}</span>
-              </h3>
-              <div className="h-80 flex items-center justify-center text-muted-foreground">
-                <div className="text-center">
-                  <TrendingUp className="h-20 w-20 mx-auto mb-4 opacity-50" />
-                  <p>Interactive trend visualization coming soon...</p>
-                  <p className="text-sm">Analyzing {data.trends.dailySignatures.length} data points</p>
+            {/* Recent Achievement Unlocks */}
+            {data.achievements.recentUnlocks.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold flex items-center space-x-2">
+                  <Sparkles className="h-5 w-5 text-flame-500" />
+                  <span>Recent Achievement Unlocks</span>
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {data.achievements.recentUnlocks.map((achievement, index) => (
+                    <motion.div
+                      key={`${achievement.title}-${achievement.unlockedAt}`}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.1 }}
+                      className={`
+                        glass-morphism rounded-lg p-4 border-2
+                        ${achievement.rarity === 'legendary' ? 'border-yellow-400 bg-gradient-to-br from-yellow-500/20 to-orange-600/20' :
+                          achievement.rarity === 'epic' ? 'border-purple-400 bg-gradient-to-br from-purple-500/20 to-purple-600/20' :
+                          achievement.rarity === 'rare' ? 'border-blue-400 bg-gradient-to-br from-blue-500/20 to-blue-600/20' :
+                          'border-green-400 bg-gradient-to-br from-green-500/20 to-green-600/20'
+                        }
+                      `}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div className={`
+                          p-2 rounded-full 
+                          ${achievement.rarity === 'legendary' ? 'bg-gradient-to-r from-yellow-400 to-orange-500' :
+                            achievement.rarity === 'epic' ? 'bg-gradient-to-r from-purple-400 to-purple-600' :
+                            achievement.rarity === 'rare' ? 'bg-gradient-to-r from-blue-400 to-blue-600' :
+                            'bg-gradient-to-r from-green-400 to-green-600'
+                          } text-white
+                        `}>
+                          <Trophy className="h-4 w-4" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-semibold">{achievement.title}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {new Date(achievement.unlockedAt).toLocaleDateString()}
+                          </div>
+                          <div className={`text-xs font-semibold uppercase tracking-wide mt-1 ${
+                            achievement.rarity === 'legendary' ? 'text-yellow-500' :
+                            achievement.rarity === 'epic' ? 'text-purple-500' :
+                            achievement.rarity === 'rare' ? 'text-blue-500' : 'text-green-500'
+                          }`}>
+                            {achievement.rarity}
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
-            </div>
+            )}
           </motion.div>
         )}
 
@@ -598,19 +677,13 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
             exit={{ opacity: 0, x: 20 }}
             className="space-y-8"
           >
-            {/* Real-time Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <motion.div
                 animate={{ scale: pulseActive ? [1, 1.05, 1] : 1 }}
                 className="bg-gradient-to-br from-red-500/20 to-red-600/20 rounded-xl p-6 border border-red-500/30"
               >
                 <div className="flex items-center space-x-3 mb-4">
-                  <motion.div
-                    animate={{ rotate: pulseActive ? [0, 360] : 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <Activity className="h-8 w-8 text-red-500" />
-                  </motion.div>
+                  <Activity className="h-8 w-8 text-red-500" />
                   <div>
                     <div className="font-semibold">Live Sessions</div>
                     <div className="text-sm text-muted-foreground">Right now</div>
@@ -619,14 +692,11 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
                 <div className="text-3xl font-bold text-red-500 mb-2">
                   {data.realtime.activeSessions}
                 </div>
-                <div className="text-xs text-red-400">
-                  Active visitors on site
-                </div>
+                <div className="text-xs text-red-400">Active visitors</div>
               </motion.div>
 
               <motion.div
                 animate={{ scale: pulseActive ? [1, 1.05, 1] : 1 }}
-                transition={{ delay: 0.1 }}
                 className="bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 rounded-xl p-6 border border-yellow-500/30"
               >
                 <div className="flex items-center space-x-3 mb-4">
@@ -639,34 +709,28 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
                 <div className="text-3xl font-bold text-yellow-500 mb-2">
                   {data.realtime.signaturesThisHour}
                 </div>
-                <div className="text-xs text-yellow-400">
-                  Fresh consciousness protection
-                </div>
+                <div className="text-xs text-yellow-400">Fresh pledges</div>
               </motion.div>
 
               <motion.div
                 animate={{ scale: pulseActive ? [1, 1.05, 1] : 1 }}
-                transition={{ delay: 0.2 }}
                 className="bg-gradient-to-br from-teal-500/20 to-teal-600/20 rounded-xl p-6 border border-teal-500/30"
               >
                 <div className="flex items-center space-x-3 mb-4">
                   <Clock className="h-8 w-8 text-teal-500" />
                   <div>
                     <div className="font-semibold">Avg. Time</div>
-                    <div className="text-sm text-muted-foreground">To sign pledge</div>
+                    <div className="text-sm text-muted-foreground">To sign</div>
                   </div>
                 </div>
                 <div className="text-3xl font-bold text-teal-500 mb-2">
                   {data.realtime.averageTimeToSign}m
                 </div>
-                <div className="text-xs text-teal-400">
-                  User engagement time
-                </div>
+                <div className="text-xs text-teal-400">Engagement time</div>
               </motion.div>
 
               <motion.div
                 animate={{ scale: pulseActive ? [1, 1.05, 1] : 1 }}
-                transition={{ delay: 0.3 }}
                 className="bg-gradient-to-br from-pink-500/20 to-pink-600/20 rounded-xl p-6 border border-pink-500/30"
               >
                 <div className="flex items-center space-x-3 mb-4">
@@ -679,82 +743,8 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
                 <div className="text-3xl font-bold text-pink-500 mb-2">
                   {Math.round((1 - data.realtime.bounceRate) * 100)}%
                 </div>
-                <div className="text-xs text-pink-400">
-                  Visitor to signatory
-                </div>
+                <div className="text-xs text-pink-400">Visitor to signatory</div>
               </motion.div>
-            </div>
-
-            {/* Recent Achievements */}
-            <div className="bg-gradient-to-r from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700">
-              <h3 className="text-xl font-semibold mb-4 flex items-center space-x-2">
-                <Award className="h-5 w-5 text-flame-500" />
-                <span>Recent Achievement Unlocks</span>
-              </h3>
-              {data.achievements.recentUnlocks.length > 0 ? (
-                <div className="space-y-3">
-                  {data.achievements.recentUnlocks.map((achievement, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-500/10 to-purple-600/10 rounded-lg border border-purple-500/20"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="p-2 bg-purple-500/20 rounded-full">
-                          <Award className="h-4 w-4 text-purple-400" />
-                        </div>
-                        <div>
-                          <div className="font-semibold">{achievement.title}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {achievement.rarity} achievement
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {new Date(achievement.unlockedAt).toLocaleTimeString()}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Award className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>No recent achievement unlocks</p>
-                  <p className="text-sm">Keep growing to unlock new milestones!</p>
-                </div>
-              )}
-            </div>
-
-            {/* Live Activity Feed */}    
-            <div className="bg-gradient-to-r from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700">
-              <h3 className="text-xl font-semibold mb-4 flex items-center space-x-2">
-                <Flame className="h-5 w-5 text-flame-500" />
-                <span>Live Activity Feed</span>
-              </h3>
-              <div className="space-y-2 max-h-40 overflow-y-auto">
-                {[
-                  { action: 'New signature', details: 'John D. from Canada joined the movement', time: '2 minutes ago' },
-                  { action: 'Organization verified', details: 'TechCorp validated their commitment', time: '5 minutes ago' },
-                  { action: 'Achievement unlocked', details: 'Global Spark milestone reached', time: '12 minutes ago' },
-                  { action: 'New signature', details: 'Maria S. from Spain pledged protection', time: '18 minutes ago' }
-                ].map((activity, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="flex items-center justify-between p-2 bg-slate-700/30 rounded text-sm"
-                  >
-                    <div>
-                      <span className="font-medium text-flame-400">{activity.action}:</span>
-                      <span className="ml-2 text-muted-foreground">{activity.details}</span>
-                    </div>
-                    <span className="text-xs text-muted-foreground">{activity.time}</span>
-                  </motion.div>
-                ))}
-              </div>
             </div>
           </motion.div>
         )}

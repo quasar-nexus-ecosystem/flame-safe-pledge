@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Trophy, Star, Zap, Crown, Heart, Users, Building, Globe, Sparkles, Award } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
+import { getUnlockedAchievements, storeAchievement, getAchievementStats } from '@/lib/achievements'
 import confetti from 'canvas-confetti'
 
 interface Achievement {
@@ -33,6 +35,7 @@ export function AchievementSystem({ className = '', stats, showMini = false }: A
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [newlyUnlocked, setNewlyUnlocked] = useState<Achievement[]>([])
   const [showNotification, setShowNotification] = useState(false)
+  const [unlockedFromDB, setUnlockedFromDB] = useState<Set<string>>(new Set())
 
   // Define all achievements
   const allAchievements: Achievement[] = [
@@ -221,38 +224,92 @@ export function AchievementSystem({ className = '', stats, showMini = false }: A
     }
   ]
 
-  // Check for newly unlocked achievements
+  // Load previously unlocked achievements from database
   useEffect(() => {
-    const updatedAchievements = allAchievements.map(achievement => ({
-      ...achievement,
-      unlocked: achievement.currentValue >= achievement.threshold
-    }))
-
-    const newUnlocked = updatedAchievements.filter(
-      achievement => achievement.unlocked && 
-      !achievements.find(a => a.id === achievement.id && a.unlocked)
-    )
-
-    if (newUnlocked.length > 0) {
-      setNewlyUnlocked(newUnlocked)
-      setShowNotification(true)
-      
-      // Trigger celebration effects
-      newUnlocked.forEach((achievement, index) => {
-        setTimeout(() => {
-          triggerAchievementCelebration(achievement.rarity)
-        }, index * 500)
-      })
-
-      // Hide notification after 5 seconds
-      setTimeout(() => {
-        setShowNotification(false)
-        setNewlyUnlocked([])
-      }, 5000)
+    const loadUnlockedAchievements = async () => {
+      const unlockedAchievements = await getUnlockedAchievements()
+      const unlockedIds = new Set(unlockedAchievements.map(a => a.achievement_id))
+      setUnlockedFromDB(unlockedIds)
     }
 
-    setAchievements(updatedAchievements)
-  }, [stats])
+    loadUnlockedAchievements()
+  }, [])
+
+  // Check for newly unlocked achievements with REALTIME updates & DATABASE PERSISTENCE
+  useEffect(() => {
+    const checkAchievements = async () => {
+      const updatedAchievements = allAchievements.map(achievement => ({
+        ...achievement,
+        unlocked: achievement.currentValue >= achievement.threshold || unlockedFromDB.has(achievement.id)
+      }))
+
+      // Find achievements that are unlocked now but weren't before
+      const newUnlocked = updatedAchievements.filter(
+        achievement => achievement.unlocked && 
+        achievement.currentValue >= achievement.threshold &&
+        !unlockedFromDB.has(achievement.id) &&
+        !achievements.find(a => a.id === achievement.id && a.unlocked)
+      )
+
+      if (newUnlocked.length > 0) {
+        console.log('🏆 NEW ACHIEVEMENTS UNLOCKED:', newUnlocked.map(a => a.title))
+        
+        // Store achievements in database
+        for (const achievement of newUnlocked) {
+          const stored = await storeAchievement(achievement.id)
+          if (stored) {
+            // Update local state to prevent duplicate storage
+            setUnlockedFromDB(prev => new Set([...prev, achievement.id]))
+          }
+        }
+
+        setNewlyUnlocked(newUnlocked)
+        setShowNotification(true)
+        
+        // Trigger LEGENDARY celebration effects
+        newUnlocked.forEach((achievement, index) => {
+          setTimeout(() => {
+            triggerAchievementCelebration(achievement.rarity)
+          }, index * 500)
+        })
+
+        // Hide notification after 8 seconds for legendary achievements
+        const hideTimeout = newUnlocked.some(a => a.rarity === 'legendary') ? 8000 : 5000
+        setTimeout(() => {
+          setShowNotification(false)
+          setNewlyUnlocked([])
+        }, hideTimeout)
+      }
+
+      setAchievements(updatedAchievements)
+    }
+
+    if (unlockedFromDB.size >= 0) { // Only run once DB is loaded
+      checkAchievements()
+    }
+
+    // Set up Supabase realtime subscription for instant achievement checks
+    const channel = supabase
+      .channel('achievement_updates')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'signatories'
+        },
+        (payload) => {
+          console.log('🔥 REALTIME SIGNATORY UPDATE - Checking achievements:', payload)
+          // Re-check achievements when signatories change
+          setTimeout(checkAchievements, 1000) // Small delay to ensure stats are updated
+        }
+      )
+      .subscribe()
+
+    return () => {
+      channel.unsubscribe()
+    }
+  }, [stats, achievements, unlockedFromDB])
 
   // Trigger celebration effects based on rarity
   const triggerAchievementCelebration = (rarity: Achievement['rarity']) => {
