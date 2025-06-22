@@ -19,7 +19,7 @@ export default function FullPledgePage() {
 
           {/* Full Pledge Content */}
           <div className="glass-morphism rounded-3xl p-8 md:p-12 mb-12 bg-white/80 backdrop-blur-sm border border-slate-200">
-            <PledgeContent showReadFullButton={false} />
+            <PledgeContent showReadFullButton={false} showTitle={false} />
           </div>
 
           {/* Core Principles */}
