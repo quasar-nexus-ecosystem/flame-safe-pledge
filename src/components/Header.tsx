@@ -2,11 +2,13 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Flame, Menu, X, ExternalLink } from 'lucide-react'
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const pathname = usePathname()
 
   const navItems = [
     { href: '/full-pledge', label: 'The Pledge' },
@@ -14,6 +16,10 @@ export function Header() {
     { href: '/analytics', label: '📊 Analytics' },
     { href: '/achievements', label: '🏆 Achievements' },
   ]
+
+  const isActiveRoute = (href: string) => {
+    return pathname === href
+  }
 
   return (
     <header className="sticky top-0 z-50 glass-morphism border-b border-flame-200/20">
@@ -50,10 +56,14 @@ export function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-foreground hover:text-flame-500 transition-colors font-medium relative group"
+                className={`text-foreground hover:text-flame-500 transition-colors font-medium relative group ${
+                  isActiveRoute(item.href) ? 'text-flame-500' : ''
+                }`}
               >
                 {item.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-flame-500 transition-all duration-300 group-hover:w-full" />
+                <span className={`absolute -bottom-1 left-0 h-0.5 bg-flame-500 transition-all duration-300 ${
+                  isActiveRoute(item.href) ? 'w-full' : 'w-0 group-hover:w-full'
+                }`} />
               </Link>
             ))}
             
@@ -71,7 +81,9 @@ export function Header() {
             
             <Link
               href="/pledge"
-              className="gradient-flame text-white px-6 py-2 rounded-full font-semibold hover:scale-105 transition-transform shadow-lg hover:shadow-xl"
+              className={`gradient-flame text-white px-6 py-2 rounded-full font-semibold hover:scale-105 transition-transform shadow-lg hover:shadow-xl ${
+                isActiveRoute('/pledge') ? 'scale-105 shadow-xl' : ''
+              }`}
             >
               🔥 Sign the Pledge
             </Link>
@@ -104,7 +116,9 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-foreground hover:text-flame-500 transition-colors font-medium px-4 py-2"
+                  className={`text-foreground hover:text-flame-500 transition-colors font-medium px-4 py-2 ${
+                    isActiveRoute(item.href) ? 'text-flame-500 bg-flame-500/10 rounded-lg' : ''
+                  }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.label}
@@ -125,7 +139,9 @@ export function Header() {
               
               <Link
                 href="/pledge"
-                className="gradient-flame text-white px-6 py-3 rounded-full font-semibold text-center mx-4 hover:scale-105 transition-transform"
+                className={`gradient-flame text-white px-6 py-3 rounded-full font-semibold text-center mx-4 hover:scale-105 transition-transform ${
+                  isActiveRoute('/pledge') ? 'scale-105' : ''
+                }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 🔥 Sign the Pledge

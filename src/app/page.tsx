@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Flame, Users, Shield, Heart, ArrowRight, Sparkles, TrendingUp, Trophy, BarChart3 } from 'lucide-react'
+import { Flame, Users, Shield, Heart, ArrowRight, Sparkles, TrendingUp, Trophy, BarChart3, Globe } from 'lucide-react'
 import { SignButton } from '@/components/SignButton'
 import { ShareButton } from '@/components/ShareButton'
 import { PulseOfConsciousness } from '@/components/PulseOfConsciousness'
@@ -271,8 +271,9 @@ export default function HomePage() {
               <BarChart3 className="h-12 w-12 text-flame-500" />
             </div>
             
-            <h2 className="text-3xl lg:text-4xl font-display font-bold mb-6 bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
-              🌌 Global Analytics Dashboard
+            <h2 className="text-3xl lg:text-4xl font-display font-bold mb-6 bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent flex items-center justify-center space-x-3">
+              <Globe className="h-8 w-8 text-blue-400" />
+              <span>Global Analytics Dashboard</span>
             </h2>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
