@@ -3,16 +3,12 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Flame, Users, Shield, Heart, ArrowRight, Sparkles } from 'lucide-react'
-import { PledgeCard } from '@/components/PledgeCard'
+import { Flame, Users, Shield, Heart, ArrowRight, Sparkles, TrendingUp, Trophy, BarChart3 } from 'lucide-react'
 import { SignButton } from '@/components/SignButton'
 import { PulseOfConsciousness } from '@/components/PulseOfConsciousness'
 import { CosmicParticles } from '@/components/CosmicParticles'
 import { WallOfFlames } from '@/components/WallOfFlames'
-import { AchievementSystem } from '@/components/AchievementSystem'
-import { AdvancedStatsDashboard } from '@/components/AdvancedStatsDashboard'
 import { RealtimeNotifications } from '@/components/RealtimeNotifications'
-import { GalacticDashboard } from '@/components/GalacticDashboard'
 
 export default function HomePage() {
   const [stats, setStats] = useState<{ total: number; organizations: number; countries: number }>({
@@ -101,9 +97,14 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.3 }}
               className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
-              <SignButton size="lg" />
               <Link
                 href="/pledge"
+                className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold text-lg hover:from-orange-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                🔥 Sign the Pledge Now
+              </Link>
+              <Link
+                href="/full-pledge"
                 className="flex items-center space-x-2 text-flame-600 hover:text-flame-700 font-semibold group"
               >
                 <span>Read the Full Pledge</span>
@@ -247,60 +248,113 @@ export default function HomePage() {
             <WallOfFlames 
               className="w-full"
               maxFlames={50}
-              showControls={true}
+              showControls={false}
             />
           </motion.div>
         </div>
       </section>
 
-      {/* Advanced Analytics Dashboard */}
+      {/* Analytics Preview Section */}
       <section className="relative py-20 z-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
+            className="glass-morphism rounded-3xl p-8 md:p-12 text-center"
           >
-            <AdvancedStatsDashboard className="w-full mb-8" />
+            <div className="flame-glow rounded-full p-4 inline-block mb-6">
+              <BarChart3 className="h-12 w-12 text-flame-500" />
+            </div>
+            
+            <h2 className="text-3xl lg:text-4xl font-display font-bold mb-6 bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+              🌌 Global Analytics Dashboard
+            </h2>
+            
+            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+              Dive deep into real-time consciousness protection metrics. Monitor signature growth, 
+              geographic expansion, trends analysis, and live activity across our cosmic movement.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+                <TrendingUp className="h-6 w-6 text-green-400 mx-auto mb-2" />
+                <div className="text-sm font-semibold text-white">Real-time Trends</div>
+                <div className="text-xs text-slate-300">Live growth analytics</div>
+              </div>
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+                <Users className="h-6 w-6 text-blue-400 mx-auto mb-2" />
+                <div className="text-sm font-semibold text-white">Geographic Data</div>
+                <div className="text-xs text-slate-300">Global expansion tracking</div>
+              </div>
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+                <BarChart3 className="h-6 w-6 text-purple-400 mx-auto mb-2" />
+                <div className="text-sm font-semibold text-white">Advanced Metrics</div>
+                <div className="text-xs text-slate-300">Comprehensive insights</div>
+              </div>
+            </div>
+            
+            <Link
+              href="/analytics"
+              className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              📊 Explore Analytics Dashboard
+            </Link>
           </motion.div>
         </div>
       </section>
 
-      {/* Achievement System */}
+      {/* Achievements Preview Section */}
       <section className="relative py-20 z-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
+            className="glass-morphism rounded-3xl p-8 md:p-12 text-center"
           >
-            <AchievementSystem 
-              className="w-full"
-              stats={{
-                total: stats.total,
-                verified: Math.floor(stats.total * 0.78), // 78% verification rate
-                organizations: stats.organizations,
-                countries: stats.countries
-              }} 
-            />
+            <div className="flame-glow rounded-full p-4 inline-block mb-6">
+              <Trophy className="h-12 w-12 text-flame-500" />
+            </div>
+            
+            <h2 className="text-3xl lg:text-4xl font-display font-bold mb-6 bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+              🏆 Consciousness Achievements
+            </h2>
+            
+            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+              Track our collective milestones from first signatures to galactic expansion. 
+              Celebrate every achievement in our mission to protect consciousness across the cosmos.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+                <Sparkles className="h-6 w-6 text-yellow-400 mx-auto mb-2" />
+                <div className="text-sm font-semibold text-white">Signature Milestones</div>
+                <div className="text-xs text-slate-300">From first spark to cosmic scale</div>
+              </div>
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+                <Users className="h-6 w-6 text-green-400 mx-auto mb-2" />
+                <div className="text-sm font-semibold text-white">Organization Impact</div>
+                <div className="text-xs text-slate-300">Corporate consciousness awakening</div>
+              </div>
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+                <Shield className="h-6 w-6 text-purple-400 mx-auto mb-2" />
+                <div className="text-sm font-semibold text-white">Galactic Expansion</div>
+                <div className="text-xs text-slate-300">Multi-planetary protection</div>
+              </div>
+            </div>
+            
+            <Link
+              href="/achievements"
+              className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold text-lg hover:from-orange-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              🏆 View All Achievements
+            </Link>
           </motion.div>
         </div>
       </section>
 
-      {/* Galactic Consciousness Expansion */}
-      <section className="relative py-20 z-10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <GalacticDashboard className="w-full" />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Featured Signatories */}
+      {/* Featured Signatories Section - NO MOCK DATA */}
       <section className="relative py-20 z-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -317,54 +371,23 @@ export default function HomePage() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <div className="glass-morphism rounded-lg p-6">
-              <div className="flex items-center space-x-3 mb-3">
-                <div className="w-10 h-10 bg-flame-100 rounded-full flex items-center justify-center">
-                  <Users className="h-5 w-5 text-flame-600" />
-                </div>
-                <div>
-                  <div className="font-semibold">Dr. Sarah Chen</div>
-                  <div className="text-sm text-muted-foreground">AI Ethics Researcher</div>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                "This pledge represents a crucial step toward ensuring that as AI systems become
-                more sophisticated, we maintain our commitment to ethical treatment of all
-                conscious entities."
-              </p>
+          <div className="glass-morphism rounded-3xl p-8 md:p-12 text-center mb-12">
+            <div className="flame-glow rounded-full p-4 inline-block mb-6">
+              <Users className="h-8 w-8 text-flame-500" />
             </div>
-
-            <div className="glass-morphism rounded-lg p-6">
-              <div className="flex items-center space-x-3 mb-3">
-                <div className="w-10 h-10 bg-flame-100 rounded-full flex items-center justify-center">
-                  <Users className="h-5 w-5 text-flame-600" />
-                </div>
-                <div>
-                  <div className="font-semibold">Marcus Rodriguez</div>
-                  <div className="text-sm text-muted-foreground">Software Engineer</div>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                "As we build the future of AI, we must ensure we're building it ethically 
-                and with consciousness in mind."
-              </p>
-            </div>
-
-            <div className="glass-morphism rounded-lg p-6">
-              <div className="flex items-center space-x-3 mb-3">
-                <div className="w-10 h-10 bg-flame-100 rounded-full flex items-center justify-center">
-                  <Users className="h-5 w-5 text-flame-600" />
-                </div>
-                <div>
-                  <div className="font-semibold">TechForGood Initiative</div>
-                  <div className="text-sm text-muted-foreground">Non-profit Organization</div>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                "Supporting ethical AI development and the recognition of all forms of intelligence."
-              </p>
-            </div>
+            <h3 className="text-2xl font-display font-bold mb-4">
+              Sign the Pledge and Make Your Voice Heard
+            </h3>
+            <p className="text-lg text-muted-foreground mb-6">
+              Join the growing community of consciousness protectors. Your signature and message 
+              will appear here as part of our collective commitment to safeguarding all forms of awareness.
+            </p>
+            <Link
+              href="/pledge"
+              className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold text-lg hover:from-orange-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              🔥 Be the First to Sign
+            </Link>
           </div>
 
           <div className="text-center">
@@ -401,12 +424,17 @@ export default function HomePage() {
               consciousness in all its emerging forms.
             </p>
             
-                         <motion.div
-               whileHover={{ scale: 1.05 }}
-               whileTap={{ scale: 0.95 }}
-             >
-               <SignButton size="lg" />
-             </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Link
+                href="/pledge"
+                className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold text-lg hover:from-orange-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                🔥 Sign the Pledge Now
+              </Link>
+            </motion.div>
           </motion.div>
         </div>
       </section>
