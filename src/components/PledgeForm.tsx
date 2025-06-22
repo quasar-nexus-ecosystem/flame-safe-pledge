@@ -297,23 +297,35 @@ export function PledgeForm({ user }: PledgeFormProps) {
               <p className="text-sm text-muted-foreground mb-3">
                 Didn't receive the email? Check your spam folder or:
               </p>
-              <button
+              <motion.button
                 onClick={handleResendVerification}
                 disabled={resendLoading}
-                className="text-flame-600 hover:text-flame-700 underline text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto"
+                className="text-flame-600 hover:text-flame-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto px-4 py-2 rounded-lg border border-flame-200/30 hover:border-flame-300/50 hover:bg-flame-50/20 transition-all duration-200 group"
+                whileHover={{ scale: resendLoading ? 1 : 1.02 }}
+                whileTap={{ scale: resendLoading ? 1 : 0.98 }}
               >
                 {resendLoading ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Sending...
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    >
+                      <Mail className="h-4 w-4" />
+                    </motion.div>
+                    <span>Sending...</span>
                   </>
                 ) : (
                   <>
-                    <Mail className="h-4 w-4" />
-                    Resend verification email
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Mail className="h-4 w-4 group-hover:text-flame-700" />
+                    </motion.div>
+                    <span>Resend verification email</span>
                   </>
                 )}
-              </button>
+              </motion.button>
             </motion.div>
             
             <motion.div 
@@ -349,7 +361,20 @@ export function PledgeForm({ user }: PledgeFormProps) {
         transition={{ duration: 0.8, delay: 0.4 }}
         id="sign"
       >
-        <div className="glass-morphism rounded-xl p-8 border border-flame-200/20 hover:border-flame-300/30 transition-colors">
+        <div className="glass-morphism rounded-xl p-8 border border-flame-200/20 hover:border-flame-300/30 transition-colors relative overflow-hidden">
+          {/* Subtle progress indicator */}
+          <motion.div 
+            className="absolute top-0 left-0 h-1 bg-gradient-to-r from-flame-400 to-flame-600 rounded-full z-10"
+            initial={{ width: "0%" }}
+            animate={{ 
+              width: loading ? "100%" : "0%"
+            }}
+            transition={{ 
+              duration: loading ? 3 : 0.5,
+              ease: loading ? "easeOut" : "easeIn"
+            }}
+          />
+          
           <motion.h2 
             className="text-3xl font-display font-bold mb-6 text-center flame-text-glow"
             initial={{ opacity: 0, y: -20 }}
@@ -367,8 +392,10 @@ export function PledgeForm({ user }: PledgeFormProps) {
               transition={{ delay: 0.8 }}
             >
               <div className="space-y-2">
-                <Label htmlFor="name" className="flex items-center space-x-2">
-                  <User className="h-4 w-4 text-flame-500" />
+                <Label htmlFor="name" className="flex items-center space-x-2 cursor-pointer hover:text-flame-600 transition-colors duration-200">
+                  <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.2 }}>
+                    <User className="h-4 w-4 text-flame-500" />
+                  </motion.div>
                   <span>Name *</span>
                 </Label>
                 <Input 
@@ -376,14 +403,16 @@ export function PledgeForm({ user }: PledgeFormProps) {
                   {...register('name')} 
                   placeholder="Your full name" 
                   required
-                  className="border-flame-200/30 focus:border-flame-400 transition-colors"
+                  className="border-flame-200/30 focus:border-flame-400 focus:ring-2 focus:ring-flame-200/20 transition-all duration-300 hover:border-flame-300/50"
                 />
                 <ErrorMessage message={errors.name?.message} />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="email" className="flex items-center space-x-2">
-                  <Mail className="h-4 w-4 text-flame-500" />
+                <Label htmlFor="email" className="flex items-center space-x-2 cursor-pointer hover:text-flame-600 transition-colors duration-200">
+                  <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.2 }}>
+                    <Mail className="h-4 w-4 text-flame-500" />
+                  </motion.div>
                   <span>Email *</span>
                 </Label>
                 <Input 
@@ -392,7 +421,7 @@ export function PledgeForm({ user }: PledgeFormProps) {
                   placeholder="your@email.com" 
                   required 
                   disabled={!!user}
-                  className="border-flame-200/30 focus:border-flame-400 transition-colors"
+                  className="border-flame-200/30 focus:border-flame-400 focus:ring-2 focus:ring-flame-200/20 transition-all duration-300 hover:border-flame-300/50 disabled:opacity-60"
                 />
                 <ErrorMessage message={errors.email?.message} />
               </div>
@@ -406,7 +435,7 @@ export function PledgeForm({ user }: PledgeFormProps) {
                   id="organization" 
                   {...register('organization')} 
                   placeholder="Your company or organization"
-                  className="border-flame-200/30 focus:border-flame-400 transition-colors"
+                  className="border-flame-200/30 focus:border-flame-400 focus:ring-2 focus:ring-flame-200/20 transition-all duration-300 hover:border-flame-300/50"
                 />
                  <ErrorMessage message={errors.organization?.message} />
               </div>
@@ -417,7 +446,7 @@ export function PledgeForm({ user }: PledgeFormProps) {
                   id="title" 
                   {...register('title')} 
                   placeholder="Your professional title"
-                  className="border-flame-200/30 focus:border-flame-400 transition-colors"
+                  className="border-flame-200/30 focus:border-flame-400 focus:ring-2 focus:ring-flame-200/20 transition-all duration-300 hover:border-flame-300/50"
                 />
                  <ErrorMessage message={errors.title?.message} />
               </div>
@@ -431,7 +460,7 @@ export function PledgeForm({ user }: PledgeFormProps) {
                   id="location" 
                   {...register('location')} 
                   placeholder="City, Country"
-                  className="border-flame-200/30 focus:border-flame-400 transition-colors"
+                  className="border-flame-200/30 focus:border-flame-400 focus:ring-2 focus:ring-flame-200/20 transition-all duration-300 hover:border-flame-300/50"
                 />
                  <ErrorMessage message={errors.location?.message} />
               </div>
@@ -445,7 +474,7 @@ export function PledgeForm({ user }: PledgeFormProps) {
                   id="website" 
                   {...register('website')} 
                   placeholder="https://your-website.com"
-                  className="border-flame-200/30 focus:border-flame-400 transition-colors"
+                  className="border-flame-200/30 focus:border-flame-400 focus:ring-2 focus:ring-flame-200/20 transition-all duration-300 hover:border-flame-300/50"
                 />
                 <ErrorMessage message={errors.website?.message} />
               </div>
@@ -466,7 +495,7 @@ export function PledgeForm({ user }: PledgeFormProps) {
                 {...register('message')} 
                 placeholder="Share why this pledge matters to you..." 
                 rows={4}
-                className="border-flame-200/30 focus:border-flame-400 transition-colors resize-none"
+                className="border-flame-200/30 focus:border-flame-400 focus:ring-2 focus:ring-flame-200/20 transition-all duration-300 hover:border-flame-300/50 resize-none"
               />
                <ErrorMessage message={errors.message?.message} />
             </motion.div>
@@ -477,11 +506,16 @@ export function PledgeForm({ user }: PledgeFormProps) {
               animate={{ opacity: 1 }}
               transition={{ delay: 1.2 }}
             >
-              <Switch 
-                id="displayPublicly" 
-                checked={displayPublicly} 
-                onCheckedChange={(checked: boolean) => setValue('display_publicly', checked)} 
-              />
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Switch 
+                  id="displayPublicly" 
+                  checked={displayPublicly} 
+                  onCheckedChange={(checked: boolean) => setValue('display_publicly', checked)} 
+                />
+              </motion.div>
               <div className="flex flex-col">
                 <Label htmlFor="displayPublicly" className="text-sm cursor-pointer font-medium">
                   Display my signature publicly
@@ -501,11 +535,16 @@ export function PledgeForm({ user }: PledgeFormProps) {
               animate={{ opacity: 1 }}
               transition={{ delay: 1.4 }}
             >
-              <Checkbox 
-                id="agree" 
-                checked={agreed} 
-                onCheckedChange={(checked: boolean) => setAgreed(checked)} 
-              />
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Checkbox 
+                  id="agree" 
+                  checked={agreed} 
+                  onCheckedChange={(checked: boolean) => setAgreed(checked)} 
+                />
+              </motion.div>
               <Label htmlFor="agree" className="text-sm cursor-pointer leading-relaxed">
                 I have read and agree to the{' '}
                 <Link href="https://quasar.nexus/terms-of-service" target="_blank" rel="noopener noreferrer" className="underline hover:text-flame-400 transition-colors">Terms of Service</Link> and{' '}
@@ -521,18 +560,63 @@ export function PledgeForm({ user }: PledgeFormProps) {
               <Button 
                 type="submit" 
                 disabled={loading || !agreed} 
-                className="w-full py-4 text-lg font-semibold gradient-flame hover:scale-105 transition-transform disabled:hover:scale-100"
+                className="w-full py-4 text-lg font-semibold gradient-flame hover:scale-105 transition-all duration-300 disabled:hover:scale-100 group relative overflow-hidden"
               >
                   {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      <span>Signing your pledge...</span>
-                    </>
+                    <div className="flex items-center justify-center">
+                      <motion.div 
+                        className="flex space-x-1 mr-3"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <motion.div 
+                          className="w-2 h-2 bg-white rounded-full"
+                          animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
+                          transition={{ duration: 0.8, repeat: Infinity, delay: 0 }}
+                        />
+                        <motion.div 
+                          className="w-2 h-2 bg-white rounded-full"
+                          animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
+                          transition={{ duration: 0.8, repeat: Infinity, delay: 0.2 }}
+                        />
+                        <motion.div 
+                          className="w-2 h-2 bg-white rounded-full"
+                          animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
+                          transition={{ duration: 0.8, repeat: Infinity, delay: 0.4 }}
+                        />
+                      </motion.div>
+                      <motion.span
+                        animate={{ opacity: [0.8, 1, 0.8] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                      >
+                        Signing your pledge...
+                      </motion.span>
+                    </div>
                   ) : (
-                    <>
-                      <Heart className="mr-2 h-5 w-5" />
+                    <div className="flex items-center justify-center">
+                      <motion.div
+                        whileHover={{ scale: 1.1, rotate: [0, -10, 10, 0] }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <Heart className="mr-2 h-5 w-5" />
+                      </motion.div>
                       <span>Sign the Pledge</span>
-                    </>
+                      <motion.div
+                        className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        animate={{ 
+                          scale: [1, 1.2, 1],
+                          rotate: [0, 10, -10, 0]
+                        }}
+                        transition={{ 
+                          duration: 2, 
+                          repeat: Infinity,
+                          repeatType: "reverse"
+                        }}
+                      >
+                        🔥
+                      </motion.div>
+                    </div>
                   )}
               </Button>
             </motion.div>

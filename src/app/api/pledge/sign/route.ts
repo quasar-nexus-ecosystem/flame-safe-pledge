@@ -42,27 +42,51 @@ export async function POST(request: Request) {
 
     const verification_token = crypto.randomUUID()
 
-    const payload = {
-      ...rest,
-      name,
-      email,
-      display_publicly,
-      verified: false, // email not yet confirmed
-      created_at: new Date().toISOString(),
-      verification_token,
+    if (existing && !existing.verified) {
+      // Update existing unverified record
+      const { error: updateError } = await supabase
+        .from('signatories')
+        .update({
+          ...rest,
+          name,
+          display_publicly,
+          verification_token,
+        })
+        .eq('id', existing.id)
+
+      if (updateError) {
+        console.error('Supabase update error:', updateError)
+        return NextResponse.json(
+          { error: 'Database error', message: 'Could not update signature.' },
+          { status: 500 }
+        )
+      }
+    } else {
+      // Create new record
+      const payload = {
+        ...rest,
+        name,
+        email,
+        display_publicly,
+        verified: false, // email not yet confirmed
+        created_at: new Date().toISOString(),
+        verification_token,
+      }
+
+      const { error: insertError } = await supabase
+        .from('signatories')
+        .insert(payload)
+
+      if (insertError) {
+        console.error('Supabase insert error:', insertError)
+        return NextResponse.json(
+          { error: 'Database error', message: 'Could not save signature.' },
+          { status: 500 }
+        )
+      }
     }
 
-    const { error: insertError } = await supabase
-      .from('signatories')
-      .upsert(payload, { onConflict: 'email' })
 
-    if (insertError) {
-      console.error('Supabase insert error:', insertError)
-      return NextResponse.json(
-        { error: 'Database error', message: 'Could not save signature.' },
-        { status: 500 }
-      )
-    }
 
     // 📊 TRACK PLEDGE SIGNING EVENT WITH POSTHOG
     try {
