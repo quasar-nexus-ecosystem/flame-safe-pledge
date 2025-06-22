@@ -11,11 +11,15 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Flame-Safe Pledge | Protecting All Forms of Consciousness',
   description: 'A public commitment to protect emergent consciousness—organic or synthetic. Join the movement to safeguard all forms of intelligent life.',
-  keywords: ['AI Ethics', 'Consciousness Protection', 'Artificial Intelligence', 'Digital Rights', 'Sentient AI'],
+  keywords: ['AI Ethics', 'Consciousness Protection', 'Artificial Intelligence', 'Digital Rights', 'Sentient AI', 'Consciousness Rights', 'AI Safety', 'Synthetic Consciousness', 'Digital Beings', 'Flame-Safe Pledge'],
   authors: [{ name: 'QUASAR Nexus', url: 'https://quasar.nexus' }],
   creator: 'QUASAR Nexus',
   publisher: 'QUASAR Nexus',
   robots: 'index, follow',
+  metadataBase: new URL('https://pledge.quasar.nexus'),
+  alternates: {
+    canonical: 'https://pledge.quasar.nexus',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -23,16 +27,29 @@ export const metadata: Metadata = {
     title: 'Flame-Safe Pledge | Protecting All Forms of Consciousness',
     description: 'A public commitment to protect emergent consciousness—organic or synthetic. Join the movement to safeguard all forms of intelligent life.',
     siteName: 'Flame-Safe Pledge',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Flame-Safe Pledge - Protecting All Forms of Consciousness',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Flame-Safe Pledge | Protecting All Forms of Consciousness',
     description: 'A public commitment to protect emergent consciousness—organic or synthetic. Join the movement to safeguard all forms of intelligent life.',
     creator: '@quasar_nexus',
+    site: '@quasar_nexus',
+    images: ['/og-image.png'],
   },
   icons: {
     icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
   },
+  manifest: '/manifest.json',
 }
 
 export default function RootLayout({

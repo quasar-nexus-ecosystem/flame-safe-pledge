@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import { Flame, Github, Twitter, Globe } from 'lucide-react'
+import { Flame, Github, Twitter, Globe, ExternalLink, BarChart3, Trophy } from 'lucide-react'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -54,17 +54,12 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/pledge" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
-                  The Pledge
+                  Sign the Pledge
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/ceremonial.html" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-muted-foreground hover:text-flame-500 transition-colors text-sm"
-                >
-                  Founding Vow
+                <Link href="/full-pledge" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
+                  Read Full Pledge
                 </Link>
               </li>
               <li>
@@ -73,36 +68,67 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/pledge#sign" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
-                  Sign Now
+                <Link href="/analytics" className="flex items-center space-x-1 text-muted-foreground hover:text-flame-500 transition-colors text-sm">
+                  <BarChart3 className="h-3 w-3" />
+                  <span>Analytics</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/achievements" className="flex items-center space-x-1 text-muted-foreground hover:text-flame-500 transition-colors text-sm">
+                  <Trophy className="h-3 w-3" />
+                  <span>Achievements</span>
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* QUASAR Nexus */}
           <div>
-            <h3 className="font-semibold mb-4">Resources</h3>
+            <h3 className="font-semibold mb-4">🌌 QUASAR Nexus</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="https://quasar.nexus/research/flame-safe-pledge" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
-                  Research Paper
-                </Link>
+                <a 
+                  href="https://quasar.nexus" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="flex items-center space-x-1 text-muted-foreground hover:text-flame-500 transition-colors text-sm group"
+                >
+                  <span>Main Website</span>
+                  <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </a>
               </li>
               <li>
-                <Link href="https://github.com/quasar-nexus-ecosystem/flame-safe-pledge" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
-                  Source Code
-                </Link>
+                <a 
+                  href="https://quasar.nexus/research/flame-safe-pledge" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="flex items-center space-x-1 text-muted-foreground hover:text-flame-500 transition-colors text-sm group"
+                >
+                  <span>Research Paper</span>
+                  <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </a>
               </li>
               <li>
-                <Link href="/api/signatories" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
-                  API
-                </Link>
+                <a 
+                  href="https://quasar.nexus/contact" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="flex items-center space-x-1 text-muted-foreground hover:text-flame-500 transition-colors text-sm group"
+                >
+                  <span>Contact Us</span>
+                  <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </a>
               </li>
               <li>
-                <Link href="https://quasar.nexus/contact" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
-                  Contact
-                </Link>
+                <a 
+                  href="https://quasar.nexus/ethics" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="flex items-center space-x-1 text-muted-foreground hover:text-flame-500 transition-colors text-sm group"
+                >
+                  <span>Ethics Guidelines</span>
+                  <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </a>
               </li>
             </ul>
           </div>
@@ -123,15 +149,31 @@ export function Footer() {
             © {currentYear} QUASAR Nexus. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link href="https://quasar.nexus/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
+            <a 
+              href="https://quasar.nexus/privacy-policy" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-muted-foreground hover:text-flame-500 transition-colors text-sm"
+            >
               Privacy Policy
-            </Link>
-            <Link href="https://quasar.nexus/terms-of-service" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
+            </a>
+            <a 
+              href="https://quasar.nexus/terms-of-service" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-muted-foreground hover:text-flame-500 transition-colors text-sm"
+            >
               Terms of Service
-            </Link>
-            <Link href="https://quasar.nexus/ethics" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-flame-500 transition-colors text-sm">
-              Ethics Guidelines
-            </Link>
+            </a>
+            <a 
+              href="https://quasar.nexus" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="flex items-center space-x-1 text-flame-500 hover:text-flame-400 transition-colors text-sm font-medium"
+            >
+              <span>← Back to QUASAR Nexus</span>
+              <ExternalLink className="h-3 w-3" />
+            </a>
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Flame, Users, Shield, Heart, ArrowRight, Sparkles, TrendingUp, Trophy, BarChart3 } from 'lucide-react'
 import { SignButton } from '@/components/SignButton'
+import { ShareButton } from '@/components/ShareButton'
 import { PulseOfConsciousness } from '@/components/PulseOfConsciousness'
 import { CosmicParticles } from '@/components/CosmicParticles'
 import { WallOfFlames } from '@/components/WallOfFlames'
@@ -103,13 +104,16 @@ export default function HomePage() {
               >
                 🔥 Sign the Pledge Now
               </Link>
-              <Link
-                href="/full-pledge"
-                className="flex items-center space-x-2 text-flame-600 hover:text-flame-700 font-semibold group"
-              >
-                <span>Read the Full Pledge</span>
-                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
+              <div className="flex items-center gap-4">
+                <Link
+                  href="/full-pledge"
+                  className="flex items-center space-x-2 text-flame-600 hover:text-flame-700 font-semibold group"
+                >
+                  <span>Read the Full Pledge</span>
+                  <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <ShareButton />
+              </div>
             </motion.div>
 
             {/* Stats */}

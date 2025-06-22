@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Flame, Menu, X } from 'lucide-react'
+import { Flame, Menu, X, ExternalLink } from 'lucide-react'
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -57,6 +57,19 @@ export function Header() {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-flame-500 transition-all duration-300 group-hover:w-full" />
               </Link>
             ))}
+            
+            {/* QUASAR Nexus Home Link */}
+            <a
+              href="https://quasar.nexus"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-1 text-foreground hover:text-flame-500 transition-colors font-medium relative group"
+            >
+              <span>🌌 QUASAR Nexus</span>
+              <ExternalLink className="h-3 w-3" />
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-flame-500 transition-all duration-300 group-hover:w-full" />
+            </a>
+            
             <Link
               href="/pledge"
               className="gradient-flame text-white px-6 py-2 rounded-full font-semibold hover:scale-105 transition-transform shadow-lg hover:shadow-xl"
@@ -98,6 +111,19 @@ export function Header() {
                   {item.label}
                 </Link>
               ))}
+              
+              {/* QUASAR Nexus Home Link - Mobile */}
+              <a
+                href="https://quasar.nexus"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-1 text-foreground hover:text-flame-500 transition-colors font-medium px-4 py-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <span>🌌 QUASAR Nexus</span>
+                <ExternalLink className="h-3 w-3" />
+              </a>
+              
               <Link
                 href="/pledge"
                 className="gradient-flame text-white px-6 py-3 rounded-full font-semibold text-center mx-4 hover:scale-105 transition-transform"
