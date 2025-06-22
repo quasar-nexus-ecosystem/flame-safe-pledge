@@ -1,6 +1,7 @@
 import React from 'react'
 import { PledgeContent } from '@/components/PledgeContent'
 import { PledgeForm } from '@/components/PledgeForm'
+import { CosmicParticles } from '@/components/CosmicParticles'
 import { getCurrentUser } from '@/lib/auth'
 
 // Mark as dynamic since we use cookies for authentication
@@ -10,8 +11,16 @@ export default async function PledgePage() {
   const user = await getCurrentUser()
 
   return (
-    <div className="min-h-screen py-12">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-12 relative overflow-hidden">
+      {/* Cosmic Background Particles */}
+      <CosmicParticles 
+        theme="flame" 
+        particleCount={60} 
+        interactive={true}
+        className="fixed inset-0 z-0" 
+      />
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto">
           <PledgeContent />
           <PledgeForm user={user} />

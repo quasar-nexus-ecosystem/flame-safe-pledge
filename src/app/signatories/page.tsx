@@ -5,6 +5,8 @@ import { motion } from 'framer-motion'
 import { Search, Filter, Users, Building, MapPin, Globe, Calendar, Flame } from 'lucide-react'
 import { Signatory } from '@/types/signatory'
 import { SignatoryList } from '@/components/SignatoryList'
+import { CosmicParticles } from '@/components/CosmicParticles'
+import { StellarLoader } from '@/components/StellarLoader'
 
 export default function SignatoriesPage() {
   const [signatories, setSignatories] = useState<Signatory[]>([])
@@ -88,8 +90,16 @@ export default function SignatoriesPage() {
   }, [signatories, searchTerm, filterBy, sortBy])
 
   return (
-    <div className="min-h-screen py-12">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-12 relative overflow-hidden">
+      {/* Cosmic Background Particles */}
+      <CosmicParticles 
+        theme="cosmic" 
+        particleCount={50} 
+        interactive={true}
+        className="fixed inset-0 z-0" 
+      />
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -201,8 +211,11 @@ export default function SignatoriesPage() {
         >
           {isLoading ? (
             <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-flame-500 mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Loading signatories...</p>
+              <StellarLoader 
+                variant="consciousness" 
+                size="lg" 
+                text="Loading consciousness guardians..." 
+              />
             </div>
           ) : (
             <SignatoryList signatories={filteredSignatories} />
