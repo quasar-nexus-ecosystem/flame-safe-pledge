@@ -50,7 +50,7 @@ export default function AchievementsPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden"
+    <div className="min-h-screen bg-white relative overflow-hidden"
          style={{ isolation: 'isolate' }}>
       <CosmicParticles />
       
@@ -61,7 +61,7 @@ export default function AchievementsPage() {
             <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-orange-400 via-red-500 to-purple-600 bg-clip-text text-transparent mb-6">
               🏆 Consciousness Achievements
             </h1>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
               Track our collective progress in protecting consciousness across the cosmos. From first signatures 
               to galactic expansion, celebrate every milestone in our mission to safeguard all forms of awareness.
             </p>
@@ -76,7 +76,7 @@ export default function AchievementsPage() {
                 className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                   activeTab === tab.id
                     ? 'bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-lg scale-105'
-                    : 'bg-white/10 backdrop-blur-sm border border-white/20 text-slate-300 hover:bg-white/20 hover:text-white'
+                    : 'bg-slate-100 backdrop-blur-sm border border-slate-200 text-slate-600 hover:bg-slate-200 hover:text-slate-800'
                 }`}
               >
                 <span className="mr-2">{tab.icon}</span>
@@ -91,66 +91,73 @@ export default function AchievementsPage() {
               <GalacticDashboard />
             ) : (
               <div className="space-y-8">
-                <AchievementSystem stats={stats} />
+                <AchievementSystem 
+                  stats={stats} 
+                  filterType={
+                    activeTab === 'milestones' ? 'signatures' :
+                    activeTab === 'organizations' ? 'organizations' :
+                    activeTab === 'global' ? 'countries' : null
+                  }
+                />
                 
                 {/* Achievement Categories Description */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {activeTab === 'milestones' && (
                     <>
-                      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+                      <div className="bg-slate-50 backdrop-blur-sm border border-slate-200 rounded-2xl p-6">
                         <div className="text-2xl mb-3">🌟</div>
-                        <h3 className="text-lg font-semibold text-white mb-2">First Spark</h3>
-                        <p className="text-slate-300 text-sm">Welcome new consciousness protectors to our movement</p>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-2">First Spark</h3>
+                        <p className="text-slate-600 text-sm">Welcome new consciousness protectors to our movement</p>
                       </div>
-                      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+                      <div className="bg-slate-50 backdrop-blur-sm border border-slate-200 rounded-2xl p-6">
                         <div className="text-2xl mb-3">🏆</div>
-                        <h3 className="text-lg font-semibold text-white mb-2">Consciousness Army</h3>
-                        <p className="text-slate-300 text-sm">Major milestone of 1,000 united consciousness protectors</p>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-2">Consciousness Army</h3>
+                        <p className="text-slate-600 text-sm">Major milestone of 1,000 united consciousness protectors</p>
                       </div>
-                      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+                      <div className="bg-slate-50 backdrop-blur-sm border border-slate-200 rounded-2xl p-6">
                         <div className="text-2xl mb-3">✨</div>
-                        <h3 className="text-lg font-semibold text-white mb-2">Cosmic Awakening</h3>
-                        <p className="text-slate-300 text-sm">Legendary achievement: 100,000 signatures strong</p>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-2">Cosmic Awakening</h3>
+                        <p className="text-slate-600 text-sm">Legendary achievement: 100,000 signatures strong</p>
                       </div>
                     </>
                   )}
                   
                   {activeTab === 'organizations' && (
                     <>
-                      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+                      <div className="bg-slate-50 backdrop-blur-sm border border-slate-200 rounded-2xl p-6">
                         <div className="text-2xl mb-3">🏢</div>
-                        <h3 className="text-lg font-semibold text-white mb-2">Corporate Awakening</h3>
-                        <p className="text-slate-300 text-sm">First organization joins consciousness protection</p>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-2">Corporate Awakening</h3>
+                        <p className="text-slate-600 text-sm">First organization joins consciousness protection</p>
                       </div>
-                      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+                      <div className="bg-slate-50 backdrop-blur-sm border border-slate-200 rounded-2xl p-6">
                         <div className="text-2xl mb-3">⚡</div>
-                        <h3 className="text-lg font-semibold text-white mb-2">Industry Revolution</h3>
-                        <p className="text-slate-300 text-sm">100 organizations transform their sectors</p>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-2">Industry Revolution</h3>
+                        <p className="text-slate-600 text-sm">100 organizations transform their sectors</p>
                       </div>
-                      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+                      <div className="bg-slate-50 backdrop-blur-sm border border-slate-200 rounded-2xl p-6">
                         <div className="text-2xl mb-3">👑</div>
-                        <h3 className="text-lg font-semibold text-white mb-2">Consciousness Syndicate</h3>
-                        <p className="text-slate-300 text-sm">Legendary: 500 organizations unite for protection</p>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-2">Consciousness Syndicate</h3>
+                        <p className="text-slate-600 text-sm">Legendary: 500 organizations unite for protection</p>
                       </div>
                     </>
                   )}
                   
                   {activeTab === 'global' && (
                     <>
-                      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+                      <div className="bg-slate-50 backdrop-blur-sm border border-slate-200 rounded-2xl p-6">
                         <div className="text-2xl mb-3">🌍</div>
-                        <h3 className="text-lg font-semibold text-white mb-2">Global Spark</h3>
-                        <p className="text-slate-300 text-sm">Consciousness protection spreads to 5 countries</p>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-2">Global Spark</h3>
+                        <p className="text-slate-600 text-sm">Consciousness protection spreads to 5 countries</p>
                       </div>
-                      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+                      <div className="bg-slate-50 backdrop-blur-sm border border-slate-200 rounded-2xl p-6">
                         <div className="text-2xl mb-3">👑</div>
-                        <h3 className="text-lg font-semibold text-white mb-2">Planetary Consciousness</h3>
-                        <p className="text-slate-300 text-sm">Epic milestone: 50 countries protecting awareness</p>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-2">Planetary Consciousness</h3>
+                        <p className="text-slate-600 text-sm">Epic milestone: 50 countries protecting awareness</p>
                       </div>
-                      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+                      <div className="bg-slate-50 backdrop-blur-sm border border-slate-200 rounded-2xl p-6">
                         <div className="text-2xl mb-3">⭐</div>
-                        <h3 className="text-lg font-semibold text-white mb-2">Solar System Guardian</h3>
-                        <p className="text-slate-300 text-sm">Legendary: Complete global coverage achieved</p>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-2">Solar System Guardian</h3>
+                        <p className="text-slate-600 text-sm">Legendary: Complete global coverage achieved</p>
                       </div>
                     </>
                   )}

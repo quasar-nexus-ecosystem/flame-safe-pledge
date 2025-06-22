@@ -4,7 +4,7 @@ import { Globe } from 'lucide-react'
 
 export default function AnalyticsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-white relative overflow-hidden">
       <CosmicParticles theme="cosmic" particleCount={30} />
       
       <div className="relative z-10 py-20">
@@ -15,7 +15,7 @@ export default function AnalyticsPage() {
               <Globe className="h-12 w-12 md:h-16 md:w-16 text-blue-400" />
               Global Analytics
             </h1>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
               Real-time insights into consciousness protection across the cosmos. Monitor signature growth, 
               geographic expansion, and the pulse of our global movement to safeguard all forms of awareness.
             </p>

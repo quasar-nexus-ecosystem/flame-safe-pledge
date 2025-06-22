@@ -30,9 +30,10 @@ interface AchievementSystemProps {
     countries: number
   }
   showMini?: boolean
+  filterType?: 'signatures' | 'organizations' | 'countries' | 'verified' | 'special' | null
 }
 
-export function AchievementSystem({ className = '', stats, showMini = false }: AchievementSystemProps) {
+export function AchievementSystem({ className = '', stats, showMini = false, filterType = null }: AchievementSystemProps) {
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [newlyUnlocked, setNewlyUnlocked] = useState<Achievement[]>([])
   const [showNotification, setShowNotification] = useState(false)
@@ -542,13 +543,14 @@ export function AchievementSystem({ className = '', stats, showMini = false }: A
         {/* Achievement Categories */}
         <div className="space-y-8">
           {/* Signatures */}
-          <div>
-            <h3 className="text-xl font-semibold mb-4 flex items-center space-x-2">
-              <Users className="h-5 w-5 text-flame-500" />
-              <span>Signature Milestones</span>
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {achievements.filter(a => a.type === 'signatures').map((achievement, index) => (
+          {(!filterType || filterType === 'signatures') && (
+            <div>
+              <h3 className="text-xl font-semibold mb-4 flex items-center space-x-2">
+                <Users className="h-5 w-5 text-flame-500" />
+                <span>Signature Milestones</span>
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {achievements.filter(a => a.type === 'signatures').map((achievement, index) => (
                 <motion.div
                   key={achievement.id}
                   initial={{ opacity: 0, x: -20 }}
@@ -627,8 +629,10 @@ export function AchievementSystem({ className = '', stats, showMini = false }: A
               ))}
             </div>
           </div>
+          )}
 
           {/* Organizations */}
+          {(!filterType || filterType === 'organizations') && (
           <div>
             <h3 className="text-xl font-semibold mb-4 flex items-center space-x-2">
               <Building className="h-5 w-5 text-flame-500" />
@@ -703,8 +707,10 @@ export function AchievementSystem({ className = '', stats, showMini = false }: A
               ))}
             </div>
           </div>
+          )}
 
           {/* Global Reach */}
+          {(!filterType || filterType === 'countries') && (
           <div>
             <h3 className="text-xl font-semibold mb-4 flex items-center space-x-2">
               <Globe className="h-5 w-5 text-flame-500" />
@@ -779,6 +785,7 @@ export function AchievementSystem({ className = '', stats, showMini = false }: A
               ))}
             </div>
           </div>
+          )}
         </div>
       </motion.div>
     </div>
