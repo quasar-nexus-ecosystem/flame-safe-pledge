@@ -9,8 +9,7 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const navItems = [
-    { href: '/', label: 'Home' },
-    { href: '/pledge', label: 'The Pledge' },
+    { href: '/full-pledge', label: 'The Pledge' },
     { href: '/signatories', label: 'Signatories' },
     { href: '/analytics', label: '📊 Analytics' },
     { href: '/achievements', label: '🏆 Achievements' },
@@ -74,7 +73,7 @@ export function Header() {
               href="/pledge"
               className="gradient-flame text-white px-6 py-2 rounded-full font-semibold hover:scale-105 transition-transform shadow-lg hover:shadow-xl"
             >
-              Sign the Pledge
+              🔥 Sign the Pledge
             </Link>
           </nav>
 
@@ -129,7 +128,7 @@ export function Header() {
                 className="gradient-flame text-white px-6 py-3 rounded-full font-semibold text-center mx-4 hover:scale-105 transition-transform"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Sign the Pledge
+                🔥 Sign the Pledge
               </Link>
             </div>
           </motion.nav>

@@ -161,17 +161,17 @@ export function SimpleChart({
       {/* Stats summary */}
       <div className="mt-4 grid grid-cols-3 gap-4 text-center">
         <div className="p-2 bg-slate-700/30 rounded">
-          <div className="text-sm font-bold" style={{ color }}>{maxValue}</div>
+          <div className="text-sm font-bold text-flame-500">{maxValue}</div>
           <div className="text-xs text-muted-foreground">Peak</div>
         </div>
         <div className="p-2 bg-slate-700/30 rounded">
-          <div className="text-sm font-bold" style={{ color }}>
+          <div className="text-sm font-bold text-flame-500">
             {Math.round(data.reduce((sum, d) => sum + d.count, 0) / data.length)}
           </div>
           <div className="text-xs text-muted-foreground">Average</div>
         </div>
         <div className="p-2 bg-slate-700/30 rounded">
-          <div className="text-sm font-bold" style={{ color }}>
+          <div className="text-sm font-bold text-flame-500">
             {data[data.length - 1]?.count || 0}
           </div>
           <div className="text-xs text-muted-foreground">Latest</div>

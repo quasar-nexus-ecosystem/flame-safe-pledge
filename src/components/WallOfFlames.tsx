@@ -225,10 +225,7 @@ export function WallOfFlames({ className = '', maxFlames = 100, showControls = t
       {/* Flames Container */}
       <div 
         ref={containerRef}
-        className={`p-6 overflow-hidden ${isExpanded ? 'h-full' : 'h-96'}`}
-        style={{ 
-          background: 'radial-gradient(ellipse at bottom, rgba(15, 15, 15, 0.9) 0%, rgba(0, 0, 0, 0.95) 70%)',
-        }}
+        className={`p-6 overflow-hidden ${isExpanded ? 'h-full' : 'h-96'} bg-[radial-gradient(ellipse_at_bottom,rgba(15,15,15,0.9)_0%,rgba(0,0,0,0.95)_70%)]`}
       >
         <div className="relative h-full flex items-end justify-center flex-wrap gap-1">
           <AnimatePresence>

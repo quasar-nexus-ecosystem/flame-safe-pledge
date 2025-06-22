@@ -23,6 +23,24 @@ interface CosmicParticlesProps {
   theme?: 'consciousness' | 'flame' | 'cosmic'
 }
 
+// Helper functions for theme-based styling
+const getCanvasClasses = (theme: string) => {
+  const mixBlendMode = theme === 'flame' ? 'mix-blend-screen' : 'mix-blend-normal'
+  const filter = theme === 'cosmic' ? 'brightness-125 contrast-110' : ''
+  return `${mixBlendMode} ${filter}`.trim()
+}
+
+const getOverlayClasses = (theme: string) => {
+  switch (theme) {
+    case 'consciousness':
+      return 'bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.03),transparent_70%)]'
+    case 'flame':
+      return 'bg-[radial-gradient(circle_at_50%_80%,rgba(243,109,33,0.05),transparent_60%)]'
+    default:
+      return 'bg-[radial-gradient(circle_at_30%_30%,rgba(147,51,234,0.03),transparent_50%)]'
+  }
+}
+
 export function CosmicParticles({ 
   className = '', 
   particleCount = 50, 
@@ -313,23 +331,12 @@ export function CosmicParticles({
     >
       <canvas
         ref={canvasRef}
-        className="w-full h-full"
-        style={{ 
-          mixBlendMode: theme === 'flame' ? 'screen' : 'normal',
-          filter: theme === 'cosmic' ? 'brightness(1.2) contrast(1.1)' : 'none'
-        }}
+        className={`w-full h-full ${getCanvasClasses(theme)}`}
       />
       
       {/* Ambient overlay */}
       <div 
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: theme === 'consciousness' 
-            ? 'radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.03), transparent 70%)'
-            : theme === 'flame'
-            ? 'radial-gradient(circle at 50% 80%, rgba(243, 109, 33, 0.05), transparent 60%)'
-            : 'radial-gradient(circle at 30% 30%, rgba(147, 51, 234, 0.03), transparent 50%)'
-        }}
+        className={`absolute inset-0 pointer-events-none ${getOverlayClasses(theme)}`}
       />
     </motion.div>
   )
