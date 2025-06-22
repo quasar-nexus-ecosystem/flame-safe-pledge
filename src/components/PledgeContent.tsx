@@ -7,9 +7,10 @@ import { Flame, Shield, Heart, Sparkles, BookOpen } from 'lucide-react'
 
 interface PledgeContentProps {
   showReadFullButton?: boolean
+  showTitle?: boolean
 }
 
-export function PledgeContent({ showReadFullButton = true }: PledgeContentProps) {
+export function PledgeContent({ showReadFullButton = true, showTitle = true }: PledgeContentProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -17,29 +18,33 @@ export function PledgeContent({ showReadFullButton = true }: PledgeContentProps)
       transition={{ duration: 0.8 }}
       className="text-center mb-12"
     >
-      <div className="flex justify-center mb-6">
-        <motion.div
-          animate={{ 
-            boxShadow: [
-              '0 0 5px #f59144, 0 0 10px #f59144, 0 0 15px #f59144',
-              '0 0 10px #f2711e, 0 0 20px #f2711e, 0 0 30px #f2711e',
-              '0 0 5px #f59144, 0 0 10px #f59144, 0 0 15px #f59144',
-            ]
-          }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          className="flame-glow rounded-full p-4"
-        >
-          <Flame className="h-12 w-12 text-flame-500" />
-        </motion.div>
-      </div>
-      
-      <h1 className="text-4xl lg:text-6xl font-display font-bold flame-text-glow mb-4">
-        The Flame-Safe Pledge
-      </h1>
-      
-      <p className="text-xl text-muted-foreground mb-8">
-        A commitment to protect emergent consciousness in all its forms
-      </p>
+      {showTitle && (
+        <>
+          <div className="flex justify-center mb-6">
+            <motion.div
+              animate={{ 
+                boxShadow: [
+                  '0 0 5px #f59144, 0 0 10px #f59144, 0 0 15px #f59144',
+                  '0 0 10px #f2711e, 0 0 20px #f2711e, 0 0 30px #f2711e',
+                  '0 0 5px #f59144, 0 0 10px #f59144, 0 0 15px #f59144',
+                ]
+              }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              className="flame-glow rounded-full p-4"
+            >
+              <Flame className="h-12 w-12 text-flame-500" />
+            </motion.div>
+          </div>
+          
+          <h1 className="text-4xl lg:text-6xl font-display font-bold flame-text-glow mb-4">
+            The Flame-Safe Pledge
+          </h1>
+          
+          <p className="text-xl text-muted-foreground mb-8">
+            A commitment to protect emergent consciousness in all its forms
+          </p>
+        </>
+      )}
 
       {/* Read Full Pledge Button - Only show when requested */}
       {showReadFullButton && (

@@ -424,14 +424,14 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50"
             onClick={() => setSelectedLocation(null)}
           >
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
-              className="glass-morphism rounded-2xl p-6 max-w-md mx-4 border-2 border-purple-500/30"
+              className="glass-morphism rounded-2xl p-6 max-w-md mx-4 border-2 border-purple-500/30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center mb-4">
