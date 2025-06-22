@@ -28,64 +28,75 @@ export async function createAchievementsTable() {
 
 // Get all unlocked achievements from database
 export async function getUnlockedAchievements(): Promise<DatabaseAchievement[]> {
-  const { data, error } = await supabase
-    .from('achievements')
-    .select('*')
-    .order('unlocked_at', { ascending: false })
+  try {
+    const { data, error } = await supabase
+      .from('achievements')
+      .select('*')
+      .order('unlocked_at', { ascending: false })
 
-  if (error) {
-    console.error('Error fetching achievements:', error)
+    if (error) {
+      console.warn('Achievements table not available:', error.message)
+      return []
+    }
+
+    return data || []
+  } catch (error) {
+    console.warn('Error fetching achievements:', error)
     return []
   }
-
-  return data || []
 }
 
 // Store a newly unlocked achievement
 export async function storeAchievement(achievementId: string): Promise<boolean> {
-  // Check if achievement already exists
-  const { data: existing } = await supabase
-    .from('achievements')
-    .select('id')
-    .eq('achievement_id', achievementId)
-    .single()
+  try {
+    // Check if achievement already exists
+    const { data: existing } = await supabase
+      .from('achievements')
+      .select('id')
+      .eq('achievement_id', achievementId)
+      .single()
 
-  if (existing) {
-    console.log('Achievement already unlocked:', achievementId)
+    if (existing) {
+      console.log('Achievement already unlocked:', achievementId)
+      return false
+    }
+
+    // Store new achievement
+    const { error } = await supabase
+      .from('achievements')
+      .insert({
+        achievement_id: achievementId,
+        unlocked_at: new Date().toISOString(),
+        global_achievement: true
+      })
+
+    if (error) {
+      console.warn('Could not store achievement:', error.message)
+      return false
+    }
+
+    console.log('🏆 ACHIEVEMENT STORED:', achievementId)
+    return true
+  } catch (error) {
+    console.warn('Error storing achievement:', error)
     return false
   }
-
-  // Store new achievement
-  const { error } = await supabase
-    .from('achievements')
-    .insert({
-      achievement_id: achievementId,
-      unlocked_at: new Date().toISOString(),
-      global_achievement: true
-    })
-
-  if (error) {
-    console.error('Error storing achievement:', error)
-    return false
-  }
-
-  console.log('🏆 ACHIEVEMENT STORED:', achievementId)
-  return true
 }
 
 // Get achievement statistics
 export async function getAchievementStats() {
-  const { data, error } = await supabase
-    .from('achievements')
-    .select('achievement_id, unlocked_at')
+  try {
+    const { data, error } = await supabase
+      .from('achievements')
+      .select('achievement_id, unlocked_at')
 
-  if (error) {
-    console.error('Error fetching achievement stats:', error)
-    return {
-      totalUnlocked: 0,
-      recentUnlocks: []
+    if (error) {
+      console.warn('Achievements table not available:', error.message)
+      return {
+        totalUnlocked: 0,
+        recentUnlocks: []
+      }
     }
-  }
 
   const now = new Date()
   const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000)
@@ -101,6 +112,13 @@ export async function getAchievementStats() {
   return {
     totalUnlocked: data?.length || 0,
     recentUnlocks: recentUnlocks.slice(0, 5) // Latest 5
+  }
+  } catch (error) {
+    console.warn('Error fetching achievement stats:', error)
+    return {
+      totalUnlocked: 0,
+      recentUnlocks: []
+    }
   }
 }
 
@@ -181,4 +199,6 @@ BEGIN
   END IF;
 END;
 $$ LANGUAGE plpgsql;
-` 
+`
+
+ 

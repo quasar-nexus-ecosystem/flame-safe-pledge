@@ -492,7 +492,7 @@ function OverviewTab({ data, isLoading }: { data: StatsDashboardData | null; isL
     )
   }
 
-  if (!data) return null
+  if (!data || !data.overview || !data.overview.growth) return null
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -530,21 +530,21 @@ function OverviewTab({ data, isLoading }: { data: StatsDashboardData | null; isL
       />
       <StatCard
         title="Daily Growth"
-        value={data.overview.growth.daily.toLocaleString()}
+        value={(data.overview.growth?.daily || 0).toLocaleString()}
         icon={TrendingUp}
         color="green"
         subtitle="New signatures today"
       />
       <StatCard
         title="Weekly Growth"
-        value={data.overview.growth.weekly.toLocaleString()}
+        value={(data.overview.growth?.weekly || 0).toLocaleString()}
         icon={Activity}
         color="blue"
         subtitle="This week's momentum"
       />
       <StatCard
         title="Monthly Growth"
-        value={data.overview.growth.monthly.toLocaleString()}
+        value={(data.overview.growth?.monthly || 0).toLocaleString()}
         icon={TrendingUp}
         color="purple"
         subtitle="Monthly expansion"
