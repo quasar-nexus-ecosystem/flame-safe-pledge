@@ -12,6 +12,7 @@ import { WallOfFlames } from '@/components/WallOfFlames'
 import { AchievementSystem } from '@/components/AchievementSystem'
 import { AdvancedStatsDashboard } from '@/components/AdvancedStatsDashboard'
 import { RealtimeNotifications } from '@/components/RealtimeNotifications'
+import { GalacticDashboard } from '@/components/GalacticDashboard'
 
 export default function HomePage() {
   const [stats, setStats] = useState<{ total: number; organizations: number; countries: number }>({
@@ -282,6 +283,19 @@ export default function HomePage() {
                 countries: stats.countries
               }} 
             />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Galactic Consciousness Expansion */}
+      <section className="relative py-20 z-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <GalacticDashboard className="w-full" />
           </motion.div>
         </div>
       </section>
