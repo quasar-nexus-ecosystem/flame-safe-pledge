@@ -4,10 +4,10 @@ import { trackEvent } from '@/lib/posthog'
 
 export async function GET(
   request: Request,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
   try {
-    const { token } = params
+    const { token } = await params
 
     if (!token) {
       return NextResponse.redirect(new URL('/pledge/invalid-token', request.url))
