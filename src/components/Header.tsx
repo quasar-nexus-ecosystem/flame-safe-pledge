@@ -12,6 +12,8 @@ export function Header() {
     { href: '/', label: 'Home' },
     { href: '/pledge', label: 'The Pledge' },
     { href: '/signatories', label: 'Signatories' },
+    { href: '/analytics', label: '📊 Analytics' },
+    { href: '/achievements', label: '🏆 Achievements' },
   ]
 
   return (
@@ -56,7 +58,7 @@ export function Header() {
               </Link>
             ))}
             <Link
-              href="/pledge#sign"
+              href="/pledge"
               className="gradient-flame text-white px-6 py-2 rounded-full font-semibold hover:scale-105 transition-transform shadow-lg hover:shadow-xl"
             >
               Sign the Pledge
@@ -97,7 +99,7 @@ export function Header() {
                 </Link>
               ))}
               <Link
-                href="/pledge#sign"
+                href="/pledge"
                 className="gradient-flame text-white px-6 py-3 rounded-full font-semibold text-center mx-4 hover:scale-105 transition-transform"
                 onClick={() => setIsMenuOpen(false)}
               >
