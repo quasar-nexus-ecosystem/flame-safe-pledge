@@ -36,7 +36,8 @@ export async function POST(request: Request) {
           { status: 409 }
         )
       }
-      // If it exists but is not verified, we can resend verification.
+      // If it exists but is not verified, we'll update and resend verification
+      console.log('🔄 Resending verification for existing unverified email:', email)
     }
 
     const verification_token = crypto.randomUUID()
@@ -88,9 +89,14 @@ export async function POST(request: Request) {
       )
     }
 
+    const isResend = existing && !existing.verified
+    
     return NextResponse.json({
       success: true,
-      message: 'Thank you! Please check your email to verify your signature.',
+      message: isResend 
+        ? '🔄 Verification email resent! Please check your email (including spam folder) for the new verification link.'
+        : 'Thank you! Please check your email to verify your signature.',
+      isResend,
       ...(process.env.NODE_ENV !== 'production' && {
         token: verification_token,
       }),

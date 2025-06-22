@@ -24,6 +24,8 @@ export function PledgeForm({ user }: PledgeFormProps) {
   const [formSuccess, setFormSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   const [agreed, setAgreed] = useState(false)
+  const [resendLoading, setResendLoading] = useState(false)
+  const [signedEmail, setSignedEmail] = useState('')
 
   const form = useForm<SignatoryFormValues>({
     resolver: zodResolver(signatorySchema),
@@ -55,6 +57,31 @@ export function PledgeForm({ user }: PledgeFormProps) {
 
   const displayPublicly = watch('display_publicly')
 
+  const handleResendVerification = async () => {
+    if (!signedEmail) return
+    
+    setResendLoading(true)
+    try {
+      const response = await fetch('/api/pledge/resend-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: signedEmail }),
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+        toast.success(result.message || 'Verification email resent!')
+      } else {
+        toast.error(result.error || 'Failed to resend verification email.')
+      }
+    } catch (error) {
+      toast.error('A network error occurred. Please try again.')
+    } finally {
+      setResendLoading(false)
+    }
+  }
+
   const onSubmit: SubmitHandler<SignatoryFormValues> = async (values) => {
     if (!agreed) {
       toast.error('Please accept the Terms & Privacy Policy first.')
@@ -73,6 +100,9 @@ export function PledgeForm({ user }: PledgeFormProps) {
 
       if (response.ok) {
         toast.success(result.message || 'Thank you for signing!')
+        
+        // Store the email for potential resend
+        setSignedEmail(values.email)
         
         // Magical confetti celebration
         const triggerConfetti = () => {
@@ -125,21 +155,40 @@ export function PledgeForm({ user }: PledgeFormProps) {
         position="top-center" 
         toastOptions={{
           className: 'glass-morphism text-white',
+          duration: 6000, // 6 seconds instead of default 4
           style: {
-            background: 'rgba(0, 0, 0, 0.8)',
-            border: '1px solid rgba(243, 109, 33, 0.3)',
-            backdropFilter: 'blur(10px)',
+            background: 'rgba(0, 0, 0, 0.9)',
+            border: '2px solid rgba(243, 109, 33, 0.5)',
+            backdropFilter: 'blur(15px)',
+            fontSize: '16px',
+            fontWeight: '500',
+            padding: '16px 24px',
+            borderRadius: '12px',
+            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)',
+            marginTop: '60px', // Push it down from very top
+            maxWidth: '500px',
+            textAlign: 'center',
           },
           success: {
             iconTheme: {
               primary: '#10B981',
               secondary: '#ffffff',
             },
+            style: {
+              background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.9) 0%, rgba(34, 197, 94, 0.9) 100%)',
+              border: '2px solid rgba(16, 185, 129, 0.6)',
+              color: '#ffffff',
+            },
           },
           error: {
             iconTheme: {
               primary: '#EF4444',
               secondary: '#ffffff',
+            },
+            style: {
+              background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.9) 0%, rgba(220, 38, 38, 0.9) 100%)',
+              border: '2px solid rgba(239, 68, 68, 0.6)',
+              color: '#ffffff',
             },
           },
         }} 
@@ -185,7 +234,7 @@ export function PledgeForm({ user }: PledgeFormProps) {
             </motion.h2>
             
             <motion.p 
-              className="text-muted-foreground mb-8 text-lg"
+              className="text-muted-foreground mb-4 text-lg"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9 }}
@@ -194,6 +243,34 @@ export function PledgeForm({ user }: PledgeFormProps) {
                 <br />
                 <span className="text-flame-400 font-semibold">Check your inbox to complete your pledge!</span>
             </motion.p>
+
+            <motion.div
+              className="mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1 }}
+            >
+              <p className="text-sm text-muted-foreground mb-3">
+                Didn't receive the email? Check your spam folder or:
+              </p>
+              <button
+                onClick={handleResendVerification}
+                disabled={resendLoading}
+                className="text-flame-600 hover:text-flame-700 underline text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto"
+              >
+                {resendLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Mail className="h-4 w-4" />
+                    Resend verification email
+                  </>
+                )}
+              </button>
+            </motion.div>
             
             <motion.div 
               className="flex flex-col sm:flex-row gap-4 justify-center"
