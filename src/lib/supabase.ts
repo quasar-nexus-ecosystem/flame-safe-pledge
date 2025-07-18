@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Signatory } from '@/types/signatory'
 import { SignatoryFormValues } from './schemas'
+import { getCountryFromLocation } from './countries'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -48,13 +49,20 @@ export async function getSignatoryStats() {
     const now = new Date()
     const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000)
 
+    // Calculate countries using improved detection
+    const countries = new Set(
+      data
+        .map(s => getCountryFromLocation(s.location))
+        .filter(country => country !== null)
+    )
+
     return {
       total: data.length,
       verified: data.filter(s => s.verified).length,
       organizations: data.filter(s => s.organization).length,
       individuals: data.filter(s => !s.organization).length,
       recentSignatures: data.filter(s => new Date(s.created_at) > oneDayAgo).length,
-      countries: new Set(data.map(s => s.location?.split(',')[1]?.trim())).size,
+      countries: countries.size,
     }
   } catch (error) {
     console.error('Error fetching stats:', error)
