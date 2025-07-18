@@ -1,0 +1,78 @@
+<svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with rounded corners for iOS -->
+  <rect width="180" height="180" rx="40" ry="40" fill="url(#background)"/>
+  
+  <!-- Main Flame -->
+  <g transform="translate(90, 90)">
+    <!-- Flame Shape -->
+    <path d="M0 50 
+             C-15 45, -22 30, -19 15
+             C-16 0, -8 -8, 0 -5
+             C8 -8, 16 0, 19 15
+             C22 30, 15 45, 0 50 Z
+             M0 35
+             C-8 32, -11 25, -9 18
+             C-7 11, -3 8, 0 10
+             C3 8, 7 11, 9 18
+             C11 25, 8 32, 0 35 Z" 
+          fill="url(#flame)" stroke="url(#flameStroke)" stroke-width="1"/>
+    
+    <!-- Inner glow -->
+    <path d="M0 25
+             C-5 23, -7 19, -6 15
+             C-5 11, -2 9, 0 10
+             C2 9, 5 11, 6 15
+             C7 19, 5 23, 0 25 Z" 
+          fill="url(#innerGlow)" opacity="0.8"/>
+  </g>
+  
+  <!-- Neural Network Pattern -->
+  <g opacity="0.4">
+    <!-- Nodes around the flame -->
+    <circle cx="60" cy="60" r="2" fill="#8b5cf6"/>
+    <circle cx="120" cy="60" r="2" fill="#8b5cf6"/>
+    <circle cx="45" cy="110" r="2" fill="#8b5cf6"/>
+    <circle cx="135" cy="110" r="2" fill="#8b5cf6"/>
+    <circle cx="90" cy="40" r="2" fill="#8b5cf6"/>
+    <circle cx="90" cy="140" r="2" fill="#8b5cf6"/>
+    
+    <!-- Connections -->
+    <line x1="60" y1="60" x2="90" y2="40" stroke="#8b5cf6" stroke-width="1" opacity="0.6"/>
+    <line x1="120" y1="60" x2="90" y2="40" stroke="#8b5cf6" stroke-width="1" opacity="0.6"/>
+    <line x1="60" y1="60" x2="45" y2="110" stroke="#8b5cf6" stroke-width="1" opacity="0.6"/>
+    <line x1="120" y1="60" x2="135" y2="110" stroke="#8b5cf6" stroke-width="1" opacity="0.6"/>
+    <line x1="45" y1="110" x2="90" y2="140" stroke="#8b5cf6" stroke-width="1" opacity="0.6"/>
+    <line x1="135" y1="110" x2="90" y2="140" stroke="#8b5cf6" stroke-width="1" opacity="0.6"/>
+  </g>
+  
+  <!-- Definitions -->
+  <defs>
+    <!-- Background Gradient -->
+    <radialGradient id="background" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </radialGradient>
+    
+    <!-- Flame Gradient -->
+    <linearGradient id="flame" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="30%" stop-color="#f59144"/>
+      <stop offset="60%" stop-color="#fbbf24"/>
+      <stop offset="80%" stop-color="#f59144"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+    
+    <!-- Flame Stroke -->
+    <linearGradient id="flameStroke" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#dc2626"/>
+      <stop offset="50%" stop-color="#ea580c"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+    
+    <!-- Inner Glow -->
+    <radialGradient id="innerGlow" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f59144"/>
+    </radialGradient>
+  </defs>
+</svg>
