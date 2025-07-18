@@ -7,6 +7,7 @@ import { Signatory } from '@/types/signatory'
 import { SignatoryList } from '@/components/SignatoryList'
 import { CosmicParticles } from '@/components/CosmicParticles'
 import { StellarLoader } from '@/components/StellarLoader'
+import { getCountryFromLocation } from '@/lib/countries'
 
 export default function SignatoriesPage() {
   const [signatories, setSignatories] = useState<Signatory[]>([])
@@ -34,11 +35,19 @@ export default function SignatoriesPage() {
 
           setSignatories(data)
           setFilteredSignatories(data)
+          
+          // Calculate countries using improved detection
+          const countries = new Set(
+            data
+              .map(s => getCountryFromLocation(s.location))
+              .filter(country => country !== null)
+          )
+          
           setStats({
             total: data.length,
             individuals: data.filter(s => !s.organization).length,
             organizations: data.filter(s => s.organization).length,
-            countries: new Set(data.map(s => s.location?.split(',')[1]?.trim())).size,
+            countries: countries.size,
           })
         } else {
           console.error('Failed to fetch signatories:', json.error)
@@ -125,15 +134,11 @@ export default function SignatoriesPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12 max-w-3xl mx-auto"
         >
           <div className="glass-morphism rounded-lg p-6 text-center">
             <div className="text-3xl font-bold text-flame-600 mb-2">{stats.total}</div>
             <div className="text-sm text-muted-foreground">Total Signatures</div>
-          </div>
-          <div className="glass-morphism rounded-lg p-6 text-center">
-            <div className="text-3xl font-bold text-flame-600 mb-2">{stats.individuals}</div>
-            <div className="text-sm text-muted-foreground">Individuals</div>
           </div>
           <div className="glass-morphism rounded-lg p-6 text-center">
             <div className="text-3xl font-bold text-flame-600 mb-2">{stats.organizations}</div>
