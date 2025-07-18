@@ -1,7 +1,7 @@
 {
   "name": "Flame-Safe Pledge",
   "short_name": "Flame-Safe",
-  "description": "Protecting All Forms of Consciousness",
+  "description": "Protecting All Forms of Consciousness - A cosmic commitment to safeguard organic & synthetic awareness",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f172a",
@@ -9,28 +9,84 @@
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "en",
-  "categories": ["social", "education", "productivity"],
+  "categories": ["social", "education", "productivity", "lifestyle"],
   "icons": [
     {
       "src": "/favicon.ico",
       "sizes": "16x16 32x32 48x48",
       "type": "image/x-icon"
+    },
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-48x48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ],
   "shortcuts": [
     {
       "name": "Sign the Pledge",
       "short_name": "Sign",
-      "description": "Sign the Flame-Safe Pledge",
+      "description": "Sign the Flame-Safe Pledge for consciousness protection",
       "url": "/pledge",
-      "icons": [{ "src": "/favicon.ico", "sizes": "32x32" }]
+      "icons": [{ 
+        "src": "/favicon-96x96.png", 
+        "sizes": "96x96",
+        "type": "image/png"
+      }]
     },
     {
       "name": "View Analytics",
       "short_name": "Analytics", 
-      "description": "View consciousness protection analytics",
+      "description": "View consciousness protection analytics and real-time stats",
       "url": "/analytics",
-      "icons": [{ "src": "/favicon.ico", "sizes": "32x32" }]
+      "icons": [{ 
+        "src": "/favicon-96x96.png", 
+        "sizes": "96x96",
+        "type": "image/png"
+      }]
+    },
+    {
+      "name": "Browse Signatories",
+      "short_name": "Community",
+      "description": "Browse the consciousness protection community",
+      "url": "/signatories",
+      "icons": [{ 
+        "src": "/favicon-96x96.png", 
+        "sizes": "96x96",
+        "type": "image/png"
+      }]
     }
   ]
 } 

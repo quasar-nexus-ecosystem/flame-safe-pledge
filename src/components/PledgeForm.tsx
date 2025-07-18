@@ -1,11 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { signatorySchema, SignatoryFormValues } from '@/lib/schemas'
-import { Toaster, toast } from 'react-hot-toast'
+import { SubmitHandler } from 'react-hook-form'
+import { SignatoryFormValues } from '@/lib/schemas'
+import { Toaster } from 'react-hot-toast'
 import { motion, AnimatePresence } from 'framer-motion'
 import { User, Mail, Building, Globe, MessageSquare, MapPin, Loader2, Heart, Sparkles, CheckCircle } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -14,37 +13,18 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import confetti from 'canvas-confetti'
+import { usePledgeForm } from '@/hooks/usePledgeForm'
+import { useFormSubmission } from '@/hooks/useFormSubmission'
+import { useVerificationResend } from '@/hooks/useVerificationResend'
 
 interface PledgeFormProps {
     user: { id: string; name: string; email: string } | null
 }
 
 export function PledgeForm({ user }: PledgeFormProps) {
-  const [formSuccess, setFormSuccess] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [agreed, setAgreed] = useState(false)
-  const [resendLoading, setResendLoading] = useState(false)
-  const [signedEmail, setSignedEmail] = useState('')
-
-  const form = useForm<SignatoryFormValues>({
-    resolver: zodResolver(signatorySchema),
-    defaultValues: {
-      name: user?.name || '',
-      email: user?.email || '',
-      organization: '',
-      title: '',
-      message: '',
-      location: '',
-      website: '',
-      display_publicly: true,
-      social: {
-        twitter: '',
-        linkedin: '',
-        github: '',
-      },
-    },
-  })
+  const { form, agreed, setAgreed, displayPublicly } = usePledgeForm({ user })
+  const { loading, formSuccess, signedEmail, submitForm, setFormSuccess, setSignedEmail } = useFormSubmission()
+  const { resendLoading, resendVerification } = useVerificationResend()
 
   const {
     register,
@@ -55,125 +35,13 @@ export function PledgeForm({ user }: PledgeFormProps) {
     setValue,
   } = form
 
-  const displayPublicly = watch('display_publicly')
-
   const handleResendVerification = async () => {
     if (!signedEmail) return
-    
-    setResendLoading(true)
-    try {
-      const response = await fetch('/api/pledge/resend-verification', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: signedEmail }),
-      })
-
-      const result = await response.json()
-
-      if (response.ok) {
-        toast.success(result.message || '🔄 New verification email sent! Check your inbox and spam folder.')
-      } else if (response.status === 404) {
-        toast.error('📧 Email not found. Please sign the pledge first, then try resending verification.')
-      } else if (response.status === 400) {
-        toast.error('✅ This email is already verified! You\'re all set to protect consciousness.')
-      } else {
-        toast.error(`❌ Failed to resend verification email: ${result.error || 'Please try again or contact support.'}`)
-      }
-    } catch (error) {
-      console.error('Resend verification error:', error)
-      toast.error('🔌 Network error occurred. Please check your connection and try again.')
-    } finally {
-      setResendLoading(false)
-    }
+    await resendVerification(signedEmail)
   }
 
   const onSubmit: SubmitHandler<SignatoryFormValues> = async (values) => {
-    if (!agreed) {
-      toast.error('Please accept the Terms & Privacy Policy first.')
-      return
-    }
-
-    setLoading(true)
-    try {
-      const response = await fetch('/api/pledge/sign', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      })
-
-      const result = await response.json()
-
-      if (response.ok) {
-        // Check if this was a resend
-        const successMessage = result.isResend 
-          ? '🔄 New verification email sent! Check your inbox (and spam folder) for the fresh link.'
-          : '🎉 Thank you for signing the Flame-Safe Pledge! Check your email to verify your signature.'
-        
-        toast.success(successMessage)
-        
-        // Store the email for potential resend
-        setSignedEmail(values.email)
-        
-        // Magical confetti celebration
-        const triggerConfetti = () => {
-          confetti({
-            particleCount: 150,
-            spread: 90,
-            origin: { y: 0.6 },
-            colors: ['#f36d21', '#ff8c42', '#ffa366', '#ffb380']
-          })
-        }
-        
-        triggerConfetti()
-        setTimeout(triggerConfetti, 300)
-        setTimeout(triggerConfetti, 600)
-        
-        setFormSuccess(true)
-      } else if (response.status === 409) {
-        // Handle duplicate email with specific message
-        if (result.error === 'duplicate') {
-          toast.error('✋ This email has already been used to sign and verify the pledge. You\'re already protecting consciousness!')
-        } else {
-          toast.error(result.message || 'This email has already signed the pledge.')
-        }
-      } else if (response.status === 400) {
-        // Handle validation errors
-        if (result.details?.fieldErrors) {
-          const fieldErrors = result.details.fieldErrors
-          const errorMessages = []
-          
-          if (fieldErrors.email) errorMessages.push(`Email: ${fieldErrors.email[0]}`)
-          if (fieldErrors.name) errorMessages.push(`Name: ${fieldErrors.name[0]}`)
-          if (fieldErrors.website) errorMessages.push(`Website: ${fieldErrors.website[0]}`)
-          if (fieldErrors.message) errorMessages.push(`Message: ${fieldErrors.message[0]}`)
-          
-          const errorText = errorMessages.length > 0 
-            ? `Please fix: ${errorMessages.join(', ')}`
-            : 'Please check your input and try again.'
-          
-          toast.error(errorText)
-        } else {
-          toast.error(result.error || 'Invalid input. Please check your information and try again.')
-        }
-      } else if (response.status === 500) {
-        // Handle server errors
-        if (result.error === 'Email error') {
-          toast.error('📧 Unable to send verification email. Please try again or contact support.')
-        } else if (result.error === 'Database error') {
-          toast.error('💾 Database connection issue. Please try again in a moment.')
-        } else {
-          toast.error('🔧 Server error occurred. Please try again or contact support if the problem persists.')
-        }
-      } else {
-        // Handle any other errors
-        toast.error(`❌ Unexpected error (${response.status}): ${result.error || result.message || 'Please try again or contact support.'}`)
-      }
-    } catch (error) {
-      console.error('Form submission error:', error)
-      toast.error('🔌 Network error occurred. Please check your connection and try again.')
-    } finally {
-      setLoading(false)
-    }
+    await submitForm(values, agreed)
   }
 
   const ErrorMessage = ({ message }: { message?: string }) => {
