@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '@/lib/supabase'
 import { type PostHogAnalytics } from '@/lib/posthog'
 import { SimpleChart } from '@/components/SimpleChart'
+import { getCountryFromLocation, getContinentFromLocation, getCountryFlag } from '@/lib/countries'
 import { 
   TrendingUp, 
   Globe, 
@@ -170,10 +171,13 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
             console.error('Error fetching achievements:', achievementError)
           }
 
-                     // Geographic analysis
+                     // Geographic analysis with improved country detection
            const countryStats = signatories.reduce((acc, s) => {
              if (s.location) {
-               acc[s.location] = (acc[s.location] || 0) + 1
+               const country = getCountryFromLocation(s.location)
+               if (country) {
+                 acc[country] = (acc[country] || 0) + 1
+               }
              }
              return acc
            }, {} as Record<string, number>)
@@ -188,16 +192,24 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
              .sort((a, b) => b.count - a.count)
              .slice(0, 20)
 
-           // Continental analysis (simplified)
-           const continents = [
-             { name: 'North America', count: countries.filter(c => ['United States', 'Canada', 'Mexico'].includes(c.name)).reduce((sum, c) => sum + c.count, 0) },
-             { name: 'Europe', count: countries.filter(c => ['United Kingdom', 'Germany', 'France', 'Netherlands', 'Spain', 'Italy'].includes(c.name)).reduce((sum, c) => sum + c.count, 0) },
-             { name: 'Asia', count: countries.filter(c => ['China', 'Japan', 'India', 'Singapore', 'South Korea'].includes(c.name)).reduce((sum, c) => sum + c.count, 0) },
-             { name: 'Other', count: countries.filter(c => !['United States', 'Canada', 'Mexico', 'United Kingdom', 'Germany', 'France', 'Netherlands', 'Spain', 'Italy', 'China', 'Japan', 'India', 'Singapore', 'South Korea'].includes(c.name)).reduce((sum, c) => sum + c.count, 0) }
-           ].map(continent => ({
-             ...continent,
-             percentage: (continent.count / signatories.length) * 100
-           }))
+           // Continental analysis using proper continent detection
+           const continentStats = signatories.reduce((acc, s) => {
+             if (s.location) {
+               const continent = getContinentFromLocation(s.location)
+               if (continent) {
+                 acc[continent] = (acc[continent] || 0) + 1
+               }
+             }
+             return acc
+           }, {} as Record<string, number>)
+
+           const continents = Object.entries(continentStats)
+             .map(([name, count]) => ({
+               name,
+               count: count as number,
+               percentage: ((count as number) / signatories.length) * 100
+             }))
+             .sort((a, b) => b.count - a.count)
 
           const dashboardData: StatsDashboardData = {
             overview: baseStats,
@@ -845,29 +857,4 @@ function RealtimeTab({ data, isLoading }: { data: StatsDashboardData | null; isL
 }
 
 // Helper function to get country flags
-function getCountryFlag(countryName: string): string {
-  const flagMap: Record<string, string> = {
-    'United States': '🇺🇸',
-    'Canada': '🇨🇦',
-    'United Kingdom': '🇬🇧',
-    'Germany': '🇩🇪',
-    'France': '🇫🇷',
-    'Netherlands': '🇳🇱',
-    'Australia': '🇦🇺',
-    'Japan': '🇯🇵',
-    'China': '🇨🇳',
-    'India': '🇮🇳',
-    'Brazil': '🇧🇷',
-    'Mexico': '🇲🇽',
-    'Spain': '🇪🇸',
-    'Italy': '🇮🇹',
-    'South Korea': '🇰🇷',
-    'Singapore': '🇸🇬',
-    'Sweden': '🇸🇪',
-    'Norway': '🇳🇴',
-    'Denmark': '🇩🇰',
-    'Finland': '🇫🇮'
-  }
-  
-  return flagMap[countryName] || '🌍'
-} 
+ 

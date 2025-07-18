@@ -324,7 +324,7 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.1 }}
-                onClick={() => setSelectedLocation(isActive ? location : null)}
+                onClick={() => setSelectedLocation(location)}
                 className={`
                   p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 hover:scale-105
                   ${isActive 
@@ -424,48 +424,48 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50"
             onClick={() => setSelectedLocation(null)}
           >
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
-              className="glass-morphism rounded-2xl p-6 max-w-md mx-4 border-2 border-purple-500/30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md"
+              className="rounded-2xl p-6 max-w-md mx-4 border-2 border-purple-500/50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center mb-4">
                 <span className="text-4xl block mb-2">{selectedLocation.emoji}</span>
-                <h3 className="text-xl font-bold">{selectedLocation.name}</h3>
-                <p className="text-sm text-muted-foreground">{selectedLocation.system} System</p>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">{selectedLocation.name}</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300">{selectedLocation.system} System</p>
               </div>
               
               <div className="space-y-3 mb-4">
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Type:</span>
-                  <span className="text-sm font-semibold capitalize">{selectedLocation.type}</span>
+                  <span className="text-sm text-slate-600 dark:text-slate-300">Type:</span>
+                  <span className="text-sm font-semibold text-slate-900 dark:text-white capitalize">{selectedLocation.type}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Population:</span>
-                  <span className="text-sm font-semibold">
+                  <span className="text-sm text-slate-600 dark:text-slate-300">Population:</span>
+                  <span className="text-sm font-semibold text-slate-900 dark:text-white">
                     {selectedLocation.population?.toLocaleString() || 'Unknown'}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Established:</span>
-                  <span className="text-sm font-semibold">{selectedLocation.established}</span>
+                  <span className="text-sm text-slate-600 dark:text-slate-300">Established:</span>
+                  <span className="text-sm font-semibold text-slate-900 dark:text-white">{selectedLocation.established}</span>
                 </div>
               </div>
               
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-sm text-slate-700 dark:text-slate-200 mb-4 leading-relaxed">
                 {selectedLocation.description}
               </p>
               
-              <div className="text-center">
-                <div className="text-lg font-bold text-purple-500">
+              <div className="text-center bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-lg p-4 border border-purple-500/20">
+                <div className="text-lg font-bold text-purple-600 dark:text-purple-400">
                   {galacticData.stats.locationBreakdown[selectedLocation.id] || 0} Consciousness Protectors
                 </div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-xs text-slate-600 dark:text-slate-300">
                   Active at this location
                 </div>
               </div>
