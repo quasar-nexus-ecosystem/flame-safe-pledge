@@ -47,6 +47,7 @@ export default async function PledgePage() {
           <PledgeStats stats={{
             total: stats.total || 0,
             organizations: stats.organizations || 0,
+            individuals: stats.individuals || 0,
             countries: stats.countries || 0
           }} />
         </div>

@@ -8,11 +8,15 @@ interface PledgeStatsProps {
   stats: {
     total: number
     organizations: number
+    individuals: number
     countries: number
   }
 }
 
 export function PledgeStats({ stats }: PledgeStatsProps) {
+  // Calculate signatory breakdown percentages using signatory counts, **not** the number of unique organisations.
+  const individualRate = stats.total > 0 ? (stats.individuals / stats.total) * 100 : 0
+  const organizationRate = stats.total > 0 ? ((stats.total - stats.individuals) / stats.total) * 100 : 0
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
