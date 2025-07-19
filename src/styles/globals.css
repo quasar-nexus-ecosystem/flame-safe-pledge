@@ -117,4 +117,108 @@
 /* Smooth animations */
 * {
   transition: all 0.2s ease-in-out;
+}
+
+/* Mobile-specific enhancements */
+@layer utilities {
+  /* Improved touch targets for mobile */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Mobile-optimized text sizes */
+  .mobile-text-sm {
+    @apply text-xs sm:text-sm;
+  }
+  
+  .mobile-text-base {
+    @apply text-sm sm:text-base;
+  }
+  
+  .mobile-text-lg {
+    @apply text-base sm:text-lg;
+  }
+  
+  .mobile-text-xl {
+    @apply text-lg sm:text-xl;
+  }
+  
+  /* Mobile-optimized spacing */
+  .mobile-px {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+  
+  .mobile-py {
+    @apply py-8 sm:py-12 lg:py-16;
+  }
+  
+  /* Mobile-optimized grid layouts */
+  .mobile-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6;
+  }
+  
+  /* Mobile-optimized cards */
+  .mobile-card {
+    @apply p-4 sm:p-6 lg:p-8 rounded-xl;
+  }
+  
+  /* Mobile-optimized buttons */
+  .mobile-button {
+    @apply w-full sm:w-auto px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base;
+  }
+  
+  /* Mobile-optimized navigation */
+  .mobile-nav {
+    @apply flex flex-col sm:flex-row gap-3 sm:gap-4;
+  }
+  
+  /* Mobile-optimized stats */
+  .mobile-stats {
+    @apply grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4;
+  }
+  
+  /* Mobile-optimized hero */
+  .mobile-hero {
+    @apply py-8 sm:py-12 lg:py-16 xl:py-20;
+  }
+  
+  .mobile-hero-title {
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl;
+  }
+  
+  .mobile-hero-subtitle {
+    @apply text-base sm:text-lg lg:text-xl xl:text-2xl;
+  }
+}
+
+/* Mobile-specific scrollbar */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Mobile-specific focus states */
+@media (max-width: 768px) {
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid theme('colors.flame.500');
+    outline-offset: 2px;
+  }
 } 
