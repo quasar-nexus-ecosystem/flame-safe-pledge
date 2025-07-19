@@ -43,10 +43,16 @@ export default function SignatoriesPage() {
               .filter(country => country !== null)
           )
           
+          const uniqueOrganizations = new Set(
+            data
+              .filter((s) => s.organization)
+              .map((s) => (s.organization as string).trim().toLowerCase())
+          ).size
+
           setStats({
             total: data.length,
-            individuals: data.filter(s => !s.organization).length,
-            organizations: data.filter(s => s.organization).length,
+            individuals: data.filter((s) => !s.organization).length,
+            organizations: uniqueOrganizations,
             countries: countries.size,
           })
         } else {

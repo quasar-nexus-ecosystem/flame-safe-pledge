@@ -56,10 +56,17 @@ export async function getSignatoryStats() {
         .filter(country => country !== null)
     )
 
+    // Calculate distinct organizations using case-insensitive comparison and trimming
+    const uniqueOrganizations = new Set(
+      data
+        .filter((s) => s.organization)
+        .map((s) => (s.organization as string).trim().toLowerCase())
+    )
+
     return {
       total: data.length,
       verified: data.filter(s => s.verified).length,
-      organizations: data.filter(s => s.organization).length,
+      organizations: uniqueOrganizations.size,
       individuals: data.filter(s => !s.organization).length,
       recentSignatures: data.filter(s => new Date(s.created_at) > oneDayAgo).length,
       countries: countries.size,
