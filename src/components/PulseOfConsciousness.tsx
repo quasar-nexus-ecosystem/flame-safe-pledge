@@ -65,7 +65,8 @@ export function PulseOfConsciousness({ className = '', showMini = false }: Pulse
             total: data.total || 0,
             verified: data.verified || 0,
             organizations: data.organizations || 0,
-            individuals: (data.total || 0) - (data.organizations || 0),
+            // Prefer back-end provided individuals count (distinct non-organization signatories) falling back to derived value
+            individuals: (data.individuals ?? ((data.total || 0) - (data.organizations || 0))) || 0,
             recentSignatures: data.recentSignatures || 0,
             countries: data.countries || 0,
             pulse: Math.max(40, Math.min(120, 60 + ((data.recentSignatures || 0) * 5))) // Dynamic pulse based on activity
