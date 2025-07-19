@@ -65,7 +65,7 @@ export function PulseOfConsciousness({ className = '', showMini = false }: Pulse
             total: data.total || 0,
             verified: data.verified || 0,
             organizations: data.organizations || 0,
-            individuals: (data.total || 0) - (data.organizations || 0),
+            individuals: data.individuals || 0,
             recentSignatures: data.recentSignatures || 0,
             countries: data.countries || 0,
             pulse: Math.max(40, Math.min(120, 60 + ((data.recentSignatures || 0) * 5))) // Dynamic pulse based on activity
@@ -223,13 +223,13 @@ export function PulseOfConsciousness({ className = '', showMini = false }: Pulse
       </div>
 
       {/* Vital Signs Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
         {/* Total Signatures */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl p-6 border border-blue-500/30"
+          className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl p-4 sm:p-6 border border-blue-500/30 hover:scale-105 transition-transform duration-300"
         >
           <div className="flex items-center justify-between mb-4">
             <Users className="h-8 w-8 text-blue-500" />
@@ -254,7 +254,7 @@ export function PulseOfConsciousness({ className = '', showMini = false }: Pulse
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-xl p-6 border border-green-500/30"
+          className="bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-xl p-4 sm:p-6 border border-green-500/30 hover:scale-105 transition-transform duration-300"
         >
           <div className="flex items-center justify-between mb-4">
             <Building className="h-8 w-8 text-green-500" />
@@ -280,7 +280,7 @@ export function PulseOfConsciousness({ className = '', showMini = false }: Pulse
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-xl p-6 border border-purple-500/30"
+          className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-xl p-4 sm:p-6 border border-purple-500/30 hover:scale-105 transition-transform duration-300"
         >
           <div className="flex items-center justify-between mb-4">
             <Globe className="h-8 w-8 text-purple-500" />
