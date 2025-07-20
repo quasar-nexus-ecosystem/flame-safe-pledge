@@ -14,7 +14,7 @@ export default async function PledgePage() {
   const user = await getCurrentUser()
 
   // Fetch stats directly from Supabase instead of API route to avoid URL issues
-  let stats = { total: 0, organizations: 0, countries: 0, verified: 0 }
+  let stats = { total: 0, organizations: 0, countries: 0, verified: 0, individuals: 0 }
   try {
     stats = await getSignatoryStats()
   } catch (error) {
@@ -47,6 +47,7 @@ export default async function PledgePage() {
           <PledgeStats stats={{
             total: stats.total || 0,
             organizations: stats.organizations || 0,
+            individuals: stats.individuals || 0,
             countries: stats.countries || 0
           }} />
         </div>
