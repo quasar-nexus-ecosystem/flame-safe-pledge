@@ -5,14 +5,7 @@ export async function GET() {
   try {
     const stats = await getSignatoryStats()
     
-    // Check if stats has an error flag from permission issues
-    if (stats.error) {
-      return NextResponse.json({ 
-        success: false, 
-        error: stats.error
-      }, { status: 500 }) // Return proper error status
-    }
-    
+    // getSignatoryStats() returns stats directly, no error property to check
     return NextResponse.json({ success: true, data: stats }, { status: 200 })
   } catch (error) {
     // Log only in development to reduce console spam
