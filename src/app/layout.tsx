@@ -5,6 +5,8 @@ import { Analytics } from "@vercel/analytics/next"
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { FlameParticles } from '@/components/FlameParticles'
+import { RealtimeNotifications } from '@/components/RealtimeNotifications'
+import { CosmicParticles } from '@/components/CosmicParticles'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -79,6 +81,7 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.className} antialiased`}>
         <FlameParticles />
+        <CosmicParticles theme="cosmic" particleCount={20} className="fixed inset-0 pointer-events-none" />
         <div className="relative z-10 min-h-screen flex flex-col">
           <Header />
           <main className="flex-1">
@@ -86,6 +89,7 @@ export default function RootLayout({
           </main>
           <Footer />
         </div>
+        <RealtimeNotifications />
         <Analytics />
       </body>
     </html>

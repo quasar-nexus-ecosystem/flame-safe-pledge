@@ -2,8 +2,7 @@ import React from 'react'
 import { PledgeContent } from '@/components/PledgeContent'
 import { PledgeForm } from '@/components/PledgeForm'
 import { PledgeStats } from '@/components/PledgeStats'
-import { CosmicParticles } from '@/components/CosmicParticles'
-import { RealtimeNotifications } from '@/components/RealtimeNotifications'
+
 import { getCurrentUser } from '@/lib/auth'
 import { getSignatoryStats } from '@/lib/supabase'
 
@@ -24,16 +23,7 @@ export default async function PledgePage() {
 
   return (
     <div className="min-h-screen py-12 relative overflow-hidden">
-      {/* Cosmic Background Particles */}
-      <CosmicParticles 
-        theme="flame" 
-        particleCount={60} 
-        interactive={true}
-        className="fixed inset-0 z-0" 
-      />
 
-      {/* REALTIME Live Notifications */}
-      <RealtimeNotifications />
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto space-y-8">

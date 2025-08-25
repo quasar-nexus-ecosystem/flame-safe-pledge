@@ -1,11 +1,11 @@
 import { AdvancedStatsDashboard } from '@/components/AdvancedStatsDashboard'
-import { CosmicParticles } from '@/components/CosmicParticles'
+
 import { Globe } from 'lucide-react'
 
 export default function AnalyticsPage() {
   return (
     <div className="min-h-screen bg-white relative overflow-hidden">
-      <CosmicParticles theme="cosmic" particleCount={30} />
+
       
       <div className="relative z-10 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

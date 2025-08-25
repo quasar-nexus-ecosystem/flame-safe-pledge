@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { AchievementSystem } from '@/components/AchievementSystem'
 import { GalacticDashboard } from '@/components/GalacticDashboard'
-import { CosmicParticles } from '@/components/CosmicParticles'
+
 
 type TabType = 'milestones' | 'organizations' | 'global' | 'galactic'
 
@@ -52,7 +52,7 @@ export default function AchievementsPage() {
   return (
     <div className="min-h-screen bg-white relative overflow-hidden"
          style={{ isolation: 'isolate' }}>
-      <CosmicParticles />
+
       
       <div className="relative z-10 py-20" style={{ isolation: 'isolate' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

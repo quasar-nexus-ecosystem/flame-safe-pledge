@@ -7,9 +7,7 @@ import { Flame, Users, Shield, Heart, ArrowRight, Sparkles, TrendingUp, Trophy, 
 import { SignButton } from '@/components/SignButton'
 import { ShareButton } from '@/components/ShareButton'
 import { PulseOfConsciousness } from '@/components/PulseOfConsciousness'
-import { CosmicParticles } from '@/components/CosmicParticles'
 import { WallOfFlames } from '@/components/WallOfFlames'
-import { RealtimeNotifications } from '@/components/RealtimeNotifications'
 
 export default function HomePage() {
   const [stats, setStats] = useState<{ total: number; verified: number; organizations: number; individuals: number; countries: number; recentSignatures: number }>({
@@ -53,16 +51,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Cosmic Background Particles */}
-      <CosmicParticles 
-        theme="consciousness" 
-        particleCount={75} 
-        interactive={true}
-        className="fixed inset-0 z-0" 
-      />
 
-      {/* REALTIME Live Notifications */}
-      <RealtimeNotifications />
 
       {/* Hero Section */}
       <section className="relative py-16 sm:py-20 lg:py-32 z-10">

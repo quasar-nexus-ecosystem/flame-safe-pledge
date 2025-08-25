@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { Search, Filter, Users, Building, MapPin, Globe, Calendar, Flame } from 'lucide-react'
 import { Signatory } from '@/types/signatory'
 import { SignatoryList } from '@/components/SignatoryList'
-import { CosmicParticles } from '@/components/CosmicParticles'
+
 import { StellarLoader } from '@/components/StellarLoader'
 import { getCountryFromLocation } from '@/lib/countries'
 
@@ -107,13 +107,7 @@ export default function SignatoriesPage() {
 
   return (
     <div className="min-h-screen py-12 relative overflow-hidden">
-      {/* Cosmic Background Particles */}
-      <CosmicParticles 
-        theme="cosmic" 
-        particleCount={50} 
-        interactive={true}
-        className="fixed inset-0 z-0" 
-      />
+
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
