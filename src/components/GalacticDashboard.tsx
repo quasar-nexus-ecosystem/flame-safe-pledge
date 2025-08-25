@@ -44,27 +44,14 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
             console.error('Error fetching signatories:', error)
           }
           
-          // Check if it's a permission issue and provide fallback data
+          // Check if it's a permission issue
           if (error.message.includes('permission denied')) {
-            console.error('🔒 Database permission issue detected. Using fallback galactic data.')
+            console.error('🔒 Database permission issue detected.')
           }
           
-          // Provide fallback data so the component can still render
-          const fallbackSignatories = []
-          const fallbackStats = getGalacticStats(fallbackSignatories)
-          const fallbackRecommendations = getExpansionRecommendations({ 
-            total: 0, 
-            galactic: fallbackStats 
-          })
-          
-          setGalacticData({
-            stats: fallbackStats,
-            recommendations: fallbackRecommendations,
-            totalSignatories: 0,
-            phase: 'earthbound'
-          })
-          
-          setSignatories(fallbackSignatories)
+          // Don't set any data - let the error state handle it
+          setGalacticData(null)
+          setSignatories([])
           setExpansionPhase('earthbound')
           return
         }
@@ -103,22 +90,9 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
           console.error('Error fetching galactic data:', error)
         }
         
-        // Provide fallback data on any error
-        const fallbackSignatories = []
-        const fallbackStats = getGalacticStats(fallbackSignatories)
-        const fallbackRecommendations = getExpansionRecommendations({ 
-          total: 0, 
-          galactic: fallbackStats 
-        })
-        
-        setGalacticData({
-          stats: fallbackStats,
-          recommendations: fallbackRecommendations,
-          totalSignatories: 0,
-          phase: 'earthbound'
-        })
-        
-        setSignatories(fallbackSignatories)
+        // Don't set any data on error - let the error state handle it
+        setGalacticData(null)
+        setSignatories([])
         setExpansionPhase('earthbound')
       } finally {
         setIsLoading(false)
@@ -149,7 +123,7 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
     }
   }, [])
 
-  if (isLoading || !galacticData) {
+  if (isLoading) {
     return (
       <div className={`glass-morphism rounded-2xl p-8 ${className}`}>
         <div className="animate-pulse space-y-4">
@@ -159,6 +133,22 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
               <div key={i} className="h-32 bg-gradient-to-r from-purple-400 to-blue-500 rounded-xl opacity-20"></div>
             ))}
           </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!galacticData) {
+    return (
+      <div className={`glass-morphism rounded-2xl p-8 ${className}`}>
+        <div className="text-center">
+          <div className="text-6xl mb-4">🌌</div>
+          <h3 className="text-xl font-semibold text-red-500 mb-2">
+            Galactic Data Unavailable
+          </h3>
+          <p className="text-muted-foreground">
+            Database access is currently restricted. Galactic expansion features will be available once access is restored.
+          </p>
         </div>
       </div>
     )
@@ -296,24 +286,7 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
           Current Phase: {phaseInfo.title}
         </div>
         
-        {/* Show message when using fallback data due to database issues */}
-        {galacticData.totalSignatories === 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg"
-          >
-            <div className="flex items-center space-x-2 text-amber-600">
-              <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium">
-                Database temporarily unavailable - showing demo data
-              </span>
-            </div>
-            <p className="text-xs text-amber-500/70 mt-1">
-              Galactic expansion features will be fully functional once database access is restored
-            </p>
-          </motion.div>
-        )}
+
       </div>
 
       {/* Expansion Progress */}

@@ -24,10 +24,10 @@ export async function getAllSignatories(): Promise<Signatory[]> {
     // Check if it's a permission issue
     if (error.message.includes('permission denied')) {
       console.error('🔒 Database permission issue detected. Please check Supabase RLS policies.')
-      return []
+      throw new Error('Database access restricted')
     }
     
-    return []
+    throw error
   }
 
   // Log only in development to reduce console spam
@@ -60,10 +60,10 @@ export async function getSignatories(): Promise<Signatory[]> {
     // Check if it's a permission issue
     if (error.message.includes('permission denied')) {
       console.error('🔒 Database permission issue detected. Please check Supabase RLS policies.')
-      return []
+      throw new Error('Database access restricted')
     }
     
-    return []
+    throw error
   }
 
   // Log only in development to reduce console spam
@@ -88,25 +88,10 @@ export async function getSignatoryStats() {
       // Check if it's a permission issue
       if (error.message.includes('permission denied')) {
         console.error('🔒 Database permission issue detected. Please check Supabase RLS policies.')
-        return {
-          total: 0,
-          verified: 0,
-          organizations: 0,
-          individuals: 0,
-          recentSignatures: 0,
-          countries: 0,
-          error: 'Database access restricted'
-        }
+        throw new Error('Database access restricted')
       }
       
-      return {
-        total: 0,
-        verified: 0,
-        organizations: 0,
-        individuals: 0,
-        recentSignatures: 0,
-        countries: 0,
-      }
+      throw new Error('Failed to fetch signatory stats')
     }
 
     const now = new Date()
@@ -135,14 +120,10 @@ export async function getSignatoryStats() {
       countries: countries.size,
     }
   } catch (error) {
-    console.error('Error fetching stats:', error)
-    return {
-      total: 0,
-      verified: 0,
-      organizations: 0,
-      individuals: 0,
-      recentSignatures: 0,
-      countries: 0,
+    // Log only in development to reduce console spam
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error fetching stats:', error)
     }
+    throw error
   }
 } 

@@ -9,16 +9,8 @@ export async function GET() {
     if (stats.error) {
       return NextResponse.json({ 
         success: false, 
-        error: stats.error,
-        data: {
-          total: 0,
-          verified: 0,
-          organizations: 0,
-          individuals: 0,
-          recentSignatures: 0,
-          countries: 0,
-        }
-      }, { status: 200 }) // Return 200 with error message to prevent frontend crashes
+        error: stats.error
+      }, { status: 500 }) // Return proper error status
     }
     
     return NextResponse.json({ success: true, data: stats }, { status: 200 })
@@ -28,18 +20,10 @@ export async function GET() {
       console.error('Error fetching stats:', error)
     }
     
-    // Return graceful fallback instead of 500 error
+    // Return proper error status
     return NextResponse.json({ 
       success: false, 
-      error: 'Database temporarily unavailable',
-      data: {
-        total: 0,
-        verified: 0,
-        organizations: 0,
-        individuals: 0,
-        recentSignatures: 0,
-        countries: 0,
-      }
-    }, { status: 200 }) // Return 200 to prevent frontend crashes
+      error: 'Database temporarily unavailable'
+    }, { status: 500 })
   }
 } 

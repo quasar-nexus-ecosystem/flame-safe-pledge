@@ -57,8 +57,8 @@ interface TrendsData {
   verifiedRate: number
 }
 
-// Simple analytics interface (PostHog removed)
-interface MockAnalytics {
+// Real-time data interface
+interface RealtimeData {
   activeSessions: number
   averageTimeOnSite: number
   conversionRate: number
@@ -67,9 +67,6 @@ interface MockAnalytics {
   uniqueVisitors24h: number
   topPages: Array<{ page: string; views: number }>
   sessionDuration: number
-}
-
-interface RealtimeData extends MockAnalytics {
   signaturesThisHour: number
 }
 
@@ -118,7 +115,7 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
         // Fetch base stats
         const statsRes = await fetch('/api/stats', { cache: 'no-store' })
         const statsData = await statsRes.json()
-        const baseStats = statsData.success ? statsData.data : { total: 0, verified: 0, organizations: 0, countries: 0, growth: { daily: 0, weekly: 0, monthly: 0 } }
+        const baseStats = statsData.success ? statsData.data : null
 
         // Fetch signatories for detailed analysis
         let signatories = []
@@ -142,7 +139,7 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
             }
             
             signatoriesError = error
-            signatories = [] // Use empty array as fallback
+            signatories = [] // No data available
           } else {
             signatories = signatoryData || []
           }
@@ -151,48 +148,10 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
           if (process.env.NODE_ENV === 'development') {
             console.error('Error in signatories fetch:', fetchError)
           }
-          signatories = [] // Use empty array as fallback
+          signatories = [] // No data available
         }
 
-        // Generate mock analytics data (PostHog removed)
-        let mockData: MockAnalytics
-        try {
-          // Generate realistic mock data for demo purposes
-          mockData = {
-            activeSessions: Math.floor(Math.random() * 25) + 8,
-            averageTimeOnSite: Math.random() * 3 + 1.5,
-            conversionRate: Math.random() * 0.15 + 0.05,
-            bounceRate: Math.random() * 0.3 + 0.2,
-            pageViews24h: Math.floor(Math.random() * 200) + 100,
-            uniqueVisitors24h: Math.floor(Math.random() * 150) + 75,
-            topPages: [
-              { page: '/', views: Math.floor(Math.random() * 100) + 50 },
-              { page: '/pledge', views: Math.floor(Math.random() * 80) + 30 },
-              { page: '/signatories', views: Math.floor(Math.random() * 60) + 20 },
-              { page: '/analytics', views: Math.floor(Math.random() * 40) + 15 },
-            ],
-            sessionDuration: Math.random() * 240 + 60
-          }
-          console.log('📊 Client-side analytics data generated')
-        } catch (error) {
-          console.error('Error generating analytics data:', error)
-          // Fallback mock data
-          mockData = {
-            activeSessions: 12,
-            averageTimeOnSite: 2.5,
-            conversionRate: 0.08,
-            bounceRate: 0.35,
-            pageViews24h: 150,
-            uniqueVisitors24h: 95,
-            topPages: [
-              { page: '/', views: 75 },
-              { page: '/pledge', views: 45 },
-              { page: '/signatories', views: 30 },
-              { page: '/analytics', views: 20 },
-            ],
-            sessionDuration: 150
-          }
-        }
+
 
         if (!signatoriesError && signatories && signatories.length > 0) {
           // Calculate signatures this hour
@@ -251,6 +210,12 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
              }))
              .sort((a, b) => b.count - a.count)
 
+          // Only create dashboard data if we have base stats
+          if (!baseStats) {
+            setData(null)
+            return
+          }
+
           const dashboardData: StatsDashboardData = {
             overview: baseStats,
             geographic: {
@@ -287,7 +252,14 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
               verifiedRate: baseStats.total > 0 ? (baseStats.verified || 0) / baseStats.total : 0
             },
             realtime: {
-              ...mockData,
+              activeSessions: 0,
+              averageTimeOnSite: 0,
+              conversionRate: 0,
+              bounceRate: 0,
+              pageViews24h: 0,
+              uniqueVisitors24h: 0,
+              topPages: [],
+              sessionDuration: 0,
               signaturesThisHour
             },
             achievements: achievementData || []
@@ -406,21 +378,21 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
           Real-time insights into consciousness protection across the cosmos
         </p>
         
-        {/* Show message when using fallback data due to database issues */}
-        {data && data.totalSignatories === 0 && (
+        {/* Show error state when no data is available */}
+        {!isLoading && !data && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg max-w-2xl mx-auto"
+            className="mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg max-w-2xl mx-auto"
           >
-            <div className="flex items-center space-x-2 text-amber-600">
-              <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+            <div className="flex items-center space-x-2 text-red-600">
+              <div className="w-2 h-2 bg-red-500 rounded-full"></div>
               <span className="text-sm font-medium">
-                Database temporarily unavailable - showing demo analytics
+                Database temporarily unavailable
               </span>
             </div>
-            <p className="text-xs text-amber-500/70 mt-1">
-              Real-time features will be fully functional once database access is restored
+            <p className="text-xs text-red-500/70 mt-1">
+              Analytics data will be available once database access is restored
             </p>
           </motion.div>
         )}

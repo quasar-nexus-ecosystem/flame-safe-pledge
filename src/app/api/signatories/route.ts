@@ -11,11 +11,10 @@ export async function GET() {
       console.error('Error fetching signatories:', error)
     }
     
-    // Return graceful fallback instead of 500 error
+    // Return proper error status
     return NextResponse.json({ 
       success: false, 
-      error: 'Database temporarily unavailable',
-      data: []
-    }, { status: 200 }) // Return 200 to prevent frontend crashes
+      error: 'Database temporarily unavailable'
+    }, { status: 500 })
   }
 } 
