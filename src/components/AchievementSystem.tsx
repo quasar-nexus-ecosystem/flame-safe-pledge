@@ -314,7 +314,7 @@ export function AchievementSystem({ className = '', stats, showMini = false, fil
     return () => {
       channel.unsubscribe()
     }
-  }, [stats, achievements, unlockedFromDB])
+  }, [stats, unlockedFromDB]) // Remove 'achievements' from dependencies to prevent infinite loop
 
   // Trigger celebration effects based on rarity
   const triggerAchievementCelebration = (rarity: Achievement['rarity']) => {

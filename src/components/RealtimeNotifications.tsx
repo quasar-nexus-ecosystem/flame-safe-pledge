@@ -26,8 +26,10 @@ export function RealtimeNotifications({ className = '', maxNotifications = 5 }: 
 
   useEffect(() => {
     // Set up Supabase realtime subscription for new signatures
+    // Use a unique channel name to prevent conflicts when multiple instances exist
+    const channelName = `realtime_notifications_${Math.random().toString(36).substr(2, 9)}`
     const channel = supabase
-      .channel('realtime_notifications')
+      .channel(channelName)
       .on(
         'postgres_changes',
         {

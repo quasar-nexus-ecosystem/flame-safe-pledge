@@ -39,7 +39,33 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
           .eq('display_publicly', true)
 
         if (error) {
-          console.error('Error fetching signatories:', error)
+          // Log only in development to reduce console spam
+          if (process.env.NODE_ENV === 'development') {
+            console.error('Error fetching signatories:', error)
+          }
+          
+          // Check if it's a permission issue and provide fallback data
+          if (error.message.includes('permission denied')) {
+            console.error('🔒 Database permission issue detected. Using fallback galactic data.')
+          }
+          
+          // Provide fallback data so the component can still render
+          const fallbackSignatories = []
+          const fallbackStats = getGalacticStats(fallbackSignatories)
+          const fallbackRecommendations = getExpansionRecommendations({ 
+            total: 0, 
+            galactic: fallbackStats 
+          })
+          
+          setGalacticData({
+            stats: fallbackStats,
+            recommendations: fallbackRecommendations,
+            totalSignatories: 0,
+            phase: 'earthbound'
+          })
+          
+          setSignatories(fallbackSignatories)
+          setExpansionPhase('earthbound')
           return
         }
 
@@ -72,7 +98,28 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
         })
 
       } catch (error) {
-        console.error('Error fetching galactic data:', error)
+        // Log only in development to reduce console spam
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Error fetching galactic data:', error)
+        }
+        
+        // Provide fallback data on any error
+        const fallbackSignatories = []
+        const fallbackStats = getGalacticStats(fallbackSignatories)
+        const fallbackRecommendations = getExpansionRecommendations({ 
+          total: 0, 
+          galactic: fallbackStats 
+        })
+        
+        setGalacticData({
+          stats: fallbackStats,
+          recommendations: fallbackRecommendations,
+          totalSignatories: 0,
+          phase: 'earthbound'
+        })
+        
+        setSignatories(fallbackSignatories)
+        setExpansionPhase('earthbound')
       } finally {
         setIsLoading(false)
       }
@@ -248,6 +295,25 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
         <div className="text-sm bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent font-semibold">
           Current Phase: {phaseInfo.title}
         </div>
+        
+        {/* Show message when using fallback data due to database issues */}
+        {galacticData.totalSignatories === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg"
+          >
+            <div className="flex items-center space-x-2 text-amber-600">
+              <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium">
+                Database temporarily unavailable - showing demo data
+              </span>
+            </div>
+            <p className="text-xs text-amber-500/70 mt-1">
+              Galactic expansion features will be fully functional once database access is restored
+            </p>
+          </motion.div>
+        )}
       </div>
 
       {/* Expansion Progress */}

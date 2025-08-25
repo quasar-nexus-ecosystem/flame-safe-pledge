@@ -52,6 +52,7 @@ export function CosmicParticles({
   const particlesRef = useRef<Particle[]>([])
   const mouseRef = useRef({ x: 0, y: 0 })
   const [isActive, setIsActive] = useState(false)
+  const instanceId = useRef(Math.random().toString(36).substring(2, 10)) // Unique identifier for each instance
 
   // Color schemes for different themes
   const themes = {
@@ -320,7 +321,7 @@ export function CosmicParticles({
       canvas.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('resize', handleResize)
     }
-  }, [animate, handleMouseMove, handleResize, interactive])
+  }, [animate, handleMouseMove, handleResize, interactive, instanceId.current]) // Add instanceId to prevent conflicts
 
   return (
     <motion.div

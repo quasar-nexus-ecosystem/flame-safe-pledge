@@ -121,10 +121,38 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
         const baseStats = statsData.success ? statsData.data : { total: 0, verified: 0, organizations: 0, countries: 0, growth: { daily: 0, weekly: 0, monthly: 0 } }
 
         // Fetch signatories for detailed analysis
-        const { data: signatories, error } = await supabase
-          .from('signatories')
-          .select('*')
-          .eq('display_publicly', true)
+        let signatories = []
+        let signatoriesError = null
+        
+        try {
+          const { data: signatoryData, error } = await supabase
+            .from('signatories')
+            .select('*')
+            .eq('display_publicly', true)
+          
+          if (error) {
+            // Log only in development to reduce console spam
+            if (process.env.NODE_ENV === 'development') {
+              console.error('Error fetching signatories:', error)
+            }
+            
+            // Check if it's a permission issue
+            if (error.message.includes('permission denied')) {
+              console.error('🔒 Database permission issue detected. Using fallback data.')
+            }
+            
+            signatoriesError = error
+            signatories = [] // Use empty array as fallback
+          } else {
+            signatories = signatoryData || []
+          }
+        } catch (fetchError) {
+          // Log only in development to reduce console spam
+          if (process.env.NODE_ENV === 'development') {
+            console.error('Error in signatories fetch:', fetchError)
+          }
+          signatories = [] // Use empty array as fallback
+        }
 
         // Generate mock analytics data (PostHog removed)
         let mockData: MockAnalytics
@@ -166,7 +194,7 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
           }
         }
 
-        if (!error && signatories) {
+        if (!signatoriesError && signatories && signatories.length > 0) {
           // Calculate signatures this hour
           const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
           const signaturesThisHour = signatories.filter(s => 
@@ -377,6 +405,25 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
         <p className="text-muted-foreground mt-2">
           Real-time insights into consciousness protection across the cosmos
         </p>
+        
+        {/* Show message when using fallback data due to database issues */}
+        {data && data.totalSignatories === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg max-w-2xl mx-auto"
+          >
+            <div className="flex items-center space-x-2 text-amber-600">
+              <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium">
+                Database temporarily unavailable - showing demo analytics
+              </span>
+            </div>
+            <p className="text-xs text-amber-500/70 mt-1">
+              Real-time features will be fully functional once database access is restored
+            </p>
+          </motion.div>
+        )}
       </div>
 
       {/* Vertical Tabs Layout */}

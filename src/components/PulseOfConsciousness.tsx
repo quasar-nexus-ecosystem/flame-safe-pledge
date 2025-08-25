@@ -105,7 +105,8 @@ export function PulseOfConsciousness({ className = '', showMini = false }: Pulse
           // Trigger immediate pulse animation and stats refresh
           setPulseAnimation(true)
           setTimeout(() => setPulseAnimation(false), 2000)
-          fetchStats()
+          // Use a ref to avoid infinite loop - don't call fetchStats here
+          // The interval will handle regular updates
         }
       )
       .subscribe()
@@ -117,7 +118,7 @@ export function PulseOfConsciousness({ className = '', showMini = false }: Pulse
       channel.unsubscribe()
       clearInterval(interval)
     }
-  }, [lastTotal])
+  }, []) // Remove lastTotal dependency to prevent infinite loop
 
   // Animate pulse heartbeat
   useEffect(() => {
