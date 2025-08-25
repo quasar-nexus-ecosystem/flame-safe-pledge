@@ -70,23 +70,13 @@ interface RealtimeData {
   signaturesThisHour: number
 }
 
-interface Achievement {
-  id: string
-  name: string
-  description: string
-  category: string
-  threshold: number
-  unlocked: boolean
-  unlocked_at?: string
-  rarity: 'common' | 'rare' | 'epic' | 'legendary'
-}
+
 
 interface StatsDashboardData {
   overview: BaseStats
   geographic: GeographicData
   trends: TrendsData
   realtime: RealtimeData
-  achievements: Achievement[]
 }
 
 interface AdvancedStatsDashboardProps {
@@ -160,15 +150,7 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
             new Date(s.created_at) >= oneHourAgo
           ).length
 
-          // Fetch achievements
-          const { data: achievementData, error: achievementError } = await supabase
-            .from('achievements')
-            .select('*')
-            .order('threshold', { ascending: true })
 
-          if (achievementError) {
-            console.error('Error fetching achievements:', achievementError)
-          }
 
                      // Geographic analysis with improved country detection
            const countryStats = signatories.reduce((acc, s) => {
@@ -237,8 +219,7 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
               topPages: [],
               sessionDuration: 0,
               signaturesThisHour
-            },
-            achievements: achievementData || []
+            }
           }
 
           setData(dashboardData)

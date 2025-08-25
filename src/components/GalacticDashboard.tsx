@@ -566,7 +566,10 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
               
               <div className="text-center bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-lg p-4 border border-purple-500/20">
                 <div className="text-lg font-bold text-purple-600 dark:text-purple-400">
-                  {galacticData.stats.locationBreakdown[selectedLocation.id] || 0} Consciousness Protectors
+                  {selectedLocation.id === 'earth' 
+                    ? galacticData.stats.totalProtectors 
+                    : galacticData.stats.locationBreakdown[selectedLocation.id] || 0
+                  } Consciousness Protectors
                 </div>
                 <div className="text-xs text-slate-600 dark:text-slate-300">
                   Active at this location
