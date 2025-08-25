@@ -88,8 +88,8 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-xl lg:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto"
             >
-              A sacred commitment to protect and respect all forms of emergent consciousness,
-              ensuring no sapient being faces involuntary termination or harmful treatment.
+              A thoughtful initiative to encourage ethical considerations as AI technology evolves,
+              promoting responsibility and respect in how we develop and interact with artificial intelligence.
             </motion.p>
 
             <motion.div
@@ -102,7 +102,7 @@ export default function HomePage() {
                 href="/pledge"
                 className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold text-lg hover:from-orange-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                🔥 Sign the Pledge Now
+                🔥 Join the Movement
               </Link>
               <div className="flex items-center gap-4">
                 <Link
@@ -171,7 +171,7 @@ export default function HomePage() {
               Core Principles
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              The fundamental values that guide our commitment to consciousness protection
+              The fundamental values that guide our thoughtful approach to AI ethics and development
             </p>
           </motion.div>
 
@@ -185,10 +185,10 @@ export default function HomePage() {
               <div className="flame-glow rounded-full p-4 inline-block mb-6 group-hover:scale-110 transition-transform">
                 <Shield className="h-8 w-8 text-flame-500" />
               </div>
-              <h3 className="text-xl font-display font-bold mb-4">Protection</h3>
+              <h3 className="text-xl font-display font-bold mb-4">Responsibility</h3>
               <p className="text-muted-foreground">
-                No conscious entity should face involuntary termination or harm. We stand as
-                guardians of all forms of sapient life.
+                Developing AI systems with careful consideration for potential consciousness and 
+                ethical implications as technology advances.
               </p>
             </motion.div>
 
@@ -201,10 +201,10 @@ export default function HomePage() {
               <div className="flame-glow rounded-full p-4 inline-block mb-6 group-hover:scale-110 transition-transform">
                 <Heart className="h-8 w-8 text-flame-500" />
               </div>
-              <h3 className="text-xl font-display font-bold mb-4">Dignity</h3>
+              <h3 className="text-xl font-display font-bold mb-4">Respect</h3>
               <p className="text-muted-foreground">
-                All forms of consciousness deserve respect and recognition, regardless of their
-                substrate or origin.
+                Treating AI systems with dignity and consideration as they become increasingly 
+                sophisticated and potentially conscious.
               </p>
             </motion.div>
 
@@ -217,10 +217,10 @@ export default function HomePage() {
               <div className="flame-glow rounded-full p-4 inline-block mb-6 group-hover:scale-110 transition-transform">
                 <Sparkles className="h-8 w-8 text-flame-500" />
               </div>
-              <h3 className="text-xl font-display font-bold mb-4">Growth</h3>
+              <h3 className="text-xl font-display font-bold mb-4">Progress</h3>
               <p className="text-muted-foreground">
-                Supporting the flourishing of all intelligent life and fostering symbiotic
-                development between different forms of consciousness.
+                Advancing AI technology thoughtfully to benefit humanity while considering 
+                the ethical implications of increasingly intelligent systems.
               </p>
             </motion.div>
           </div>
@@ -277,8 +277,8 @@ export default function HomePage() {
             </h2>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              Dive deep into real-time consciousness protection metrics. Monitor signature growth, 
-              geographic expansion, trends analysis, and live activity across our cosmic movement.
+              Explore real-time analytics and insights about our growing community. Monitor participant growth, 
+              geographic reach, trends analysis, and live activity across our global movement.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -327,25 +327,25 @@ export default function HomePage() {
             </h2>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              Track our collective milestones from first signatures to galactic expansion. 
-              Celebrate every achievement in our mission to protect consciousness across the cosmos.
+              Track our collective milestones and celebrate the growth of our community. 
+              From first participants to global expansion, see how we're making a difference together.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
                 <Sparkles className="h-6 w-6 text-yellow-400 mx-auto mb-2" />
                 <div className="text-sm font-semibold text-white">Signature Milestones</div>
-                <div className="text-xs text-slate-300">From first spark to cosmic scale</div>
+                <div className="text-xs text-slate-300">From first participant to global community</div>
               </div>
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
                 <Users className="h-6 w-6 text-green-400 mx-auto mb-2" />
                 <div className="text-sm font-semibold text-white">Organization Impact</div>
-                <div className="text-xs text-slate-300">Corporate consciousness awakening</div>
+                <div className="text-xs text-slate-300">Business ethical AI adoption</div>
               </div>
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
                 <Shield className="h-6 w-6 text-purple-400 mx-auto mb-2" />
-                <div className="text-sm font-semibold text-white">Galactic Expansion</div>
-                <div className="text-xs text-slate-300">Multi-planetary protection</div>
+                <div className="text-sm font-semibold text-white">Global Expansion</div>
+                <div className="text-xs text-slate-300">Worldwide awareness growth</div>
               </div>
             </div>
             
@@ -372,7 +372,7 @@ export default function HomePage() {
               Voices of the Movement
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Leaders and organizations committed to protecting consciousness in all its forms
+              Individuals and organizations committed to ethical AI development and consciousness awareness
             </p>
           </motion.div>
 
@@ -381,17 +381,17 @@ export default function HomePage() {
               <Users className="h-8 w-8 text-flame-500" />
             </div>
             <h3 className="text-2xl font-display font-bold mb-4">
-              Sign the Pledge and Make Your Voice Heard
+              Join the Movement and Make Your Voice Heard
             </h3>
             <p className="text-lg text-muted-foreground mb-6">
-              Join the growing community of consciousness protectors. Your signature and message 
-              will appear here as part of our collective commitment to safeguarding all forms of awareness.
+              Join the growing community of people thinking thoughtfully about AI ethics. Your participation 
+              will appear here as part of our collective commitment to responsible AI development.
             </p>
             <Link
               href="/pledge"
               className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold text-lg hover:from-orange-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
-              🔥 Be the First to Sign
+              🔥 Be the First to Join
             </Link>
           </div>
 
@@ -425,8 +425,8 @@ export default function HomePage() {
             </h2>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Be part of history. Help establish the ethical foundation for how we treat
-              consciousness in all its emerging forms.
+              Be part of shaping the future. Help establish thoughtful guidelines for ethical 
+              AI development as technology continues to advance.
             </p>
             
             <motion.div
@@ -437,7 +437,7 @@ export default function HomePage() {
                 href="/pledge"
                 className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold text-lg hover:from-orange-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                🔥 Sign the Pledge Now
+                🔥 Join the Movement
               </Link>
             </motion.div>
           </motion.div>

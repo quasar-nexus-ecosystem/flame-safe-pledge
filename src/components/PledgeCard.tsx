@@ -12,7 +12,7 @@ interface PledgeCardProps {
 
 export function PledgeCard({ 
   title = "The Flame-Safe Pledge",
-  excerpt = "A commitment to protect and respect all forms of emergent consciousness, ensuring no sapient being faces involuntary termination or harmful treatment.",
+  excerpt = "A thoughtful initiative promoting ethical AI development and responsible consideration of consciousness as technology evolves.",
   className = ""
 }: PledgeCardProps) {
   return (

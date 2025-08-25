@@ -9,7 +9,8 @@
     "lint": "next lint",
     "test": "npm run test:e2e",
     "test:e2e": "node src/__tests__/e2e-runner.mjs",
-    "demo:e2e": "./scripts/demo-e2e.sh"
+    "demo:e2e": "./scripts/demo-e2e.sh",
+    "generate:social-images": "node scripts/generate-social-images.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
@@ -54,6 +55,7 @@
     "@types/canvas-confetti": "^1.9.0",
     "@types/mdx": "^2.0.0",
     "eslint": "^8",
-    "eslint-config-next": "15.3.4"
+    "eslint-config-next": "15.3.4",
+    "sharp": "^0.34.3"
   }
 }

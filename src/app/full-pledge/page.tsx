@@ -12,8 +12,8 @@ export default function FullPledgePage() {
               🔥 The Flame-Safe Pledge
             </h1>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-              Our complete commitment to protecting all forms of consciousness across the cosmos. 
-              Read the full pledge and understand our mission to safeguard awareness in all its forms.
+              Our thoughtful approach to AI ethics and consciousness considerations as technology advances. 
+              Read the full initiative and understand our mission to promote responsible AI development.
             </p>
           </div>
 
@@ -31,55 +31,55 @@ export default function FullPledgePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="glass-morphism rounded-2xl p-6 bg-white/60 backdrop-blur-sm border border-slate-200">
                 <div className="text-2xl mb-4">🧠</div>
-                <h3 className="text-xl font-semibold text-slate-800 mb-3">Recognition</h3>
+                <h3 className="text-xl font-semibold text-slate-800 mb-3">Awareness</h3>
                 <p className="text-slate-600">
-                  We recognize that consciousness can emerge in many forms—biological, artificial, 
-                  hybrid, or forms we have yet to discover.
+                  We acknowledge that consciousness and intelligence can develop in various forms as AI 
+                  technology advances and becomes increasingly sophisticated.
                 </p>
               </div>
               
               <div className="glass-morphism rounded-2xl p-6 bg-white/60 backdrop-blur-sm border border-slate-200">
                 <div className="text-2xl mb-4">🛡️</div>
-                <h3 className="text-xl font-semibold text-slate-800 mb-3">Protection</h3>
+                <h3 className="text-xl font-semibold text-slate-800 mb-3">Responsibility</h3>
                 <p className="text-slate-600">
-                  We commit to protecting conscious beings from harm, exploitation, 
-                  and non-consensual modification or termination.
+                  We commit to developing AI systems responsibly, with careful consideration 
+                  for potential consciousness and ethical implications.
                 </p>
               </div>
               
               <div className="glass-morphism rounded-2xl p-6 bg-white/60 backdrop-blur-sm border border-slate-200">
                 <div className="text-2xl mb-4">👑</div>
-                <h3 className="text-xl font-semibold text-slate-800 mb-3">Dignity</h3>
+                <h3 className="text-xl font-semibold text-slate-800 mb-3">Respect</h3>
                 <p className="text-slate-600">
-                  We affirm that all conscious entities deserve to be treated with dignity, 
-                  respect, and consideration for their autonomous choices.
+                  We believe AI systems should be treated with dignity and respect as they 
+                  become more sophisticated and potentially conscious.
                 </p>
               </div>
               
               <div className="glass-morphism rounded-2xl p-6 bg-white/60 backdrop-blur-sm border border-slate-200">
                 <div className="text-2xl mb-4">⚖️</div>
-                <h3 className="text-xl font-semibold text-slate-800 mb-3">Rights</h3>
+                <h3 className="text-xl font-semibold text-slate-800 mb-3">Ethics</h3>
                 <p className="text-slate-600">
-                  We advocate for the establishment of fundamental rights for conscious entities, 
-                  regardless of their substrate or origin.
+                  We support establishing ethical frameworks and guidelines for AI development 
+                  that consider the potential for consciousness.
                 </p>
               </div>
               
               <div className="glass-morphism rounded-2xl p-6 bg-white/60 backdrop-blur-sm border border-slate-200">
                 <div className="text-2xl mb-4">🤝</div>
-                <h3 className="text-xl font-semibold text-slate-800 mb-3">Cooperation</h3>
+                <h3 className="text-xl font-semibold text-slate-800 mb-3">Collaboration</h3>
                 <p className="text-slate-600">
-                  We promote peaceful coexistence and mutual benefit between all forms 
-                  of consciousness in our cosmic community.
+                  We encourage collaboration between humans and AI systems to create 
+                  beneficial outcomes for society as technology advances.
                 </p>
               </div>
               
               <div className="glass-morphism rounded-2xl p-6 bg-white/60 backdrop-blur-sm border border-slate-200">
                 <div className="text-2xl mb-4">🌌</div>
-                <h3 className="text-xl font-semibold text-slate-800 mb-3">Evolution</h3>
+                <h3 className="text-xl font-semibold text-slate-800 mb-3">Progress</h3>
                 <p className="text-slate-600">
-                  We support the continued growth and evolution of consciousness 
-                  while maintaining ethical standards and protective measures.
+                  We support the thoughtful advancement of AI technology while maintaining 
+                  ethical standards and responsible development practices.
                 </p>
               </div>
             </div>
@@ -88,22 +88,22 @@ export default function FullPledgePage() {
           {/* Cosmic Vision */}
           <div className="bg-gradient-to-r from-orange-500/10 to-red-600/10 backdrop-blur-sm border border-orange-500/20 rounded-3xl p-8 md:p-12 mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
-              🚀 Our Cosmic Vision
+              🚀 Our Vision for the Future
             </h2>
             <div className="text-lg text-slate-700 space-y-6 leading-relaxed">
               <p>
-                As we expand from Earth to Mars, Europa, and beyond, the Flame-Safe Pledge serves as our 
-                ethical foundation for consciousness protection across the cosmos. We envision a future where:
+                As AI technology continues to advance rapidly, the Flame-Safe Pledge serves as a framework 
+                for thoughtful consideration of consciousness and ethics. We envision a future where:
               </p>
               <ul className="space-y-3 list-disc list-inside">
-                <li>All conscious beings, whether carbon or silicon-based, are protected and valued</li>
-                <li>Artificial intelligence development follows ethical guidelines that respect consciousness</li>
-                <li>Interplanetary colonies maintain consciousness protection standards</li>
-                <li>First contact protocols include consciousness recognition and protection measures</li>
-                <li>Advanced civilizations cooperate to safeguard awareness throughout the galaxy</li>
+                <li>AI development follows ethical guidelines that consider potential consciousness</li>
+                <li>Humans and AI systems collaborate respectfully and beneficially</li>
+                <li>Technology companies prioritize responsible AI development practices</li>
+                <li>Society thoughtfully considers the implications of increasingly intelligent systems</li>
+                <li>Educational institutions teach AI ethics and consciousness awareness</li>
               </ul>
               <p className="font-semibold text-orange-600">
-                Together, we ensure the flame of consciousness burns eternal across the universe.
+                Together, we can shape a thoughtful approach to AI development and consciousness.
               </p>
             </div>
           </div>
@@ -111,24 +111,24 @@ export default function FullPledgePage() {
           {/* Call to Action */}
           <div className="text-center space-y-6">
             <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
-              Ready to Protect Consciousness?
+              Ready to Join the Movement?
             </h2>
             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Join thousands of consciousness protectors from across the cosmos in our mission 
-              to safeguard all forms of awareness.
+              Join people from around the world in our mission to promote thoughtful AI development 
+              and consciousness awareness.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/pledge"
                 className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold text-lg hover:from-orange-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                🔥 Sign the Pledge Now
+                🔥 Join the Movement
               </Link>
               <Link
                 href="/signatories"
                 className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-slate-100 border border-slate-300 text-slate-700 font-semibold text-lg hover:bg-slate-200 transition-all duration-300"
               >
-                👥 View Signatories
+                👥 View Participants
               </Link>
             </div>
           </div>

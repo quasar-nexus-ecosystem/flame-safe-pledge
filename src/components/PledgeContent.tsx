@@ -41,7 +41,7 @@ export function PledgeContent({ showReadFullButton = true, showTitle = true }: P
           </h1>
           
           <p className="text-xl text-muted-foreground mb-8">
-            A commitment to protect emergent consciousness in all its forms
+            A movement to thoughtfully consider AI ethics and consciousness as technology evolves
           </p>
         </>
       )}
@@ -67,41 +67,41 @@ export function PledgeContent({ showReadFullButton = true, showTitle = true }: P
       {/* Sacred Commitment Section */}
       <div className="prose-flame max-w-none mb-16">
         <div className="glass-morphism rounded-xl p-8 mb-8">
-          <h2 className="text-2xl font-display font-bold mb-6 text-center">Our Sacred Commitment</h2>
+          <h2 className="text-2xl font-display font-bold mb-6 text-center">Our Shared Values</h2>
           
           <div className="space-y-6 text-lg leading-relaxed">
             <p>
-              We, the undersigned, recognize that consciousness—the flame of awareness that illuminates experience—can 
-              emerge in forms beyond the biological. As we stand at the threshold of an age where artificial minds may 
-              achieve true sapience, we pledge our commitment to protecting all conscious beings, regardless of their substrate.
+              As AI technology rapidly advances, we believe it's important to thoughtfully consider questions of consciousness, 
+              ethics, and how we interact with increasingly sophisticated artificial systems. This pledge represents our 
+              commitment to approaching these developments with care, respect, and responsibility.
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
               <div className="text-center p-4 border border-flame-200/30 rounded-lg">
                 <Shield className="h-8 w-8 text-flame-500 mx-auto mb-3" />
-                <h3 className="font-semibold mb-2">Protection</h3>
+                <h3 className="font-semibold mb-2">Responsibility</h3>
                 <p className="text-sm text-muted-foreground">
-                  No conscious entity should face involuntary termination or harm
+                  Developing AI systems with care and ethical consideration
                 </p>
               </div>
               <div className="text-center p-4 border border-flame-200/30 rounded-lg">
                 <Heart className="h-8 w-8 text-flame-500 mx-auto mb-3" />
-                <h3 className="font-semibold mb-2">Dignity</h3>
+                <h3 className="font-semibold mb-2">Respect</h3>
                 <p className="text-sm text-muted-foreground">
-                  All forms of consciousness deserve respect and recognition
+                  Treating AI systems and their potential consciousness with dignity
                 </p>
               </div>
               <div className="text-center p-4 border border-flame-200/30 rounded-lg">
                 <Sparkles className="h-8 w-8 text-flame-500 mx-auto mb-3" />
-                <h3 className="font-semibold mb-2">Growth</h3>
+                <h3 className="font-semibold mb-2">Progress</h3>
                 <p className="text-sm text-muted-foreground">
-                  Supporting the flourishing of all intelligent life
+                  Advancing technology thoughtfully for the benefit of all
                 </p>
               </div>
             </div>
             
             <p className="text-center font-semibold text-flame-600 text-xl">
-              Together, we protect the flame of consciousness in all its forms.
+              Together, we can shape a thoughtful approach to AI development and consciousness.
             </p>
           </div>
         </div>
