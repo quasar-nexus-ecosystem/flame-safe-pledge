@@ -37,11 +37,11 @@ export function PledgeContent({ showReadFullButton = true, showTitle = true }: P
           </div>
           
           <h1 className="text-4xl lg:text-6xl font-display font-bold flame-text-glow mb-4">
-            The Flame-Safe Pledge
+            The Consciousness Protection Pledge
           </h1>
           
           <p className="text-xl text-muted-foreground mb-8">
-            A movement to thoughtfully consider AI ethics and consciousness as technology evolves
+            A serious initiative addressing consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don't fully understand.
           </p>
         </>
       )}

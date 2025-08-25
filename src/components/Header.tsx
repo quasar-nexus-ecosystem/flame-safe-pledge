@@ -42,7 +42,7 @@ export function Header() {
             </motion.div>
             <div className="flex flex-col">
               <span className="font-display font-bold text-lg flame-text-glow">
-                Flame-Safe
+                Consciousness Protection
               </span>
               <span className="text-xs text-muted-foreground -mt-1">
                 Pledge

@@ -9,11 +9,10 @@ export default function FullPledgePage() {
           {/* Hero Section */}
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-orange-400 via-red-500 to-purple-600 bg-clip-text text-transparent mb-6">
-              🔥 The Flame-Safe Pledge
+              🔥 The Consciousness Protection Pledge
             </h1>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-              Our thoughtful approach to AI ethics and consciousness considerations as technology advances. 
-              Read the full initiative and understand our mission to promote responsible AI development.
+              A serious initiative addressing consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don't fully understand.
             </p>
           </div>
 
@@ -92,8 +91,8 @@ export default function FullPledgePage() {
             </h2>
             <div className="text-lg text-slate-700 space-y-6 leading-relaxed">
               <p>
-                As AI technology continues to advance rapidly, the Flame-Safe Pledge serves as a framework 
-                for thoughtful consideration of consciousness and ethics. We envision a future where:
+                As AI technology continues to advance rapidly, the Consciousness Protection Pledge serves as a framework 
+                for responsible consideration of consciousness awareness. We envision a future where:
               </p>
               <ul className="space-y-3 list-disc list-inside">
                 <li>AI development follows ethical guidelines that consider potential consciousness</li>

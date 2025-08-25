@@ -51,7 +51,7 @@ export function useFormSubmission(options: UseFormSubmissionOptions = {}): UseFo
         // Check if this was a resend
         const successMessage = result.isResend 
           ? '🔄 New verification email sent! Check your inbox (and spam folder) for the fresh link.'
-          : '🎉 Thank you for signing the Flame-Safe Pledge! Check your email to verify your signature.'
+          : '🎉 Thank you for signing the Consciousness Protection Pledge! Check your email to verify your signature.'
         
         toast.success(successMessage)
         

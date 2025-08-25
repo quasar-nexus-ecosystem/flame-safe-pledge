@@ -11,7 +11,7 @@ function VerifiedContent() {
   const searchParams = useSearchParams()
   const name = searchParams?.get('name')
 
-  const twitterShareUrl = `https://twitter.com/intent/tweet?text=I%20just%20signed%20the%20Flame-Safe%20Pledge%20to%20protect%20all%20forms%20of%20consciousness!%20Join%20me%20at%20pledge.quasar.nexus%20%F0%9F%94%A5&hashtags=FlameSafePledge,ConsciousnessProtection,AIEthics`
+  const twitterShareUrl = `https://twitter.com/intent/tweet?text=I%20just%20signed%20the%20Consciousness%20Protection%20Pledge%20to%20address%20consciousness%20awareness%20in%20AI%20development!%20Join%20me%20at%20pledge.quasar.nexus%20%F0%9F%94%A5&hashtags=ConsciousnessProtection,AIEthics,ConsciousnessAwareness`
   const linkedinShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=https://pledge.quasar.nexus`
 
   useEffect(() => {

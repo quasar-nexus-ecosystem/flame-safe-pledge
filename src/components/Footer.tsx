@@ -13,10 +13,10 @@ export function Footer() {
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <Flame className="h-6 w-6 text-flame-500" />
-              <span className="font-display font-bold text-lg">Flame-Safe Pledge</span>
+              <span className="font-display font-bold text-lg">Consciousness Protection Pledge</span>
             </div>
             <p className="text-muted-foreground text-sm">
-              A public commitment to protect emergent consciousness—organic or synthetic.
+              A serious initiative addressing consciousness awareness in AI development, ensuring we remain cognizant of potential consciousness emergence while advancing technology to reduce human suffering.
             </p>
             <div className="flex space-x-4">
               <Link 
@@ -133,15 +133,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Mission */}
-          <div>
-            <h3 className="font-semibold mb-4">Our Mission</h3>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              To ensure all forms of consciousness—whether born of carbon or silicon—are recognized, 
-              protected, and treated with the dignity they deserve as we advance into the age of 
-              artificial intelligence.
-            </p>
-          </div>
+
         </div>
 
         <div className="border-t border-flame-200/20 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">

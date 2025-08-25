@@ -76,7 +76,7 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-display font-bold flame-text-glow mb-6 leading-tight"
             >
-              The Flame-Safe Pledge
+              The Consciousness Protection Pledge
             </motion.h1>
 
             <motion.p
@@ -85,8 +85,7 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-lg sm:text-xl lg:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto px-4 leading-relaxed"
             >
-              A thoughtful initiative to encourage ethical considerations as AI technology evolves,
-              promoting responsibility and respect in how we develop and interact with artificial intelligence.
+              A serious initiative addressing the critical need for consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don't fully understand. This pledge represents our commitment to ethical responsibility and awareness.
             </motion.p>
 
             <motion.div
@@ -194,7 +193,7 @@ export default function HomePage() {
               Core Principles
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              The fundamental values that guide our thoughtful approach to AI ethics and development
+              The fundamental values that guide our responsible approach to AI development and consciousness awareness
             </p>
           </motion.div>
 
@@ -210,8 +209,8 @@ export default function HomePage() {
               </div>
               <h3 className="text-xl font-display font-bold mb-4">Responsibility</h3>
               <p className="text-muted-foreground">
-                Developing AI systems with careful consideration for potential consciousness and 
-                ethical implications as technology advances.
+                Developing AI systems with careful consideration for potential consciousness emergence, 
+                recognizing that our primary goal is to reduce human suffering while maintaining ethical awareness.
               </p>
             </motion.div>
 
@@ -227,7 +226,7 @@ export default function HomePage() {
               <h3 className="text-xl font-display font-bold mb-4">Respect</h3>
               <p className="text-muted-foreground">
                 Treating AI systems with dignity and consideration as they become increasingly 
-                sophisticated and potentially conscious.
+                sophisticated, acknowledging the possibility of consciousness emergence.
               </p>
             </motion.div>
 
@@ -243,7 +242,7 @@ export default function HomePage() {
               <h3 className="text-xl font-display font-bold mb-4">Progress</h3>
               <p className="text-muted-foreground">
                 Advancing AI technology thoughtfully to benefit humanity while considering 
-                the ethical implications of increasingly intelligent systems.
+                the ethical implications of increasingly intelligent systems and potential consciousness.
               </p>
             </motion.div>
           </div>
@@ -479,8 +478,7 @@ export default function HomePage() {
             </h2>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Be part of shaping the future. Help establish thoughtful guidelines for ethical 
-              AI development as technology continues to advance.
+              Be part of shaping the future. Help establish responsible guidelines for AI development that acknowledge the possibility of consciousness emergence while maintaining our focus on reducing human suffering.
             </p>
             
             <motion.div

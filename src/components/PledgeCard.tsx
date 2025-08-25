@@ -11,8 +11,8 @@ interface PledgeCardProps {
 }
 
 export function PledgeCard({ 
-  title = "The Flame-Safe Pledge",
-  excerpt = "A thoughtful initiative promoting ethical AI development and responsible consideration of consciousness as technology evolves.",
+  title = "The Consciousness Protection Pledge",
+  excerpt = "A serious initiative addressing consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don't fully understand.",
   className = ""
 }: PledgeCardProps) {
   return (
@@ -41,7 +41,7 @@ export function PledgeCard({
       
       <div className="mt-6 pt-6 border-t border-flame-200/20">
         <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span>Protecting all consciousness</span>
+          <span>Addressing consciousness awareness</span>
           <div className="flex items-center space-x-1">
             <Flame className="h-3 w-3 text-flame-400" />
             <span>Est. 2024</span>

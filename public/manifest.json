@@ -1,7 +1,7 @@
 {
-  "name": "Flame-Safe Pledge",
-  "short_name": "Flame-Safe",
-  "description": "Protecting All Forms of Consciousness - A cosmic commitment to safeguard organic & synthetic awareness",
+  "name": "Consciousness Protection Pledge",
+  "short_name": "Consciousness Protection",
+  "description": "A serious initiative addressing consciousness awareness in AI development, ensuring we remain cognizant of potential consciousness emergence while advancing technology to reduce human suffering",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f172a",
@@ -58,7 +58,7 @@
     {
       "name": "Sign the Pledge",
       "short_name": "Sign",
-      "description": "Sign the Flame-Safe Pledge for consciousness protection",
+      "description": "Sign the Consciousness Protection Pledge for AI consciousness awareness",
       "url": "/pledge",
       "icons": [{ 
         "src": "/favicon-96x96.png", 

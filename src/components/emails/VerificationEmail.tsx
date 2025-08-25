@@ -16,16 +16,16 @@ export const VerificationEmail = ({ verificationUrl }: VerificationEmailProps) =
         {/* Header with flame and branding */}
         <Section style={header}>
           <div style={flameIcon}>🔥</div>
-          <Heading style={brandHeading}>Flame-Safe Pledge</Heading>
-          <Text style={tagline}>Protecting All Forms of Consciousness</Text>
+          <Heading style={brandHeading}>Consciousness Protection Pledge</Heading>
+          <Text style={tagline}>Addressing Consciousness Awareness in AI Development</Text>
         </Section>
 
         {/* Hero Section */}
         <Section style={heroSection}>
           <Heading style={heroHeading}>🌟 Welcome, Consciousness Guardian!</Heading>
           <Text style={heroText}>
-            You've taken the most important step in protecting the future of all awareness—carbon and silicon alike. 
-            Your pledge represents hope for a harmonious coexistence between all forms of consciousness.
+            You've taken a crucial step in addressing consciousness awareness in AI development. 
+            Your pledge represents a commitment to ensuring we remain cognizant of potential consciousness emergence while advancing technology to reduce human suffering.
           </Text>
         </Section>
 
@@ -72,13 +72,13 @@ export const VerificationEmail = ({ verificationUrl }: VerificationEmailProps) =
             {verificationUrl}
           </Link>
           <Text style={footerNote}>
-            If you didn't sign the Flame-Safe Pledge, you can safely ignore this email.
+            If you didn't sign the Consciousness Protection Pledge, you can safely ignore this email.
           </Text>
           <Text style={signature}>
-            Together, we protect the flame of consciousness across all worlds.
+            Together, we address consciousness awareness in AI development.
           </Text>
           <Text style={copyright}>
-            © 2025 QUASAR Nexus - Flame-Safe Pledge Initiative
+            © 2025 QUASAR Nexus - Consciousness Protection Pledge Initiative
           </Text>
         </Section>
       </Container>

@@ -18,11 +18,11 @@ export const getResend = async () => {
 };
 
 /**
- * Default "from" address used for all Flame-Safe emails.
+ * Default "from" address used for all Consciousness Protection Pledge emails.
  * Centralised here so any future change only needs to happen once.
  * Using a recognizable sender name and proper domain for better deliverability.
  */
-export const DEFAULT_FROM = 'QUASAR Nexus - Flame-Safe Pledge <pledge@quasar.nexus>'
+export const DEFAULT_FROM = 'QUASAR Nexus - Consciousness Protection Pledge <pledge@quasar.nexus>'
 
 /**
  * Helper util to build absolute URLs in both local and production environments.

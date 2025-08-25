@@ -397,28 +397,7 @@ export function PledgeForm({ user }: PledgeFormProps) {
               </div>
             </motion.div>
             
-            <motion.div 
-              className="flex items-start space-x-3"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.4 }}
-            >
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Checkbox 
-                  id="agree" 
-                  checked={agreed} 
-                  onCheckedChange={(checked: boolean) => setAgreed(checked)} 
-                />
-              </motion.div>
-              <Label htmlFor="agree" className="text-sm cursor-pointer leading-relaxed">
-                I have read and agree to the{' '}
-                <Link href="https://quasar.nexus/terms-of-service" target="_blank" rel="noopener noreferrer" className="underline hover:text-flame-400 transition-colors">Terms of Service</Link> and{' '}
-                <Link href="https://quasar.nexus/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-flame-400 transition-colors">Privacy Policy</Link>.
-              </Label>
-            </motion.div>
+
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -427,7 +406,7 @@ export function PledgeForm({ user }: PledgeFormProps) {
             >
               <Button 
                 type="submit" 
-                disabled={loading || !agreed} 
+                disabled={loading} 
                 className="w-full py-4 text-lg font-semibold gradient-flame hover:scale-105 transition-all duration-300 disabled:hover:scale-100 group relative overflow-hidden"
               >
                   {loading ? (
@@ -489,23 +468,7 @@ export function PledgeForm({ user }: PledgeFormProps) {
               </Button>
             </motion.div>
 
-            {!user && (
-              <motion.div 
-                className="text-center mt-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.8 }}
-              >
-                <Link
-                  href={`https://auth.quasar.nexus/signup?name=${encodeURIComponent(
-                    watch('name') || ''
-                  )}&email=${encodeURIComponent(watch('email') || '')}&redirect=/pledge/signed`}
-                  className="text-sm text-muted-foreground underline hover:text-flame-400 transition-colors"
-                >
-                  Create your QUASAR Nexus Account
-                </Link>
-              </motion.div>
-            )}
+
           </form>
         </div>
       </motion.div>
