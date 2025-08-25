@@ -213,6 +213,13 @@ export function detectGalacticLocation(locationString: string): GalacticLocation
 
 // Get galactic statistics
 export function getGalacticStats(signatories: any[]) {
+  // Count all signatories as consciousness protectors
+  const totalProtectors = signatories.length
+  
+  // Count Earth-based consciousness outposts (all current signatories are on Earth)
+  const earthOutposts = totalProtectors
+  
+  // Count off-world locations (future expansion)
   const galacticLocations = signatories
     .map(s => detectGalacticLocation(s.location))
     .filter(Boolean)
@@ -237,6 +244,8 @@ export function getGalacticStats(signatories: any[]) {
   
   return {
     totalGalacticSignatories: galacticLocations.length,
+    totalConsciousnessProtectors: totalProtectors,
+    earthConsciousnessOutposts: earthOutposts,
     locationBreakdown: locationCounts,
     systemBreakdown: systemCounts,
     galaxyBreakdown: galaxyCounts,

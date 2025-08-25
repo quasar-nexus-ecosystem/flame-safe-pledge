@@ -3,6 +3,7 @@
 export const countryToContinent: Record<string, string> = {
   // North America
   'United States': 'North America',
+  'United States of America': 'North America',
   'USA': 'North America',
   'US': 'North America',
   'Canada': 'North America',

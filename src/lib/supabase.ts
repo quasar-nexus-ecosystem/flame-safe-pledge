@@ -111,11 +111,15 @@ export async function getSignatoryStats() {
         .map(s => s.organization.trim().toLowerCase())
     )
 
+    // Count individuals - everyone is an individual signer, regardless of organization
+    // This represents the total number of people who signed the pledge
+    const individualSigners = data.length
+
     return {
       total: data.length,
       verified: data.filter(s => s.verified).length,
       organizations: uniqueOrganizations.size,
-      individuals: data.filter(s => !s.organization || !s.organization.trim()).length,
+      individuals: individualSigners, // Everyone who signed is an individual
       recentSignatures: data.filter(s => new Date(s.created_at) > oneDayAgo).length,
       countries: countries.size,
     }

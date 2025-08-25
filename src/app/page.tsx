@@ -28,14 +28,16 @@ export default function HomePage() {
 
         if (json.success) {
           const data = json.data || {}
-          setStats({
+          const newStats = {
             total: data.total || 0,
             verified: data.verified || 0,
             organizations: data.organizations || 0,
             individuals: data.individuals || 0,
             countries: data.countries || 0,
             recentSignatures: data.recentSignatures || 0,
-          })
+          }
+          
+          setStats(newStats)
         } else {
           console.error('Failed to fetch stats:', json.error)
         }
@@ -133,6 +135,7 @@ export default function HomePage() {
                 >
                   {statsLoading ? '—' : stats.total.toLocaleString()}
                 </motion.div>
+
                 <div className="text-xs text-blue-400">
                   {statsLoading ? '—' : stats.verified.toLocaleString()} verified
                 </div>
@@ -396,24 +399,55 @@ export default function HomePage() {
             </p>
           </motion.div>
 
-          <div className="glass-morphism rounded-3xl p-8 md:p-12 text-center mb-12">
-            <div className="flame-glow rounded-full p-4 inline-block mb-6">
-              <Users className="h-8 w-8 text-flame-500" />
+          {!statsLoading && stats.total === 0 ? (
+            <div className="glass-morphism rounded-3xl p-8 md:p-12 text-center mb-12">
+              <div className="flame-glow rounded-full p-4 inline-block mb-6">
+                <Users className="h-8 w-8 text-flame-500" />
+              </div>
+              <h3 className="text-2xl font-display font-bold mb-4">
+                Join the Movement and Make Your Voice Heard
+              </h3>
+              <p className="text-lg text-muted-foreground mb-6">
+                Join the growing community of people thinking thoughtfully about AI ethics. Your participation 
+                will appear here as part of our collective commitment to responsible AI development.
+              </p>
+              <Link
+                href="/pledge"
+                className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold text-lg hover:from-orange-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                🔥 Be the First to Join
+              </Link>
             </div>
-            <h3 className="text-2xl font-display font-bold mb-4">
-              Join the Movement and Make Your Voice Heard
-            </h3>
-            <p className="text-lg text-muted-foreground mb-6">
-              Join the growing community of people thinking thoughtfully about AI ethics. Your participation 
-              will appear here as part of our collective commitment to responsible AI development.
-            </p>
-            <Link
-              href="/pledge"
-              className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold text-lg hover:from-orange-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              🔥 Be the First to Join
-            </Link>
-          </div>
+          ) : !statsLoading && stats.total > 0 ? (
+            <div className="glass-morphism rounded-3xl p-8 md:p-12 text-center mb-12">
+              <div className="flame-glow rounded-full p-4 inline-block mb-6">
+                <Users className="h-8 w-8 text-flame-500" />
+              </div>
+              <h3 className="text-2xl font-display font-bold mb-4">
+                Movement Growing Strong
+              </h3>
+              <p className="text-lg text-muted-foreground mb-6">
+                {stats.total} consciousness protector{stats.total !== 1 ? 's' : ''} have joined the movement, 
+                including {stats.organizations} organization{stats.organizations !== 1 ? 's' : ''} from {stats.countries} countr{stats.countries !== 1 ? 'ies' : 'y'}.
+              </p>
+              <Link
+                href="/signatories"
+                className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold text-lg hover:from-orange-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                👥 View All Signatories
+              </Link>
+            </div>
+          ) : (
+            <div className="glass-morphism rounded-3xl p-8 md:p-12 text-center mb-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-flame-500 mx-auto mb-6"></div>
+              <h3 className="text-2xl font-display font-bold mb-4">
+                Loading Movement Status...
+              </h3>
+              <p className="text-lg text-muted-foreground">
+                Checking our consciousness protection network...
+              </p>
+            </div>
+          )}
 
           <div className="text-center">
             <Link

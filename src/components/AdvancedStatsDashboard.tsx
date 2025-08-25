@@ -223,32 +223,8 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
               continents
             },
             trends: {
-              signatureGrowth: Array.from({ length: 30 }, (_, i) => {
-                const date = new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000)
-                const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-                const dayEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)
-                const count = signatories.filter(s => {
-                  const sigDate = new Date(s.created_at)
-                  return sigDate >= dayStart && sigDate < dayEnd
-                }).length
-                return {
-                  date: date.toISOString().split('T')[0],
-                  count
-                }
-              }),
-              organizationGrowth: Array.from({ length: 12 }, (_, i) => {
-                const date = new Date(Date.now() - (11 - i) * 30 * 24 * 60 * 60 * 1000)
-                const monthStart = new Date(date.getFullYear(), date.getMonth(), 1)
-                const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0)
-                const count = signatories.filter(s => {
-                  const sigDate = new Date(s.created_at)
-                  return s.organization && sigDate >= monthStart && sigDate <= monthEnd
-                }).length
-                return {
-                  date: date.toISOString().split('T')[0],
-                  count
-                }
-              }),
+              signatureGrowth: [],
+              organizationGrowth: [],
               verifiedRate: baseStats.total > 0 ? (baseStats.verified || 0) / baseStats.total : 0
             },
             realtime: {
@@ -356,8 +332,6 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: TrendingUp },
     { id: 'geographic', label: 'Geographic', icon: Globe },
-    { id: 'trends', label: 'Trends', icon: TrendingUp },
-    { id: 'realtime', label: 'Real-time', icon: Activity },
   ]
 
   return (
@@ -439,12 +413,6 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
               )}
               {activeTab === 'geographic' && (
                 <GeographicTab data={data} isLoading={isLoading} />
-              )}
-              {activeTab === 'trends' && (
-                <TrendsTab data={data} isLoading={isLoading} />
-              )}
-              {activeTab === 'realtime' && (
-                <RealtimeTab data={data} isLoading={isLoading} />
               )}
             </motion.div>
           </AnimatePresence>
@@ -535,7 +503,7 @@ function OverviewTab({ data, isLoading }: { data: StatsDashboardData | null; isL
     )
   }
 
-  if (!data || !data.overview || !data.overview.growth) return null
+  if (!data || !data.overview) return null
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -545,7 +513,6 @@ function OverviewTab({ data, isLoading }: { data: StatsDashboardData | null; isL
         icon={Users}
         color="blue"
         subtitle="Consciousness protectors"
-        trend={{ value: 12, isPositive: true }}
       />
       <StatCard
         title="Verified Signatories"
@@ -553,7 +520,6 @@ function OverviewTab({ data, isLoading }: { data: StatsDashboardData | null; isL
         icon={Zap}
         color="green"
         subtitle={`${((data.overview.verified / data.overview.total) * 100).toFixed(1)}% verified`}
-        trend={{ value: 8, isPositive: true }}
       />
       <StatCard
         title="Organizations"
@@ -561,7 +527,6 @@ function OverviewTab({ data, isLoading }: { data: StatsDashboardData | null; isL
         icon={Building2}
         color="purple"
         subtitle="Corporate supporters"
-        trend={{ value: 15, isPositive: true }}
       />
       <StatCard
         title="Countries"
@@ -569,28 +534,27 @@ function OverviewTab({ data, isLoading }: { data: StatsDashboardData | null; isL
         icon={MapPin}
         color="orange"
         subtitle="Global reach"
-        trend={{ value: 5, isPositive: true }}
       />
       <StatCard
-        title="Daily Growth"
-        value={(data.overview.growth?.daily || 0).toLocaleString()}
+        title="Recent Signatures"
+        value={data.overview.recentSignatures || 0}
         icon={TrendingUp}
         color="green"
-        subtitle="New signatures today"
+        subtitle="Last 24 hours"
       />
       <StatCard
-        title="Weekly Growth"
-        value={(data.overview.growth?.weekly || 0).toLocaleString()}
-        icon={Activity}
+        title="Individual Signers"
+        value={data.overview.individuals || 0}
+        icon={Users}
         color="blue"
-        subtitle="This week's momentum"
+        subtitle="Personal commitments"
       />
       <StatCard
-        title="Monthly Growth"
-        value={(data.overview.growth?.monthly || 0).toLocaleString()}
-        icon={TrendingUp}
+        title="Verification Rate"
+        value={`${data.overview.total > 0 ? ((data.overview.verified || 0) / data.overview.total * 100).toFixed(1) : 0}%`}
+        icon={Zap}
         color="purple"
-        subtitle="Monthly expansion"
+        subtitle="Email verification success"
       />
       <StatCard
         title="Consciousness Pulse"

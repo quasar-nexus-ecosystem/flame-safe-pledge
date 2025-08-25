@@ -81,7 +81,9 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
           stats: galacticStats,
           recommendations,
           totalSignatories: total,
-          phase
+          phase,
+          consciousnessProtectors: galacticStats.totalConsciousnessProtectors || 0,
+          earthOutposts: galacticStats.earthConsciousnessOutposts || 0
         })
 
       } catch (error) {
@@ -345,6 +347,58 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
         </div>
       </div>
 
+      {/* Current Stats */}
+      <div className="mb-8">
+        <h3 className="text-xl font-semibold mb-4 flex items-center space-x-2">
+          <Users className="h-5 w-5 text-blue-500" />
+          <span>Current Status</span>
+        </h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="p-4 rounded-xl border-2 border-blue-400 bg-gradient-to-br from-blue-500/20 to-purple-500/20"
+          >
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600">
+                {galacticData.consciousnessProtectors || 0}
+              </div>
+              <div className="text-sm text-muted-foreground">Consciousness Protectors</div>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="p-4 rounded-xl border-2 border-green-400 bg-gradient-to-br from-green-500/20 to-blue-500/20"
+          >
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">
+                {galacticData.earthOutposts || 0}
+              </div>
+              <div className="text-sm text-muted-foreground">Earth Outposts</div>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="p-4 rounded-xl border-2 border-purple-400 bg-gradient-to-br from-purple-500/20 to-pink-500/20"
+          >
+            <div className="text-center">
+              <div className="text-2xl font-bold text-purple-600">
+                {galacticData.stats.uniqueLocations || 0}
+              </div>
+              <div className="text-sm text-muted-foreground">Galactic Locations</div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
       {/* Galactic Locations Grid */}
       <div className="mb-8">
         <h3 className="text-xl font-semibold mb-4 flex items-center space-x-2">
@@ -354,7 +408,12 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {GALACTIC_LOCATIONS.slice(0, 6).map((location, index) => {
-            const signatureCount = galacticData.stats.locationBreakdown[location.id] || 0
+            // For Earth, show total consciousness protectors
+            // For other locations, show signatures at that specific location
+            const signatureCount = location.id === 'earth' 
+              ? galacticData.stats.totalConsciousnessProtectors || 0
+              : galacticData.stats.locationBreakdown[location.id] || 0
+            
             const isActive = signatureCount > 0 || location.id === 'earth'
             
             return (
@@ -396,7 +455,12 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
                     Est. {location.established}
                   </div>
                   <div className="text-sm font-bold text-purple-500">
-                    {signatureCount > 0 ? `${signatureCount} signatures` : 'Awaiting activation'}
+                    {location.id === 'earth' 
+                      ? `${signatureCount} consciousness protectors`
+                      : signatureCount > 0 
+                        ? `${signatureCount} signatures` 
+                        : 'Awaiting activation'
+                    }
                   </div>
                 </div>
               </motion.div>
