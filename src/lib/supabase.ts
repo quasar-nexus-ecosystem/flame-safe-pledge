@@ -16,12 +16,25 @@ export async function getAllSignatories(): Promise<Signatory[]> {
     .order('created_at', { ascending: false })
 
   if (error) {
-    console.error('Error fetching all signatories:', error)
+    // Log only in development to reduce console spam
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error fetching all signatories:', error)
+    }
+    
+    // Check if it's a permission issue
+    if (error.message.includes('permission denied')) {
+      console.error('🔒 Database permission issue detected. Please check Supabase RLS policies.')
+      return []
+    }
+    
     return []
   }
 
-  console.log('📊 All signatories in database:', data?.length || 0)
-  console.log('📊 Signatories data sample:', data?.slice(0, 2))
+  // Log only in development to reduce console spam
+  if (process.env.NODE_ENV === 'development') {
+    console.log('📊 All signatories in database:', data?.length || 0)
+    console.log('📊 Signatories data sample:', data?.slice(0, 2))
+  }
   return data || []
 }
 
@@ -38,12 +51,25 @@ export async function getSignatories(): Promise<Signatory[]> {
     .order('created_at', { ascending: false })
 
   if (error) {
-    console.error('Error fetching signatories:', error)
-    console.error('Supabase error details:', error)
+    // Log only in development to reduce console spam
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error fetching signatories:', error)
+      console.error('Supabase error details:', error)
+    }
+    
+    // Check if it's a permission issue
+    if (error.message.includes('permission denied')) {
+      console.error('🔒 Database permission issue detected. Please check Supabase RLS policies.')
+      return []
+    }
+    
     return []
   }
 
-  console.log('📊 Fetched signatories from Supabase:', data?.length || 0)
+  // Log only in development to reduce console spam
+  if (process.env.NODE_ENV === 'development') {
+    console.log('📊 Fetched signatories from Supabase:', data?.length || 0)
+  }
   return data || []
 }
 
@@ -54,7 +80,25 @@ export async function getSignatoryStats() {
       .select('*')
 
     if (error) {
-      console.error('Error fetching stats:', error)
+      // Log only in development to reduce console spam
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error fetching stats:', error)
+      }
+      
+      // Check if it's a permission issue
+      if (error.message.includes('permission denied')) {
+        console.error('🔒 Database permission issue detected. Please check Supabase RLS policies.')
+        return {
+          total: 0,
+          verified: 0,
+          organizations: 0,
+          individuals: 0,
+          recentSignatures: 0,
+          countries: 0,
+          error: 'Database access restricted'
+        }
+      }
+      
       return {
         total: 0,
         verified: 0,

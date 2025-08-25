@@ -22,7 +22,10 @@ export interface AchievementDefinition {
 export async function createAchievementsTable() {
   const { error } = await supabase.rpc('create_achievements_table_if_not_exists')
   if (error) {
-    console.log('Achievements table likely already exists:', error.message)
+    // Log only in development to reduce console spam
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Achievements table likely already exists:', error.message)
+    }
   }
 }
 
@@ -57,7 +60,10 @@ export async function storeAchievement(achievementId: string): Promise<boolean> 
       .single()
 
     if (existing) {
+      // Log only in development to reduce console spam
+    if (process.env.NODE_ENV === 'development') {
       console.log('Achievement already unlocked:', achievementId)
+    }
       return false
     }
 
@@ -75,7 +81,10 @@ export async function storeAchievement(achievementId: string): Promise<boolean> 
       return false
     }
 
-    console.log('🏆 ACHIEVEMENT STORED:', achievementId)
+    // Log only in development to reduce console spam
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🏆 ACHIEVEMENT STORED:', achievementId)
+    }
     return true
   } catch (error) {
     console.warn('Error storing achievement:', error)

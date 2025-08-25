@@ -55,9 +55,11 @@ export async function GET(
     }
 
     // Analytics tracking disabled (PostHog removed)
-    console.log('✅ Email verification completed:', { id: signatory.id, email: signatory.email })
-
-    console.log('✅ Email verified successfully for:', signatory.email)
+    // Log only in development to reduce console spam
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✅ Email verification completed:', { id: signatory.id, email: signatory.email })
+      console.log('✅ Email verified successfully for:', signatory.email)
+    }
     return NextResponse.redirect(new URL('/pledge/verified', request.url))
     
   } catch (error) {

@@ -37,7 +37,10 @@ export async function POST(request: Request) {
         )
       }
       // If it exists but is not verified, we'll update and resend verification
-      console.log('🔄 Resending verification for existing unverified email:', email)
+      // Log only in development to reduce console spam
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔄 Resending verification for existing unverified email:', email)
+      }
     }
 
     const verification_token = crypto.randomUUID()
@@ -89,7 +92,10 @@ export async function POST(request: Request) {
 
 
     // Analytics tracking disabled (PostHog removed)
-    console.log('📝 Pledge signed successfully:', { name: name || 'Anonymous', organization: rest.organization })
+    // Log only in development to reduce console spam
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📝 Pledge signed successfully:', { name: name || 'Anonymous', organization: rest.organization })
+    }
 
     // Send verification email
     try {
