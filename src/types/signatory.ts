@@ -2,6 +2,7 @@ export interface Signatory {
   id: string;
   user_id?: string; // Foreign key to auth.users
   name?: string;
+  email?: string; // Email field was missing!
   organization?: string;
   title?: string;
   message?: string;
@@ -14,6 +15,7 @@ export interface Signatory {
     linkedin?: string;
     github?: string;
   };
+  verification_token?: string; // For email verification
   
   /** Email verified via /api/verify/[token] */
   verified?: boolean;

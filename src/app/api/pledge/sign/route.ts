@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { signatorySchema } from '@/lib/schemas'
 import { sendVerificationEmail } from '@/lib/resend'
-import { trackPledgeSign } from '@/lib/posthog'
+// PostHog removed - tracking disabled
 
 export async function POST(request: Request) {
   try {
@@ -88,19 +88,8 @@ export async function POST(request: Request) {
 
 
 
-    // 📊 TRACK PLEDGE SIGNING EVENT WITH POSTHOG
-    try {
-      trackPledgeSign({
-        name: name || 'Anonymous',
-        organization: rest.organization,
-        location: rest.location,
-        verified: false
-      })
-      console.log('🎯 PostHog: Pledge signing tracked')
-    } catch (trackingError) {
-      console.warn('PostHog tracking failed:', trackingError)
-      // Don't fail the request if tracking fails
-    }
+    // Analytics tracking disabled (PostHog removed)
+    console.log('📝 Pledge signed successfully:', { name: name || 'Anonymous', organization: rest.organization })
 
     // Send verification email
     try {

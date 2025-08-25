@@ -6,7 +6,7 @@ import { Trophy, Star, Zap, Crown, Heart, Users, Building, Globe, Sparkles, Awar
 import { supabase } from '@/lib/supabase'
 import { getUnlockedAchievements, storeAchievement, getAchievementStats } from '@/lib/achievements'
 import confetti from 'canvas-confetti'
-import { trackEvent } from '@/lib/posthog'
+// PostHog removed - tracking disabled
 
 interface Achievement {
   id: string
@@ -256,22 +256,8 @@ export function AchievementSystem({ className = '', stats, showMini = false, fil
       if (newUnlocked.length > 0) {
         console.log('🏆 NEW ACHIEVEMENTS UNLOCKED:', newUnlocked.map(a => a.title))
         
-        // 📊 TRACK ACHIEVEMENT UNLOCKS WITH POSTHOG
-        try {
-          newUnlocked.forEach(achievement => {
-            trackEvent('achievement_unlocked', {
-              achievement_id: achievement.id,
-              achievement_title: achievement.title,
-              achievement_rarity: achievement.rarity,
-              total_signatures: stats.total,
-              total_organizations: stats.organizations,
-              timestamp: new Date().toISOString()
-            })
-          })
-          console.log('🎯 PostHog: Achievement unlocks tracked')
-        } catch (trackingError) {
-          console.warn('PostHog tracking failed:', trackingError)
-        }
+        // Analytics tracking disabled (PostHog removed)
+        console.log('🏆 Achievement system working:', newUnlocked.map(a => a.title))
         
         // Store achievements in database
         for (const achievement of newUnlocked) {

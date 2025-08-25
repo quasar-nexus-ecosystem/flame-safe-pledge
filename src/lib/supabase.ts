@@ -9,6 +9,22 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Database functions
+export async function getAllSignatories(): Promise<Signatory[]> {
+  const { data, error } = await supabase
+    .from('signatories')
+    .select('*')
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching all signatories:', error)
+    return []
+  }
+
+  console.log('📊 All signatories in database:', data?.length || 0)
+  console.log('📊 Signatories data sample:', data?.slice(0, 2))
+  return data || []
+}
+
 export async function getSignatories(): Promise<Signatory[]> {
   const { data, error } = await supabase
     .from('signatories')
@@ -18,13 +34,16 @@ export async function getSignatories(): Promise<Signatory[]> {
       verified
     `)
     .eq('display_publicly', true)
+    // Temporarily removed .eq('verified', true) for debugging
     .order('created_at', { ascending: false })
 
   if (error) {
     console.error('Error fetching signatories:', error)
+    console.error('Supabase error details:', error)
     return []
   }
 
+  console.log('📊 Fetched signatories from Supabase:', data?.length || 0)
   return data || []
 }
 

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '@/lib/supabase'
-import { type PostHogAnalytics } from '@/lib/posthog'
+// PostHog removed - using mock analytics only
 import { SimpleChart } from '@/components/SimpleChart'
 import { getCountryFromLocation, getContinentFromLocation, getCountryFlag } from '@/lib/countries'
 import { 
@@ -57,7 +57,19 @@ interface TrendsData {
   verifiedRate: number
 }
 
-interface RealtimeData extends PostHogAnalytics {
+// Simple analytics interface (PostHog removed)
+interface MockAnalytics {
+  activeSessions: number
+  averageTimeOnSite: number
+  conversionRate: number
+  bounceRate: number
+  pageViews24h: number
+  uniqueVisitors24h: number
+  topPages: Array<{ page: string; views: number }>
+  sessionDuration: number
+}
+
+interface RealtimeData extends MockAnalytics {
   signaturesThisHour: number
 }
 
@@ -114,11 +126,11 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
           .select('*')
           .eq('display_publicly', true)
 
-        // Fetch PostHog analytics (client-side compatible)
-        let postHogData: PostHogAnalytics
+        // Generate mock analytics data (PostHog removed)
+        let mockData: MockAnalytics
         try {
-          // For now, use mock data since PostHog server-side queries need API setup
-          postHogData = {
+          // Generate realistic mock data for demo purposes
+          mockData = {
             activeSessions: Math.floor(Math.random() * 25) + 8,
             averageTimeOnSite: Math.random() * 3 + 1.5,
             conversionRate: Math.random() * 0.15 + 0.05,
@@ -137,7 +149,7 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
         } catch (error) {
           console.error('Error generating analytics data:', error)
           // Fallback mock data
-          postHogData = {
+          mockData = {
             activeSessions: 12,
             averageTimeOnSite: 2.5,
             conversionRate: 0.08,
@@ -247,7 +259,7 @@ export function AdvancedStatsDashboard({ className = '', showCompact = false }: 
               verifiedRate: baseStats.total > 0 ? (baseStats.verified || 0) / baseStats.total : 0
             },
             realtime: {
-              ...postHogData,
+              ...mockData,
               signaturesThisHour
             },
             achievements: achievementData || []

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
-import { trackEvent } from '@/lib/posthog'
+// PostHog removed - tracking disabled
 
 export async function GET(
   request: Request,
@@ -54,21 +54,8 @@ export async function GET(
       return NextResponse.redirect(new URL('/pledge/invalid-token', request.url))
     }
 
-    // 📊 TRACK EMAIL VERIFICATION WITH POSTHOG
-    try {
-      trackEvent('email_verified', {
-        signatory_id: signatory.id,
-        has_organization: !!signatory.organization,
-        location: signatory.location,
-        time_to_verify: signatory.created_at ? 
-          Date.now() - new Date(signatory.created_at).getTime() : null,
-        timestamp: new Date().toISOString()
-      })
-      console.log('🎯 PostHog: Email verification tracked')
-    } catch (trackingError) {
-      console.warn('PostHog tracking failed:', trackingError)
-      // Don't fail the request if tracking fails
-    }
+    // Analytics tracking disabled (PostHog removed)
+    console.log('✅ Email verification completed:', { id: signatory.id, email: signatory.email })
 
     console.log('✅ Email verified successfully for:', signatory.email)
     return NextResponse.redirect(new URL('/pledge/verified', request.url))
