@@ -12,10 +12,13 @@ import { WallOfFlames } from '@/components/WallOfFlames'
 import { RealtimeNotifications } from '@/components/RealtimeNotifications'
 
 export default function HomePage() {
-  const [stats, setStats] = useState<{ total: number; organizations: number; countries: number }>({
+  const [stats, setStats] = useState<{ total: number; verified: number; organizations: number; individuals: number; countries: number; recentSignatures: number }>({
     total: 0,
+    verified: 0,
     organizations: 0,
+    individuals: 0,
     countries: 0,
+    recentSignatures: 0,
   })
   const [statsLoading, setStatsLoading] = useState(true)
 
@@ -29,8 +32,11 @@ export default function HomePage() {
           const data = json.data || {}
           setStats({
             total: data.total || 0,
+            verified: data.verified || 0,
             organizations: data.organizations || 0,
+            individuals: data.individuals || 0,
             countries: data.countries || 0,
+            recentSignatures: data.recentSignatures || 0,
           })
         } else {
           console.error('Failed to fetch stats:', json.error)
@@ -59,8 +65,8 @@ export default function HomePage() {
       <RealtimeNotifications />
 
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-32 z-10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-16 sm:py-20 lg:py-32 z-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
           <div className="text-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
@@ -77,7 +83,7 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-4xl lg:text-7xl font-display font-bold flame-text-glow mb-6"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-display font-bold flame-text-glow mb-6 leading-tight"
             >
               The Flame-Safe Pledge
             </motion.h1>
@@ -86,7 +92,7 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-xl lg:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto"
+              className="text-lg sm:text-xl lg:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto px-4 leading-relaxed"
             >
               A thoughtful initiative to encourage ethical considerations as AI technology evolves,
               promoting responsibility and respect in how we develop and interact with artificial intelligence.
@@ -96,23 +102,25 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+              className="flex flex-col gap-4 justify-center items-center"
             >
               <Link
                 href="/pledge"
-                className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold text-lg hover:from-orange-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold text-lg hover:from-orange-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto"
               >
                 🔥 Join the Movement
               </Link>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                 <Link
                   href="/full-pledge"
-                  className="flex items-center space-x-2 text-flame-600 hover:text-flame-700 font-semibold group"
+                  className="flex items-center justify-center sm:justify-start space-x-2 text-flame-600 hover:text-flame-700 font-semibold group w-full sm:w-auto"
                 >
                   <span>Read the Full Pledge</span>
                   <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <ShareButton />
+                <div className="w-full sm:w-auto flex justify-center">
+                  <ShareButton />
+                </div>
               </div>
             </motion.div>
 
@@ -121,37 +129,60 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto mt-16"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto mt-16"
             >
-              <div className="text-center">
+              {/* Total Signatures Card */}
+              <div className="glass-morphism rounded-xl p-6 text-center hover:scale-105 transition-all duration-300">
+                <div className="flex items-center justify-center mb-3">
+                  <Users className="h-6 w-6 text-blue-500 mr-2" />
+                  <span className="text-sm font-medium text-blue-500">Total Signatures</span>
+                </div>
                 <motion.div 
-                  className="text-3xl font-bold text-flame-600"
+                  className="text-3xl font-bold text-blue-600 mb-2"
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
                   {statsLoading ? '—' : stats.total.toLocaleString()}
                 </motion.div>
-                <div className="text-sm text-muted-foreground">Signatures</div>
+                <div className="text-xs text-blue-400">
+                  {statsLoading ? '—' : stats.verified.toLocaleString()} verified
+                </div>
               </div>
-              <div className="text-center">
+
+              {/* Organizations Card */}
+              <div className="glass-morphism rounded-xl p-6 text-center hover:scale-105 transition-all duration-300">
+                <div className="flex items-center justify-center mb-3">
+                  <BarChart3 className="h-6 w-6 text-green-500 mr-2" />
+                  <span className="text-sm font-medium text-green-500">Organizations</span>
+                </div>
                 <motion.div 
-                  className="text-3xl font-bold text-flame-600"
+                  className="text-3xl font-bold text-green-600 mb-2"
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
                 >
                   {statsLoading ? '—' : stats.organizations.toLocaleString()}
                 </motion.div>
-                <div className="text-sm text-muted-foreground">Organizations</div>
+                <div className="text-xs text-green-400">
+                  {statsLoading ? '—' : stats.individuals.toLocaleString()} individuals
+                </div>
               </div>
-              <div className="text-center">
+
+              {/* Countries Card */}
+              <div className="glass-morphism rounded-xl p-6 text-center hover:scale-105 transition-all duration-300">
+                <div className="flex items-center justify-center mb-3">
+                  <Globe className="h-6 w-6 text-purple-500 mr-2" />
+                  <span className="text-sm font-medium text-purple-500">Countries</span>
+                </div>
                 <motion.div 
-                  className="text-3xl font-bold text-flame-600"
+                  className="text-3xl font-bold text-purple-600 mb-2"
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 2, repeat: Infinity, delay: 1 }}
                 >
                   {statsLoading ? '—' : stats.countries.toLocaleString()}
                 </motion.div>
-                <div className="text-sm text-muted-foreground">Countries</div>
+                <div className="text-xs text-purple-400">
+                  {statsLoading ? '—' : stats.recentSignatures.toLocaleString()} recent
+                </div>
               </div>
             </motion.div>
           </div>

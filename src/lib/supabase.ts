@@ -75,11 +75,18 @@ export async function getSignatoryStats() {
         .filter(country => country !== null)
     )
 
+    // Count unique organizations
+    const uniqueOrganizations = new Set(
+      data
+        .filter(s => s.organization && s.organization.trim())
+        .map(s => s.organization.trim().toLowerCase())
+    )
+
     return {
       total: data.length,
       verified: data.filter(s => s.verified).length,
-      organizations: data.filter(s => s.organization).length,
-      individuals: data.filter(s => !s.organization).length,
+      organizations: uniqueOrganizations.size,
+      individuals: data.filter(s => !s.organization || !s.organization.trim()).length,
       recentSignatures: data.filter(s => new Date(s.created_at) > oneDayAgo).length,
       countries: countries.size,
     }

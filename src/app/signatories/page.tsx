@@ -42,11 +42,18 @@ export default function SignatoriesPage() {
               .map(s => getCountryFromLocation(s.location))
               .filter(country => country !== null)
           )
+
+          // Count unique organizations
+          const uniqueOrganizations = new Set(
+            data
+              .filter(s => s.organization && s.organization.trim())
+              .map(s => s.organization!.trim().toLowerCase())
+          )
           
           setStats({
             total: data.length,
-            individuals: data.filter(s => !s.organization).length,
-            organizations: data.filter(s => s.organization).length,
+            individuals: data.filter(s => !s.organization || !s.organization.trim()).length,
+            organizations: uniqueOrganizations.size,
             countries: countries.size,
           })
         } else {

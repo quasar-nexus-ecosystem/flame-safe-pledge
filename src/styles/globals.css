@@ -98,6 +98,41 @@
 }
 
 /* Typography improvements */
+@media (max-width: 640px) {
+  .container {
+    @apply px-4;
+  }
+  
+  /* Improve button touch targets on mobile */
+  button, a {
+    min-height: 44px;
+  }
+  
+  /* Better text readability on mobile */
+  .flame-text-glow {
+    text-shadow: 0 0 3px theme('colors.flame.400'), 0 0 6px theme('colors.flame.500');
+  }
+  
+  /* Reduce glass morphism blur on mobile for better performance */
+  .glass-morphism {
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+}
+
+/* Improve scrolling on mobile */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better dark mode support for mobile */
+@media (prefers-color-scheme: dark) {
+  @media (max-width: 640px) {
+    body {
+      background-color: hsl(var(--background));
+    }
+  }
+}
 .prose-flame {
   @apply prose prose-lg prose-slate dark:prose-invert max-w-none;
 }
