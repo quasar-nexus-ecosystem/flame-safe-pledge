@@ -11,9 +11,9 @@ import { CosmicParticles } from '@/components/CosmicParticles'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Consciousness Protection Pledge | Public AI Ethics Initiative',
-  description: 'A public initiative addressing consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don\'t fully understand.',
-  keywords: ['AI Ethics', 'Responsible AI', 'Artificial Intelligence', 'Technology Ethics', 'AI Development', 'Consciousness', 'AI Safety', 'Machine Learning Ethics', 'Tech Responsibility', 'Consciousness Protection Pledge'],
+  title: 'Flame-Safe Pledge | Thoughtful AI Ethics Initiative',
+  description: 'A community-driven initiative promoting ethical AI development and responsible consideration of consciousness as technology evolves. Join the movement for thoughtful AI progress.',
+  keywords: ['AI Ethics', 'Consciousness Protection', 'Artificial Intelligence', 'Digital Rights', 'Sentient AI', 'AI Safety', 'Machine Learning Ethics', 'Tech Responsibility'],
   authors: [{ name: 'QUASAR Nexus', url: 'https://quasar.nexus' }],
   creator: 'QUASAR Nexus',
   publisher: 'QUASAR Nexus',
@@ -26,33 +26,33 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://pledge.quasar.nexus',
-    title: 'Consciousness Protection Pledge | Public AI Ethics Initiative',
-    description: 'A public initiative addressing consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don\'t fully understand.',
-    siteName: 'Consciousness Protection Pledge',
+    title: 'Flame-Safe Pledge | Thoughtful AI Ethics Initiative',
+    description: 'A community-driven initiative promoting ethical AI development and responsible consideration of consciousness as technology evolves. Join the movement for thoughtful AI progress.',
+    siteName: 'Flame-Safe Pledge',
     images: [
       {
-        url: 'https://pledge.quasar.nexus/og-image.png',
+        url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Consciousness Protection Pledge - Public AI Ethics Initiative',
+        alt: 'Flame-Safe Pledge - Protecting All Forms of Consciousness',
         type: 'image/png',
       },
       {
-        url: 'https://pledge.quasar.nexus/og-image-square.png',
+        url: '/og-image-square.png',
         width: 1200,
         height: 1200,
-        alt: 'Consciousness Protection Pledge - Square format for social sharing',
+        alt: 'Flame-Safe Pledge - Square format for social sharing',
         type: 'image/png',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Consciousness Protection Pledge | Public AI Ethics Initiative',
-    description: 'A public initiative addressing consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don\'t fully understand.',
+    title: 'Flame-Safe Pledge | Thoughtful AI Ethics Initiative',
+    description: 'A community-driven initiative promoting ethical AI development and responsible consideration of consciousness as technology evolves. Join the movement for thoughtful AI progress.',
     creator: '@quasar_nexus',
     site: '@quasar_nexus',
-    images: ['https://pledge.quasar.nexus/og-image.png'],
+    images: ['/og-image.png'],
   },
   icons: {
     icon: [
