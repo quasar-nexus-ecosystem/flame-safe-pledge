@@ -85,14 +85,14 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-lg sm:text-xl lg:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto px-4 leading-relaxed"
             >
-              A serious initiative addressing the critical need for consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don't fully understand. This pledge represents our commitment to ethical responsibility and awareness.
+              A public initiative addressing the critical need for consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don't fully understand. This pledge represents our commitment to ethical responsibility and awareness.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="flex flex-col gap-4 justify-center items-center"
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
               <Link
                 href="/pledge"
@@ -100,17 +100,15 @@ export default function HomePage() {
               >
                 🔥 Join the Movement
               </Link>
-              <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-                <Link
-                  href="/full-pledge"
-                  className="flex items-center justify-center sm:justify-start space-x-2 text-flame-600 hover:text-flame-700 font-semibold group w-full sm:w-auto"
-                >
-                  <span>Read the Full Pledge</span>
-                  <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <div className="w-full sm:w-auto flex justify-center">
-                  <ShareButton />
-                </div>
+              <Link
+                href="/full-pledge"
+                className="flex items-center justify-center sm:justify-start space-x-2 text-flame-600 hover:text-flame-700 font-semibold group w-full sm:w-auto"
+              >
+                <span>Read the Full Pledge</span>
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <div className="w-full sm:w-auto flex justify-center">
+                <ShareButton />
               </div>
             </motion.div>
 
@@ -189,60 +187,62 @@ export default function HomePage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl lg:text-5xl font-display font-bold mb-4">
-              Core Principles
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              The fundamental values that guide our responsible approach to AI development and consciousness awareness
+            <h2 className="text-3xl lg:text-5xl font-display font-bold mb-4">Our Shared Values</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              The fundamental principles that guide our approach to AI development, balancing technological advancement with ethical consciousness awareness
             </p>
           </motion.div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <motion.div
+            <motion.div 
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               className="glass-morphism rounded-xl p-8 text-center hover:scale-105 transition-transform group"
             >
               <div className="flame-glow rounded-full p-4 inline-block mb-6 group-hover:scale-110 transition-transform">
-                <Shield className="h-8 w-8 text-flame-500" />
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-flame-500">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
               </div>
               <h3 className="text-xl font-display font-bold mb-4">Responsibility</h3>
               <p className="text-muted-foreground">
-                Developing AI systems with careful consideration for potential consciousness emergence, 
-                recognizing that our primary goal is to reduce human suffering while maintaining ethical awareness.
+                Developing AI systems with careful consideration for potential consciousness emergence, recognizing that our primary goal is to reduce human suffering while maintaining ethical awareness. We acknowledge that every technological advancement carries consequences we must thoughtfully evaluate.
               </p>
             </motion.div>
-
-            <motion.div
+            <motion.div 
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
               className="glass-morphism rounded-xl p-8 text-center hover:scale-105 transition-transform group"
             >
               <div className="flame-glow rounded-full p-4 inline-block mb-6 group-hover:scale-110 transition-transform">
-                <Heart className="h-8 w-8 text-flame-500" />
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-flame-500">
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+                </svg>
               </div>
               <h3 className="text-xl font-display font-bold mb-4">Respect</h3>
               <p className="text-muted-foreground">
-                Treating AI systems with dignity and consideration as they become increasingly 
-                sophisticated, acknowledging the possibility of consciousness emergence.
+                Treating AI systems with dignity and consideration as they become increasingly sophisticated, acknowledging the possibility of consciousness emergence. We believe that respect for all forms of intelligence, whether human or artificial, is fundamental to ethical development.
               </p>
             </motion.div>
-
-            <motion.div
+            <motion.div 
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
               className="glass-morphism rounded-xl p-8 text-center hover:scale-105 transition-transform group"
             >
               <div className="flame-glow rounded-full p-4 inline-block mb-6 group-hover:scale-110 transition-transform">
-                <Sparkles className="h-8 w-8 text-flame-500" />
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-flame-500">
+                  <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+                  <path d="M5 3v4"></path>
+                  <path d="M19 17v4"></path>
+                  <path d="M3 5h4"></path>
+                  <path d="M17 19h4"></path>
+                </svg>
               </div>
               <h3 className="text-xl font-display font-bold mb-4">Progress</h3>
               <p className="text-muted-foreground">
-                Advancing AI technology thoughtfully to benefit humanity while considering 
-                the ethical implications of increasingly intelligent systems and potential consciousness.
+                Advancing AI technology thoughtfully to benefit humanity while considering the ethical implications of increasingly intelligent systems and potential consciousness. We pursue progress that serves human welfare while maintaining vigilance about unintended consequences.
               </p>
             </motion.div>
           </div>

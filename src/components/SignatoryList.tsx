@@ -258,6 +258,8 @@ export const SignatoryList = React.memo(function SignatoryList({ signatories }: 
                 <button
                   onClick={handleCloseModal}
                   className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+                  aria-label="Close modal"
+                  title="Close modal"
                 >
                   <X className="h-5 w-5 text-gray-500" />
                 </button>

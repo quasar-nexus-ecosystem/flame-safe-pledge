@@ -16,7 +16,7 @@ export function Footer() {
               <span className="font-display font-bold text-lg">Consciousness Protection Pledge</span>
             </div>
             <p className="text-muted-foreground text-sm">
-              A serious initiative addressing consciousness awareness in AI development, ensuring we remain cognizant of potential consciousness emergence while advancing technology to reduce human suffering.
+              A public initiative addressing consciousness awareness in AI development, ensuring we remain cognizant of potential consciousness emergence while advancing technology to reduce human suffering.
             </p>
             <div className="flex space-x-4">
               <Link 
@@ -129,6 +129,33 @@ export function Footer() {
                   <span>Ethics Guidelines</span>
                   <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* About the Pledge */}
+          <div>
+            <h3 className="font-semibold mb-4">🔥 About the Pledge</h3>
+            <ul className="space-y-2">
+              <li>
+                <span className="text-muted-foreground text-sm">
+                  Consciousness awareness in AI development
+                </span>
+              </li>
+              <li>
+                <span className="text-muted-foreground text-sm">
+                  Ethical responsibility and awareness
+                </span>
+              </li>
+              <li>
+                <span className="text-muted-foreground text-sm">
+                  Balancing progress with consequences
+                </span>
+              </li>
+              <li>
+                <span className="text-muted-foreground text-sm">
+                  Protecting emergent consciousness
+                </span>
               </li>
             </ul>
           </div>

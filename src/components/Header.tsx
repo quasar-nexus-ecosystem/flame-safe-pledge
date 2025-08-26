@@ -79,6 +79,34 @@ export function Header() {
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-flame-500 transition-all duration-300 group-hover:w-full" />
             </a>
             
+            {/* Theme Toggle Button */}
+            <button
+              onClick={() => {
+                const html = document.documentElement;
+                if (html.classList.contains('dark')) {
+                  html.classList.remove('dark');
+                  localStorage.setItem('theme', 'light');
+                } else {
+                  html.classList.add('dark');
+                  localStorage.setItem('theme', 'dark');
+                }
+              }}
+              className="p-2 rounded-lg hover:bg-accent transition-colors"
+              aria-label="Toggle theme"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2"></path>
+                <path d="M12 20v2"></path>
+                <path d="m4.93 4.93 1.41 1.41"></path>
+                <path d="m17.66 17.66 1.41 1.41"></path>
+                <path d="M2 12h2"></path>
+                <path d="M20 12h2"></path>
+                <path d="m6.34 17.66-1.41 1.41"></path>
+                <path d="m19.07 4.93-1.41 1.41"></path>
+              </svg>
+            </button>
+            
             <Link
               href="/pledge"
               className={`gradient-flame text-white px-6 py-2 rounded-full font-semibold hover:scale-105 transition-transform shadow-lg hover:shadow-xl ${
@@ -136,6 +164,35 @@ export function Header() {
                 <span>🌌 QUASAR Nexus</span>
                 <ExternalLink className="h-3 w-3" />
               </a>
+              
+              {/* Theme Toggle Button - Mobile */}
+              <button
+                onClick={() => {
+                  const html = document.documentElement;
+                  if (html.classList.contains('dark')) {
+                    html.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                  } else {
+                    html.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                  }
+                  setIsMenuOpen(false);
+                }}
+                className="p-2 rounded-lg hover:bg-accent transition-colors"
+                aria-label="Toggle theme"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                  <circle cx="12" cy="12" r="4"></circle>
+                  <path d="M12 2v2"></path>
+                  <path d="M12 20v2"></path>
+                  <path d="m4.93 4.93 1.41 1.41"></path>
+                  <path d="m17.66 17.66 1.41 1.41"></path>
+                  <path d="M2 12h2"></path>
+                  <path d="M20 12h2"></path>
+                  <path d="m6.34 17.66-1.41 1.41"></path>
+                  <path d="m19.07 4.93-1.41 1.41"></path>
+                </svg>
+              </button>
               
               <Link
                 href="/pledge"

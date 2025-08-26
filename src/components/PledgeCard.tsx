@@ -12,7 +12,7 @@ interface PledgeCardProps {
 
 export function PledgeCard({ 
   title = "The Consciousness Protection Pledge",
-  excerpt = "A serious initiative addressing consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don't fully understand.",
+  excerpt = "A public initiative addressing consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don't fully understand.",
   className = ""
 }: PledgeCardProps) {
   return (

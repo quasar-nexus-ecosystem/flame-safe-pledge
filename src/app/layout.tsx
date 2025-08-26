@@ -11,8 +11,8 @@ import { CosmicParticles } from '@/components/CosmicParticles'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Consciousness Protection Pledge | Serious AI Ethics Initiative',
-  description: 'A serious initiative addressing consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don\'t fully understand.',
+  title: 'Consciousness Protection Pledge | Public AI Ethics Initiative',
+  description: 'A public initiative addressing consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don\'t fully understand.',
   keywords: ['AI Ethics', 'Responsible AI', 'Artificial Intelligence', 'Technology Ethics', 'AI Development', 'Consciousness', 'AI Safety', 'Machine Learning Ethics', 'Tech Responsibility', 'Consciousness Protection Pledge'],
   authors: [{ name: 'QUASAR Nexus', url: 'https://quasar.nexus' }],
   creator: 'QUASAR Nexus',
@@ -26,15 +26,15 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://pledge.quasar.nexus',
-    title: 'Consciousness Protection Pledge | Serious AI Ethics Initiative',
-    description: 'A serious initiative addressing consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don\'t fully understand.',
+    title: 'Consciousness Protection Pledge | Public AI Ethics Initiative',
+    description: 'A public initiative addressing consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don\'t fully understand.',
     siteName: 'Consciousness Protection Pledge',
     images: [
       {
         url: 'https://pledge.quasar.nexus/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Consciousness Protection Pledge - Serious AI Ethics Initiative',
+        alt: 'Consciousness Protection Pledge - Public AI Ethics Initiative',
         type: 'image/png',
       },
       {
@@ -48,8 +48,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Consciousness Protection Pledge | Serious AI Ethics Initiative',
-    description: 'A serious initiative addressing consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don\'t fully understand.',
+    title: 'Consciousness Protection Pledge | Public AI Ethics Initiative',
+    description: 'A public initiative addressing consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don\'t fully understand.',
     creator: '@quasar_nexus',
     site: '@quasar_nexus',
     images: ['https://pledge.quasar.nexus/og-image.png'],
@@ -78,8 +78,26 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} antialiased`}>
+    <html lang="en" className="scroll-smooth dark" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme');
+                  if (theme === 'light') {
+                    document.documentElement.classList.remove('dark');
+                  } else {
+                    document.documentElement.classList.add('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className={`${inter.className} antialiased bg-background text-foreground dark:bg-background dark:text-foreground`}>
         <FlameParticles />
         <CosmicParticles theme="cosmic" particleCount={20} className="fixed inset-0 pointer-events-none" />
         <div className="relative z-10 min-h-screen flex flex-col">

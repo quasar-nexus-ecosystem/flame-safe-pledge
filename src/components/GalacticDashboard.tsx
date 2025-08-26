@@ -534,33 +534,33 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
-              className="rounded-2xl p-6 max-w-md mx-4 border-2 border-purple-500/50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-2xl"
+              className="rounded-2xl p-6 max-w-md mx-4 border-2 border-purple-500/50 bg-background/95 backdrop-blur-md shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center mb-4">
                 <span className="text-4xl block mb-2">{selectedLocation.emoji}</span>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">{selectedLocation.name}</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-300">{selectedLocation.system} System</p>
+                <h3 className="text-xl font-bold text-foreground">{selectedLocation.name}</h3>
+                <p className="text-sm text-muted-foreground">{selectedLocation.system} System</p>
               </div>
               
               <div className="space-y-3 mb-4">
                 <div className="flex justify-between">
-                  <span className="text-sm text-slate-600 dark:text-slate-300">Type:</span>
-                  <span className="text-sm font-semibold text-slate-900 dark:text-white capitalize">{selectedLocation.type}</span>
+                  <span className="text-sm text-muted-foreground">Type:</span>
+                  <span className="text-sm font-semibold text-foreground capitalize">{selectedLocation.type}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-slate-600 dark:text-slate-300">Population:</span>
-                  <span className="text-sm font-semibold text-slate-900 dark:text-white">
+                  <span className="text-sm text-muted-foreground">Population:</span>
+                  <span className="text-sm font-semibold text-foreground">
                     {selectedLocation.population?.toLocaleString() || 'Unknown'}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-slate-600 dark:text-slate-300">Established:</span>
-                  <span className="text-sm font-semibold text-slate-900 dark:text-white">{selectedLocation.established}</span>
+                  <span className="text-sm text-muted-foreground">Established:</span>
+                  <span className="text-sm font-semibold text-foreground">{selectedLocation.established}</span>
                 </div>
               </div>
               
-              <p className="text-sm text-slate-700 dark:text-slate-200 mb-4 leading-relaxed">
+              <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
                 {selectedLocation.description}
               </p>
               
@@ -571,7 +571,7 @@ export function GalacticDashboard({ className = '', showCompact = false }: Galac
                     : galacticData.stats.locationBreakdown[selectedLocation.id] || 0
                   } Consciousness Protectors
                 </div>
-                <div className="text-xs text-slate-600 dark:text-slate-300">
+                <div className="text-xs text-muted-foreground">
                   Active at this location
                 </div>
               </div>

@@ -13,8 +13,8 @@ interface ShareButtonProps {
 
 export function ShareButton({ 
   url = 'https://pledge.quasar.nexus',
-  title = 'Consciousness Protection Pledge | Serious AI Ethics Initiative',
-  description = 'Join the serious initiative addressing consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness. 🔥',
+  title = 'Consciousness Protection Pledge | Public AI Ethics Initiative',
+  description = 'Join the public initiative addressing consciousness awareness in AI development. As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness. 🔥',
   className = ''
 }: ShareButtonProps) {
   const [isOpen, setIsOpen] = useState(false)
