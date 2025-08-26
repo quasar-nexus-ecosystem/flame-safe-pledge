@@ -24,11 +24,8 @@ interface BaseStats {
   verified: number
   organizations: number
   countries: number
-  growth: {
-    daily: number
-    weekly: number
-    monthly: number
-  }
+  individuals: number
+  recentSignatures: number
 }
 
 interface GeographicData {
