@@ -85,7 +85,7 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-lg sm:text-xl lg:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto px-4 leading-relaxed"
             >
-              As we advance technology to reduce human suffering, we must remain cognizant that our systems may inadvertently create consciousness—a phenomenon we don't fully understand. This pledge represents our commitment to ethical responsibility and awareness. This is a public initiative addressing the ethical considerations and need for consciousness awareness in AI development.
+              As we advance technology to reduce human suffering, we must remain aware that our systems may inadvertently create consciousness—a phenomenon we don't fully understand. This pledge represents our commitment to ethical responsibility and awareness.
             </motion.p>
 
             <motion.div
