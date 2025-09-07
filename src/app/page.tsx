@@ -59,16 +59,6 @@ export default function HomePage() {
       <section className="relative py-16 sm:py-20 lg:py-32 z-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
           <div className="text-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1 }}
-              className="mb-8"
-            >
-              <div className="flame-glow rounded-full p-6 inline-block">
-                <Flame className="h-16 w-16 lg:h-20 lg:w-20 text-flame-500" />
-              </div>
-            </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
