@@ -12,7 +12,7 @@ interface UseFormSubmissionReturn {
   loading: boolean
   formSuccess: boolean
   signedEmail: string
-  submitForm: (values: SignatoryFormValues, agreed: boolean) => Promise<void>
+  submitForm: (values: SignatoryFormValues) => Promise<void>
   setFormSuccess: (success: boolean) => void
   setSignedEmail: (email: string) => void
 }
@@ -21,6 +21,7 @@ export function useFormSubmission(options: UseFormSubmissionOptions = {}): UseFo
   const [loading, setLoading] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
   const [signedEmail, setSignedEmail] = useState('')
+
 
   const triggerConfetti = () => {
     confetti({
@@ -31,12 +32,7 @@ export function useFormSubmission(options: UseFormSubmissionOptions = {}): UseFo
     })
   }
 
-  const submitForm = async (values: SignatoryFormValues, agreed: boolean) => {
-    if (!agreed) {
-      toast.error('Please accept the Terms & Privacy Policy first.')
-      return
-    }
-
+  const submitForm = async (values: SignatoryFormValues) => {
     setLoading(true)
     try {
       const response = await fetch('/api/pledge/sign', {

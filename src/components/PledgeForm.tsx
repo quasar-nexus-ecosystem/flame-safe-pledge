@@ -7,7 +7,6 @@ import { SignatoryFormValues } from '@/lib/schemas'
 import { Toaster } from 'react-hot-toast'
 import { motion, AnimatePresence } from 'framer-motion'
 import { User, Mail, Building, Globe, MessageSquare, MapPin, Loader2, Heart, Sparkles, CheckCircle } from 'lucide-react'
-import { Checkbox } from '@/components/ui/checkbox'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -22,7 +21,7 @@ interface PledgeFormProps {
 }
 
 export function PledgeForm({ user }: PledgeFormProps) {
-  const { form, agreed, setAgreed, displayPublicly } = usePledgeForm({ user })
+  const { form, displayPublicly } = usePledgeForm({ user })
   const { loading, formSuccess, signedEmail, submitForm, setFormSuccess, setSignedEmail } = useFormSubmission()
   const { resendLoading, resendVerification } = useVerificationResend()
 
@@ -41,7 +40,7 @@ export function PledgeForm({ user }: PledgeFormProps) {
   }
 
   const onSubmit: SubmitHandler<SignatoryFormValues> = async (values) => {
-    await submitForm(values, agreed)
+    await submitForm(values)
   }
 
   const ErrorMessage = ({ message }: { message?: string }) => {
@@ -211,9 +210,9 @@ export function PledgeForm({ user }: PledgeFormProps) {
                 </Link>
                 {!user && (
                      <Link
-                        href={`https://auth.quasar.nexus/signup?name=${encodeURIComponent(
+                        href={`https://accounts.quasar.nexus/sign-up?redirect_url=${encodeURIComponent('https://pledge.quasar.nexus/pledge/verified')}&name=${encodeURIComponent(
                             watch('name') || ''
-                        )}&email=${encodeURIComponent(watch('email') || '')}&redirect=/pledge/signed`}
+                        )}&email=${encodeURIComponent(watch('email') || '')}`}
                         className="text-white px-8 py-3 rounded-lg font-semibold hover:scale-105 transition-transform shadow-lg inline-flex items-center justify-center space-x-2 bg-gray-700 hover:bg-gray-600 group"
                     >
                         <User className="h-5 w-5 group-hover:animate-bounce" />

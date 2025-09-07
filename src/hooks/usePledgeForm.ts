@@ -9,13 +9,10 @@ interface UsePledgeFormOptions {
 
 interface UsePledgeFormReturn {
   form: ReturnType<typeof useForm<SignatoryFormValues>>
-  agreed: boolean
-  setAgreed: (agreed: boolean) => void
   displayPublicly: boolean
 }
 
 export function usePledgeForm(options: UsePledgeFormOptions = {}): UsePledgeFormReturn {
-  const [agreed, setAgreed] = useState(false)
   const { user } = options
 
   const form = useForm<SignatoryFormValues>({
@@ -41,8 +38,6 @@ export function usePledgeForm(options: UsePledgeFormOptions = {}): UsePledgeForm
 
   return {
     form,
-    agreed,
-    setAgreed,
     displayPublicly,
   }
 }
